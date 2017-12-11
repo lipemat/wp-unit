@@ -84,7 +84,7 @@ if ( $multisite ) {
 } else {
 	echo 'Running as single site... To run multisite, use -c tests/phpunit/multisite.xml' . PHP_EOL;
 }
-unset( $multisite );
+
 
 $GLOBALS['_wp_die_disabled'] = false;
 // Allow tests to override wp_die
@@ -121,8 +121,19 @@ if ( isset( $GLOBALS[ 'wp_tests_filters' ] ) ){
 	}
 }
 
+
+
 // Load WordPress
 require_once ABSPATH . '/wp-settings.php';
+
+// Switch to the blog we have defined in the wp-tests-config
+if( $multisite ){
+	if( defined( 'BLOG_ID_CURRENT_SITE' ) ){
+		switch_to_blog( BLOG_ID_CURRENT_SITE );
+	}
+}
+// unset this later so we can use it after WP loads
+unset( $multisite );
 
 // Delete any default posts & related data
 if( !defined( 'WP_TESTS_NO_INSTALL' ) || !WP_TESTS_NO_INSTALL ){
