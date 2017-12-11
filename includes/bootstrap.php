@@ -113,6 +113,12 @@ if ( isset( $GLOBALS['wp_tests_options'] ) ) {
 	}
 }
 
+// Preset Filters defined in bootstrap file
+// Use to filter items before test classes are loaded
+if ( isset( $GLOBALS[ 'wp_tests_filters' ] ) ){
+	foreach( (array)$GLOBALS[ 'wp_tests_filters' ] as $filter => $callback ){
+		tests_add_filter( $filter, $callback );
+	}
 }
 
 // Load WordPress
