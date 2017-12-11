@@ -25,11 +25,10 @@ $config_file_path .= '/wp-tests-config.php';
  */
 global $wpdb, $current_site, $current_blog, $wp_rewrite, $shortcode_tags, $wp, $phpmailer, $wp_theme_directories;
 
-if ( ! is_readable( $config_file_path ) ) {
-	echo "ERROR: wp-tests-config.php is missing! Please use wp-tests-config-sample.php to create a config file.\n";
-	exit( 1 );
+if ( is_readable( $config_file_path ) ) {
+	require_once $config_file_path;
 }
-require_once $config_file_path;
+
 require_once dirname( __FILE__ ) . '/functions.php';
 
 tests_reset__SERVER();
