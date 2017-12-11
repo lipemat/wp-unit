@@ -101,6 +101,18 @@ if ( isset( $GLOBALS['wp_tests_options'] ) ) {
 	foreach ( array_keys( $GLOBALS['wp_tests_options'] ) as $key ) {
 		tests_add_filter( 'pre_option_' . $key, 'wp_tests_options' );
 	}
+
+	function wp_tests_network_options( $value ) {
+		$key = substr( current_filter(), strlen( 'pre_site_option_' ) );
+		return $GLOBALS['wp_tests_options'][$key];
+	}
+
+	//filter the site options with our test options
+	foreach ( array_keys( $GLOBALS['wp_tests_options'] ) as $key ) {
+		tests_add_filter( 'pre_site_option_'.$key, 'wp_tests_network_options' );
+	}
+}
+
 }
 
 // Load WordPress
