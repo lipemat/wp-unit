@@ -85,7 +85,10 @@ class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
 	public static function tearDownAfterClass() {
 		parent::tearDownAfterClass();
 
-		_delete_all_data();
+		if( !defined( 'WP_TESTS_NO_INSTALL' ) || !WP_TESTS_NO_INSTALL ){
+			_delete_all_data();
+		}
+
 		self::flush_cache();
 
 		$c = self::get_called_class();

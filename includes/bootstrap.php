@@ -68,9 +68,12 @@ if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
 }
 $wp_theme_directories = array( DIR_TESTDATA . '/themedir1' );
 
-system( WP_PHP_BINARY . ' ' . escapeshellarg( dirname( __FILE__ ) . '/install.php' ) . ' ' . escapeshellarg( $config_file_path ) . ' ' . $multisite, $retval );
-if ( 0 !== $retval ) {
-	exit( $retval );
+//Install the Database
+if( !defined( 'WP_TESTS_NO_INSTALL' ) || !WP_TESTS_NO_INSTALL ){
+	system( WP_PHP_BINARY . ' ' . escapeshellarg( dirname( __FILE__ ) . '/install.php' ) . ' ' . escapeshellarg( $config_file_path ) . ' ' . $multisite, $retval );
+	if( 0 !== $retval ){
+		exit( $retval );
+	}
 }
 
 if ( $multisite ) {
@@ -104,7 +107,9 @@ if ( isset( $GLOBALS['wp_tests_options'] ) ) {
 require_once ABSPATH . '/wp-settings.php';
 
 // Delete any default posts & related data
-_delete_all_posts();
+if( !defined( 'WP_TESTS_NO_INSTALL' ) || !WP_TESTS_NO_INSTALL ){
+	_delete_all_posts();
+}
 
 require dirname( __FILE__ ) . '/testcase.php';
 require dirname( __FILE__ ) . '/testcase-rest-api.php';
