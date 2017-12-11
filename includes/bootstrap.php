@@ -58,8 +58,10 @@ $multisite = $multisite || ( defined( 'WP_TESTS_MULTISITE' ) && WP_TESTS_MULTISI
 $multisite = $multisite || ( defined( 'MULTISITE' ) && MULTISITE );
 
 // Override the PHPMailer
-require_once( dirname( __FILE__ ) . '/mock-mailer.php' );
-$phpmailer = new MockPHPMailer( true );
+if( !defined( 'WP_TESTS_SEND_MAIL' ) || !WP_TESTS_SEND_MAIL ){
+	require_once( dirname( __FILE__ ) . '/mock-mailer.php' );
+	$phpmailer = new MockPHPMailer( true );
+}
 
 if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
 	define( 'WP_DEFAULT_THEME', 'default' );
