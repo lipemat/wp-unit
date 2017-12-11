@@ -1,0 +1,16 @@
+{
+    "name": "lipemat/wp-unit",
+    "description": "Forked Wp-unit with support for testing against existing database and other environment enhancements",
+    "type": "library",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "lipemat",
+            "email": "mat@matlipe.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+
+    }
+}
