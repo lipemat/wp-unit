@@ -11,4 +11,4 @@
 
 define( 'WP_TESTS_NO_INSTALL', true );
 
-require __DIR__ . '/bootstrap.php';
+require dirname( __FILE__ ) . '/bootstrap.php';
