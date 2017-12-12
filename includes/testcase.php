@@ -4,6 +4,17 @@ require_once dirname( __FILE__ ) . '/factory.php';
 require_once dirname( __FILE__ ) . '/trac.php';
 
 /**
+ * load aliases for PHPUnit_Framework_TestCase || PHPUnit\Framework\TestCase
+ * depending on which version of PHPUnit we are running.
+ * This allows PHPStorm to local assertions
+ */
+if( class_exists( 'PHPUnit\Runner\Version' ) ){
+	require_once dirname( __FILE__ ) . '/alias/phpunit-6.php';
+} else {
+	require_once dirname( __FILE__ ) . '/alias/phpunit-5.php';
+}
+
+ /**
  * Defines a basic fixture to run multiple tests.
  *
  * Resets the state of the WordPress installation before and after every test.
@@ -11,8 +22,10 @@ require_once dirname( __FILE__ ) . '/trac.php';
  * Includes utility functions and assertions useful for testing WordPress.
  *
  * All WordPress unit tests should inherit from this class.
+ *
+ *
  */
-class WP_UnitTestCase extends PHPUnit_Framework_TestCase {
+class WP_UnitTestCase extends WP_Unit_TestCase_Alias {
 
 	protected static $forced_tickets   = array();
 	protected $expected_deprecated     = array();
