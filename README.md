@@ -1,7 +1,7 @@
 # WP Unit
 Fork of wp-unit to support bootstrapping an existing database and many other enhancements.
 
-[Original may be cloned from here](git://develop.git.wordpress.org/)
+Original may be cloned from here: git://develop.git.wordpress.org/
 
 ## Usage
 Install via composer either in you project or in a global location to be used among all projects.
