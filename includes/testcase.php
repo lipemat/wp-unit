@@ -305,7 +305,11 @@ class WP_UnitTestCase extends WP_Unit_TestCase_Alias {
 		}
 		self::$hooks_saved['wp_filter'] = array();
 		foreach ( $GLOBALS['wp_filter'] as $hook_name => $hook_object ) {
-			self::$hooks_saved['wp_filter'][ $hook_name ] = clone $hook_object;
+			if( is_object( $hook_object ) ){
+				self::$hooks_saved[ 'wp_filter' ][ $hook_name ] = clone $hook_object;
+			} else {
+				self::$hooks_saved[ 'wp_filter' ][ $hook_name ] = $hook_object;
+			}
 		}
 	}
 
@@ -329,7 +333,11 @@ class WP_UnitTestCase extends WP_Unit_TestCase_Alias {
 		if ( isset( self::$hooks_saved['wp_filter'] ) ) {
 			$GLOBALS['wp_filter'] = array();
 			foreach ( self::$hooks_saved['wp_filter'] as $hook_name => $hook_object ) {
-				$GLOBALS['wp_filter'][ $hook_name ] = clone $hook_object;
+				if( is_object( $hook_object ) ){
+					$GLOBALS['wp_filter'][ $hook_name ] = clone $hook_object;
+				} else {
+					$GLOBALS['wp_filter'][ $hook_name ] = $hook_object;
+				}
 			}
 		}
 	}
