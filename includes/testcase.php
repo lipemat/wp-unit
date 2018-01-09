@@ -6,7 +6,7 @@ require_once dirname( __FILE__ ) . '/trac.php';
 /**
  * load aliases for PHPUnit_Framework_TestCase || PHPUnit\Framework\TestCase
  * depending on which version of PHPUnit we are running.
- * This allows PHPStorm to local assertions
+ * This allows PHPStorm to locate assertions
  */
 if( class_exists( 'PHPUnit\Runner\Version' ) ){
 	require_once dirname( __FILE__ ) . '/alias/phpunit-6.php';
