@@ -2,7 +2,7 @@
     "name": "lipemat/wp-unit",
     "description": "Forked Wp-unit with support for testing against existing database and other environment enhancements",
     "type": "library",
-    "license": "GPL",
+    "license": "MIT",
     "authors": [
         {
             "name": "lipemat",
