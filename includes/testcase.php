@@ -7,6 +7,10 @@ require_once dirname( __FILE__ ) . '/trac.php';
  * load aliases for PHPUnit_Framework_TestCase || PHPUnit\Framework\TestCase
  * depending on which version of PHPUnit we are running.
  * This allows PHPStorm to locate assertions
+ *
+ * @notice If PHPStorm fails to autocomplete the testcase methods,
+ * make the alias file as plain text which is not used in the corresponding
+ * project!
  */
 if( class_exists( 'PHPUnit\Runner\Version' ) ){
 	require_once dirname( __FILE__ ) . '/alias/phpunit-6.php';
@@ -23,7 +27,7 @@ if( class_exists( 'PHPUnit\Runner\Version' ) ){
  *
  * All WordPress unit tests should inherit from this class.
  *
- *
+ * @alias PHPUnit\Framework\TestCase
  */
 class WP_UnitTestCase extends WP_Unit_TestCase_Alias {
 
