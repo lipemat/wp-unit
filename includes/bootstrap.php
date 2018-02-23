@@ -47,8 +47,10 @@ if ( ! defined( 'WP_TESTS_FORCE_KNOWN_BUGS' ) ) {
 // Cron tries to make an HTTP request to the blog, which always fails, because tests are run in CLI mode only
 define( 'DISABLE_WP_CRON', true );
 
-define( 'WP_MEMORY_LIMIT', -1 );
-define( 'WP_MAX_MEMORY_LIMIT', -1 );
+if( !defined( 'WP_MEMORY_LIMIT' ) ) {
+	define( 'WP_MEMORY_LIMIT', -1 );
+}
+define( 'WP_MAX_MEMORY_LIMIT', WP_MEMORY_LIMIT );
 
 define( 'REST_TESTS_IMPOSSIBLY_HIGH_NUMBER', 99999999 );
 

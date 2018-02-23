@@ -123,4 +123,9 @@ $GLOBALS[ 'wp_tests_filters' ][ 'the_title' ] = function ( $title ) {
 define( 'WP_TESTS_SEND_MAIL', true );
 ```
 
+**Set a memory limit in your local wp-tests-config.php**
+```php
+<?php
+define( 'WP_MEMORY_LIMIT', '128M' );
+```
 
