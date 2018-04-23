@@ -1,7 +1,8 @@
 # WP Unit
+
 Fork of wp-unit to support bootstrapping an existing database and many other enhancements.
 
-Original may be cloned from here: git://develop.git.wordpress.org/
+Original may be cloned from here: **git://develop.git.wordpress.org/**
 
 ## Usage
 Install via composer either in you project or in a global location to be used among all projects.
@@ -80,14 +81,16 @@ phpunit
 
 ## Enhancements
 
-**Site options**
-Site options will automatically override the same as local blog options
+#### Network Options
+
+Setting a wp_tests_options value may also be used to set a network option. 
+Set test options like normal and they will automatically replace network option values as well.
 ```php
 <?php
 $GLOBALS['wp_tests_options'][ 'site_name' ] = 'Example Site Name';
 ```
 
-**Local wp-tests-config.php**
+#### Local wp-tests-config.php
 
 You may setup your wp-tests.config.php in the directory of your bootstrap.php and phpunit.xml. Really this can be put anywhere as long as you point to it in your bootstrap.php file.
 ```php
@@ -96,7 +99,9 @@ require __DIR__ . '/wp-tests-config.php';
 ```
 
 
-**Bootstrap WP on existing database** 
+#### Bootstrap WP on existing database
+
+Using the bootstrap-no-install.php allows you to test against your current data in the database. Out of the box it supports MySQL transactions to allow tests to set and use data without actually storing it in the database. 
 
 1. Update your wp-tests-config.php file to point to database you want to use.
 2. Change your bootstrap.php to use the bootstrap-no-install.php file like so;
@@ -104,10 +109,13 @@ require __DIR__ . '/wp-tests-config.php';
 <?php
 require __DIR__ . '/wp-tests-config.php';
 require __DIR__ . '/vendor/lipemat/wp-unit/includes/bootstrap-no-install.php';
-
 ```
+**Gotchas:**
+1. If you override the WP_UnitTestCase::setUp() method in your test class, be sure to call parent::setUp(). Otherwise any data you set during tests will persist to the database.
+2. If your database tables are using MyISAM storage engines, data will persist. They may be converted to InnoDB or any other engine which supports transactions. 
 
-**Set some filters before the tests load**
+
+#### Global filters which apply to all tests
 
 From within your wp-tests-config.php file add some filters to the $GLOBALS[ 'wp_tests_filters' ]
 ```php
@@ -117,13 +125,15 @@ $GLOBALS[ 'wp_tests_filters' ][ 'the_title' ] = function ( $title ) {
 };
 ```
 
-**Turn on mail sending**
+#### Turn on mail sending
 ```php
 <?php
 define( 'WP_TESTS_SEND_MAIL', true );
 ```
 
-**Set a memory limit in your local wp-tests-config.php**
+#### Set a memory limit 
+
+From within your wp-tests.config.php add a custom memory limit
 ```php
 <?php
 define( 'WP_MEMORY_LIMIT', '128M' );
