@@ -552,8 +552,16 @@ class Tests_Ajax_CustomizeManager extends WP_Ajax_UnitTestCase {
 	 * @covers WP_Customize_Manager::dismiss_user_auto_draft_changesets()
 	 */
 	public function test_handle_dismiss_autosave_or_lock_request() {
-		$uuid         = wp_generate_uuid4();
-		$wp_customize = $this->set_up_valid_state( $uuid );
+		$uuid          = wp_generate_uuid4();
+		$wp_customize  = $this->set_up_valid_state( $uuid );
+		$valid_user_id = get_current_user_id();
+
+		// Temporarily remove user to test requirement that user is logged in. See #42450.
+		wp_set_current_user( 0 );
+		$this->make_ajax_call( 'customize_dismiss_autosave_or_lock' );
+		$this->assertFalse( $this->_last_response_parsed['success'] );
+		$this->assertEquals( 'unauthenticated', $this->_last_response_parsed['data'] );
+		wp_set_current_user( $valid_user_id );
 
 		$this->make_ajax_call( 'customize_dismiss_autosave_or_lock' );
 		$this->assertFalse( $this->_last_response_parsed['success'] );
@@ -637,7 +645,7 @@ class Tests_Ajax_CustomizeManager extends WP_Ajax_UnitTestCase {
 		$this->assertEquals( 'changeset_lock_dismissed', $this->_last_response_parsed['data'] );
 
 		$_POST['dismiss_autosave'] = $_GET['dismiss_autosave'] = $_REQUEST['dismiss_autosave'] = true;
-		$this->assertNotInstanceOf( 'WP_Error', $r );
+		$this->assertNotWPError( $r );
 		$this->assertFalse( wp_get_post_autosave( $wp_customize->changeset_post_id() ) );
 		$this->assertContains( 'Foo', get_post( $wp_customize->changeset_post_id() )->post_content );
 
@@ -657,7 +665,7 @@ class Tests_Ajax_CustomizeManager extends WP_Ajax_UnitTestCase {
 				'autosave' => true,
 			)
 		);
-		$this->assertNotInstanceOf( 'WP_Error', $r );
+		$this->assertNotWPError( $r );
 		$autosave_revision = wp_get_post_autosave( $wp_customize->changeset_post_id() );
 		$this->assertInstanceOf( 'WP_Post', $autosave_revision );
 		$this->assertContains( 'Foo', get_post( $wp_customize->changeset_post_id() )->post_content );

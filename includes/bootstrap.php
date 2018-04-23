@@ -35,6 +35,7 @@ tests_reset__SERVER();
 
 define( 'WP_TESTS_TABLE_PREFIX', $table_prefix );
 define( 'DIR_TESTDATA', dirname( __FILE__ ) . '/../data' );
+define( 'DIR_TESTROOT', realpath( dirname( dirname( __FILE__ ) ) ) );
 
 if( !defined( 'WP_LANG_DIR' ) ) {
 	define( 'WP_LANG_DIR', DIR_TESTDATA . '/languages' );
@@ -93,6 +94,8 @@ if ( $multisite ) {
 $GLOBALS['_wp_die_disabled'] = false;
 // Allow tests to override wp_die
 tests_add_filter( 'wp_die_handler', '_wp_die_handler_filter' );
+// Use the Spy REST Server instead of default
+tests_add_filter( 'wp_rest_server_class', '_wp_rest_server_class_filter' );
 
 // Preset WordPress options defined in bootstrap file.
 // Used to activate themes, plugins, as well as  other settings.
