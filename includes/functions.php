@@ -17,7 +17,7 @@ function tests_reset__SERVER() {
 }
 
 // For adding hooks before loading WP
-function tests_add_filter( $tag, $function_to_add, $priority = 10, $accepted_args = 1 ) {
+function tests_add_filter( $tag, $function_to_add, $priority = 10, $accepted_args = 5 ) {
 	global $wp_filter;
 
 	if ( function_exists( 'add_filter' ) ) {
