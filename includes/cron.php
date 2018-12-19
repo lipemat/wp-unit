@@ -27,7 +27,7 @@ function wp_cron_run_all() {
 				$schedule = $v['schedule'];
 
 				if ( false !== $schedule ) {
-					$new_args = [ $timestamp, $schedule, $hook, $v['args'] ];
+					$new_args = array( $timestamp, $schedule, $hook, $v['args'] );
 					call_user_func_array('wp_reschedule_event', $new_args);
 				}
 
