@@ -90,6 +90,13 @@ Set test options like normal and they will automatically replace network option 
 $GLOBALS['wp_tests_options'][ 'site_name' ] = 'Example Site Name';
 ```
 
+#### Run all scheduled crons
+Used for testing crons by running them if they are schedule to run.
+
+```php
+wp_cron_run_all()
+```
+
 #### Local wp-tests-config.php
 
 You may setup your wp-tests.config.php in the directory of your bootstrap.php and phpunit.xml. Really this can be put anywhere as long as you point to it in your bootstrap.php file.
