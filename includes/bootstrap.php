@@ -30,6 +30,7 @@ if ( is_readable( $config_file_path ) ) {
 }
 
 require_once dirname( __FILE__ ) . '/functions.php';
+require_once dirname( __FILE__ ) . '/cron.php';
 
 tests_reset__SERVER();
 
