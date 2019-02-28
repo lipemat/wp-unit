@@ -42,8 +42,6 @@ if ( is_readable( $config_file_path ) ) {
 	require_once $config_file_path;
 }
 require_once dirname( __FILE__ ) . '/functions.php';
-require_once dirname( __FILE__ ) . '/cron.php';
-
 
 
 if ( version_compare( tests_get_phpunit_version(), '8.0', '>=' ) ) {
@@ -157,6 +155,8 @@ if ( isset( $GLOBALS[ 'wp_tests_filters' ] ) ){
 
 // Load WordPress
 require_once ABSPATH . '/wp-settings.php';
+require_once dirname( __FILE__ ) . '/template-tags/cron.php';
+
 
 // Switch to the blog we have defined in the wp-tests-config
 if( $multisite ){
