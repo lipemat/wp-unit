@@ -17,6 +17,8 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 	);
 	protected static $super_admin = null;
 
+	protected static $block_id;
+
 	public static function wpSetUpBeforeClass( $factory ) {
 		self::$users       = array(
 			'administrator' => $factory->user->create_and_get( array( 'role' => 'administrator' ) ),
@@ -27,6 +29,16 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		);
 		self::$super_admin = $factory->user->create_and_get( array( 'role' => 'contributor' ) );
 		grant_super_admin( self::$super_admin->ID );
+
+		self::$block_id = $factory->post->create(
+			array(
+				'post_author'  => self::$users['administrator']->ID,
+				'post_type'    => 'wp_block',
+				'post_status'  => 'publish',
+				'post_title'   => 'Test Block',
+				'post_content' => '<!-- wp:core/paragraph --><p>Hello world!</p><!-- /wp:core/paragraph -->',
+			)
+		);
 	}
 
 	function setUp() {
@@ -35,6 +47,11 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		$this->_flush_roles();
 
 	}
+
+	public static function wpTearDownAfterClass() {
+		wp_delete_post( self::$block_id, true );
+	}
+
 
 	function _flush_roles() {
 		// we want to make sure we're testing against the db, not just in-memory data
@@ -217,71 +234,77 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 
 	final private function _getSingleSiteMetaCaps() {
 		return array(
-			'create_sites'           => array(),
-			'delete_sites'           => array(),
-			'manage_network'         => array(),
-			'manage_sites'           => array(),
-			'manage_network_users'   => array(),
-			'manage_network_plugins' => array(),
-			'manage_network_themes'  => array(),
-			'manage_network_options' => array(),
-			'delete_site'            => array(),
-			'upgrade_network'        => array(),
+			'create_sites'                => array(),
+			'delete_sites'                => array(),
+			'manage_network'              => array(),
+			'manage_sites'                => array(),
+			'manage_network_users'        => array(),
+			'manage_network_plugins'      => array(),
+			'manage_network_themes'       => array(),
+			'manage_network_options'      => array(),
+			'delete_site'                 => array(),
+			'upgrade_network'             => array(),
 
-			'setup_network'          => array( 'administrator' ),
-			'upload_plugins'         => array( 'administrator' ),
-			'upload_themes'          => array( 'administrator' ),
-			'customize'              => array( 'administrator' ),
-			'add_users'              => array( 'administrator' ),
-			'install_languages'      => array( 'administrator' ),
-			'update_languages'       => array( 'administrator' ),
-			'deactivate_plugins'     => array( 'administrator' ),
-			'upgrade_php'            => array( 'administrator' ),
+			'setup_network'               => array( 'administrator' ),
+			'upload_plugins'              => array( 'administrator' ),
+			'upload_themes'               => array( 'administrator' ),
+			'customize'                   => array( 'administrator' ),
+			'add_users'                   => array( 'administrator' ),
+			'install_languages'           => array( 'administrator' ),
+			'update_languages'            => array( 'administrator' ),
+			'deactivate_plugins'          => array( 'administrator' ),
+			'update_php'                  => array( 'administrator' ),
+			'export_others_personal_data' => array( 'administrator' ),
+			'erase_others_personal_data'  => array( 'administrator' ),
+			'manage_privacy_options'      => array( 'administrator' ),
 
-			'edit_categories'        => array( 'administrator', 'editor' ),
-			'delete_categories'      => array( 'administrator', 'editor' ),
-			'manage_post_tags'       => array( 'administrator', 'editor' ),
-			'edit_post_tags'         => array( 'administrator', 'editor' ),
-			'delete_post_tags'       => array( 'administrator', 'editor' ),
-			'edit_css'               => array( 'administrator', 'editor' ),
+			'edit_categories'             => array( 'administrator', 'editor' ),
+			'delete_categories'           => array( 'administrator', 'editor' ),
+			'manage_post_tags'            => array( 'administrator', 'editor' ),
+			'edit_post_tags'              => array( 'administrator', 'editor' ),
+			'delete_post_tags'            => array( 'administrator', 'editor' ),
+			'edit_css'                    => array( 'administrator', 'editor' ),
 
-			'assign_categories'      => array( 'administrator', 'editor', 'author', 'contributor' ),
-			'assign_post_tags'       => array( 'administrator', 'editor', 'author', 'contributor' ),
+			'assign_categories'           => array( 'administrator', 'editor', 'author', 'contributor' ),
+			'assign_post_tags'            => array( 'administrator', 'editor', 'author', 'contributor' ),
 		);
 	}
 
 	final private function _getMultiSiteMetaCaps() {
 		return array(
-			'create_sites'           => array(),
-			'delete_sites'           => array(),
-			'manage_network'         => array(),
-			'manage_sites'           => array(),
-			'manage_network_users'   => array(),
-			'manage_network_plugins' => array(),
-			'manage_network_themes'  => array(),
-			'manage_network_options' => array(),
-			'setup_network'          => array(),
-			'upload_plugins'         => array(),
-			'upload_themes'          => array(),
-			'edit_css'               => array(),
-			'upgrade_network'        => array(),
-			'install_languages'      => array(),
-			'update_languages'       => array(),
-			'deactivate_plugins'     => array(),
-			'upgrade_php'            => array(),
+			'create_sites'                => array(),
+			'delete_sites'                => array(),
+			'manage_network'              => array(),
+			'manage_sites'                => array(),
+			'manage_network_users'        => array(),
+			'manage_network_plugins'      => array(),
+			'manage_network_themes'       => array(),
+			'manage_network_options'      => array(),
+			'setup_network'               => array(),
+			'upload_plugins'              => array(),
+			'upload_themes'               => array(),
+			'edit_css'                    => array(),
+			'upgrade_network'             => array(),
+			'install_languages'           => array(),
+			'update_languages'            => array(),
+			'deactivate_plugins'          => array(),
+			'update_php'                  => array(),
+			'export_others_personal_data' => array( '' ),
+			'erase_others_personal_data'  => array( '' ),
+			'manage_privacy_options'      => array(),
 
-			'customize'              => array( 'administrator' ),
-			'delete_site'            => array( 'administrator' ),
-			'add_users'              => array( 'administrator' ),
+			'customize'                   => array( 'administrator' ),
+			'delete_site'                 => array( 'administrator' ),
+			'add_users'                   => array( 'administrator' ),
 
-			'edit_categories'        => array( 'administrator', 'editor' ),
-			'delete_categories'      => array( 'administrator', 'editor' ),
-			'manage_post_tags'       => array( 'administrator', 'editor' ),
-			'edit_post_tags'         => array( 'administrator', 'editor' ),
-			'delete_post_tags'       => array( 'administrator', 'editor' ),
+			'edit_categories'             => array( 'administrator', 'editor' ),
+			'delete_categories'           => array( 'administrator', 'editor' ),
+			'manage_post_tags'            => array( 'administrator', 'editor' ),
+			'edit_post_tags'              => array( 'administrator', 'editor' ),
+			'delete_post_tags'            => array( 'administrator', 'editor' ),
 
-			'assign_categories'      => array( 'administrator', 'editor', 'author', 'contributor' ),
-			'assign_post_tags'       => array( 'administrator', 'editor', 'author', 'contributor' ),
+			'assign_categories'           => array( 'administrator', 'editor', 'author', 'contributor' ),
+			'assign_post_tags'            => array( 'administrator', 'editor', 'author', 'contributor' ),
 		);
 	}
 
@@ -874,7 +897,9 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		global $wp_roles;
 		$role_name = 'janitor';
 		add_role(
-			$role_name, 'Janitor', array(
+			$role_name,
+			'Janitor',
+			array(
 				'level_1'          => true,
 				'sweep_floor'      => true,
 				'polish_doorknobs' => true,
@@ -1094,7 +1119,8 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		$this->assertEquals( 'draw_somethings', $something->cap->create_posts );
 
 		register_post_type(
-			'something', array(
+			'something',
+			array(
 				'capabilities' =>
 				array(
 					'edit_posts'   => 'draw_somethings',
@@ -1300,7 +1326,9 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 			$this->assertEquals(
 				array(
 					$primitive_cap,
-				), $caps, "Meta cap: {$meta_cap}"
+				),
+				$caps,
+				"Meta cap: {$meta_cap}"
 			);
 		}
 	}
@@ -1392,7 +1420,9 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		);
 		$taxonomy = 'custom_cap_taxo';
 		register_taxonomy(
-			$taxonomy, 'post', array(
+			$taxonomy,
+			'post',
+			array(
 				'capabilities' => $expected,
 			)
 		);
@@ -1405,7 +1435,9 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 			$this->assertEquals(
 				array(
 					$primitive_cap,
-				), $caps, "Meta cap: {$meta_cap}"
+				),
+				$caps,
+				"Meta cap: {$meta_cap}"
 			);
 		}
 	}
@@ -1708,7 +1740,8 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 	function test_cpt_with_page_capability_type() {
 
 		register_post_type(
-			'page_capability', array(
+			'page_capability',
+			array(
 				'capability_type' => 'page',
 			)
 		);
@@ -1919,7 +1952,9 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 
 		$role_name = 'uploader';
 		add_role(
-			$role_name, 'Uploader', array(
+			$role_name,
+			'Uploader',
+			array(
 				'read'         => true,
 				'upload_files' => true,
 			)
@@ -1947,7 +1982,9 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 
 		$role_name = 'uploader';
 		add_role(
-			$role_name, 'Uploader', array(
+			$role_name,
+			'Uploader',
+			array(
 				'read'         => true,
 				'upload_files' => true,
 			)
@@ -2014,7 +2051,9 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 
 		$role_name = 'uploader';
 		add_role(
-			$role_name, 'Uploader', array(
+			$role_name,
+			'Uploader',
+			array(
 				'read'         => true,
 				'upload_files' => true,
 			)
@@ -2072,5 +2111,77 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
 		$wpdb->suppress_errors( $suppress );
 
 		$this->assertSame( 333, $roles->get_site_id() );
+	}
+
+	/**
+	 * @dataProvider data_block_caps
+	 */
+	function test_block_caps( $role, $cap, $use_post, $expected ) {
+		if ( $use_post ) {
+			$this->assertEquals( $expected, self::$users[ $role ]->has_cap( $cap, self::$block_id ) );
+		} else {
+			$this->assertEquals( $expected, self::$users[ $role ]->has_cap( $cap ) );
+		}
+	}
+
+	function data_block_caps() {
+		$post_caps = array(
+			'edit_block',
+			'read_block',
+			'delete_block',
+		);
+
+		$all_caps = array(
+			'edit_block',
+			'read_block',
+			'delete_block',
+			'edit_blocks',
+			'edit_others_blocks',
+			'publish_blocks',
+			'read_private_blocks',
+			'delete_blocks',
+			'delete_private_blocks',
+			'delete_published_blocks',
+			'delete_others_blocks',
+			'edit_private_blocks',
+			'edit_published_blocks',
+		);
+
+		$roles = array(
+			'administrator' => $all_caps,
+			'editor'        => $all_caps,
+			'author'        => array(
+				'read_block',
+				'edit_blocks',
+				'publish_blocks',
+				'delete_blocks',
+				'delete_published_blocks',
+				'edit_published_blocks',
+			),
+			'contributor'   => array(
+				'read_block',
+				'edit_blocks',
+				'delete_blocks',
+			),
+			'subscriber'    => array(),
+		);
+
+		$data = array();
+
+		foreach ( $roles as $role => $caps ) {
+			foreach ( $caps as $cap ) {
+				$use_post = in_array( $cap, $post_caps, true );
+				$data[]   = array( $role, $cap, $use_post, true );
+			}
+
+			foreach ( $all_caps as $cap ) {
+				if ( ! in_array( $cap, $caps, true ) ) {
+					$use_post = in_array( $cap, $post_caps, true );
+					$data[]   = array( $role, $cap, $use_post, false );
+				}
+			}
+		}
+
+		return $data;
 	}
 }

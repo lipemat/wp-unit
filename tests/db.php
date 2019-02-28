@@ -90,7 +90,7 @@ class Tests_DB extends WP_UnitTestCase {
 		$current_locales = explode( ';', setlocale( LC_ALL, 0 ) );
 
 		// Switch to Russian
-		$flag = setlocale( LC_ALL, 'ru_RU.utf8', 'rus', 'fr_FR.utf8', 'fr_FR', 'de_DE.utf8', 'de_DE', 'es_ES.utf8', 'es_ES' );
+		$flag = setlocale( LC_ALL, 'ru_RU.utf8', 'rus', 'fr_FR.utf8', 'fr_FR', 'de_DE.utf8', 'de_DE', 'es_ES.utf8', 'es_ES', 'ja_JP.utf8', 'ja_JP' );
 		if ( false === $flag ) {
 			$this->markTestSkipped( 'No European languages available for testing' );
 		}
@@ -570,6 +570,96 @@ class Tests_DB extends WP_UnitTestCase {
 		$this->assertEquals( 'Walter Sobchak', $row->display_name );
 	}
 
+	/**
+	 * Test the `get_col()` method.
+	 *
+	 * @param string|null        $query       The query to run.
+	 * @param string|array       $expected    The expected resulting value.
+	 * @param arrray|string|null $last_result The value to assign to `$wpdb->last_result`.
+	 * @param int|string         $column      The column index to retrieve.
+	 *
+	 * @dataProvider data_test_get_col
+	 *
+	 * @ticket 45299
+	 */
+	function test_get_col( $query, $expected, $last_result, $column ) {
+		global $wpdb;
+
+		$wpdb->last_result = $last_result;
+
+		$result = $wpdb->get_col( $query, $column );
+
+		if ( $query ) {
+			$this->assertSame( $query, $wpdb->last_query );
+		}
+
+		if ( is_array( $expected ) ) {
+			$this->assertSame( $expected, $result );
+		} else {
+			$this->assertContains( $expected, $result );
+		}
+	}
+
+	/**
+	 * Data provider for testing `get_col()`.
+	 *
+	 * @return array {
+	 *     Arguments for testing `get_col()`.
+	 *
+	 *     @type string|null        $query       The query to run.
+	 *     @type string|array       $expected    The resulting expected value.
+	 *     @type arrray|string|null $last_result The value to assign to `$wpdb->last_result`.
+	 *     @type int|string         $column      The column index to retrieve.
+	 */
+	function data_test_get_col() {
+		global $wpdb;
+
+		return array(
+			array(
+				"SELECT display_name FROM $wpdb->users",
+				'admin',
+				array(),
+				0,
+			),
+			array(
+				"SELECT user_login, user_email FROM $wpdb->users",
+				'admin',
+				array(),
+				0,
+			),
+			array(
+				"SELECT user_login, user_email FROM $wpdb->users",
+				'admin@example.org',
+				array(),
+				1,
+			),
+			array(
+				"SELECT user_login, user_email FROM $wpdb->users",
+				'admin@example.org',
+				array(),
+				'1',
+			),
+			array(
+				"SELECT user_login, user_email FROM $wpdb->users",
+				array( null ),
+				array(),
+				3,
+			),
+			array(
+				'',
+				array(),
+				null,
+				0,
+			),
+			array(
+				null,
+				array(),
+				'',
+				0,
+			),
+		);
+	}
+
 	function test_replace() {
 		global $wpdb;
 		$rows1 = $wpdb->insert( $wpdb->users, array( 'display_name' => 'Walter Sobchak' ) );
@@ -578,7 +668,8 @@ class Tests_DB extends WP_UnitTestCase {
 		$last = $wpdb->insert_id;
 
 		$rows2 = $wpdb->replace(
-			$wpdb->users, array(
+			$wpdb->users,
+			array(
 				'ID'           => $last,
 				'display_name' => 'Walter Replace Sobchak',
 			)

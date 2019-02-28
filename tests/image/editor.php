@@ -14,7 +14,7 @@ class Tests_Image_Editor extends WP_Image_UnitTestCase {
 	/**
 	 * Setup test fixture
 	 */
-	public function setup() {
+	public function setUp() {
 		require_once( ABSPATH . WPINC . '/class-wp-image-editor.php' );
 
 		include_once( DIR_TESTDATA . '/../includes/mock-image-editor.php' );
@@ -122,7 +122,8 @@ class Tests_Image_Editor extends WP_Image_UnitTestCase {
 		$property = new ReflectionProperty( $editor, 'size' );
 		$property->setAccessible( true );
 		$property->setValue(
-			$editor, array(
+			$editor,
+			array(
 				'height' => 50,
 				'width'  => 100,
 			)

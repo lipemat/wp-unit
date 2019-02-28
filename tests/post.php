@@ -13,7 +13,9 @@ class Tests_Post extends WP_UnitTestCase {
 		self::$editor_id = $factory->user->create( array( 'role' => 'editor' ) );
 
 		add_role(
-			'grammarian', 'Grammarian', array(
+			'grammarian',
+			'Grammarian',
+			array(
 				'read'                 => true,
 				'edit_posts'           => true,
 				'edit_others_posts'    => true,
@@ -813,7 +815,8 @@ class Tests_Post extends WP_UnitTestCase {
 		$post_type = rand_str( 20 );
 		register_post_type( $post_type );
 		self::factory()->post->create_many(
-			3, array(
+			3,
+			array(
 				'post_type'   => $post_type,
 				'post_author' => self::$editor_id,
 			)
@@ -1354,4 +1357,30 @@ class Tests_Post extends WP_UnitTestCase {
 		$this->assertEquals( $changeset_data, json_decode( get_post( $post_id )->post_content, true ) );
 	}
 
+	/**
+	 * Test ensuring that the post_slug can be filtered with a custom value short circuiting the built in
+	 * function that tries to create a unique name based on the post name.
+	 *
+	 * @see wp_unique_post_slug()
+	 * @ticket 21112
+	 */
+	function test_pre_wp_unique_post_slug_filter() {
+		add_filter( 'pre_wp_unique_post_slug', array( $this, 'filter_pre_wp_unique_post_slug' ), 10, 6 );
+
+		$post_id = $this->factory->post->create(
+			array(
+				'title'       => 'An example',
+				'post_status' => 'publish',
+				'post_type'   => 'page',
+			)
+		);
+		$post    = get_post( $post_id );
+		$this->assertEquals( 'override-slug-' . $post->post_type, $post->post_name );
+
+		remove_filter( 'pre_wp_unique_post_slug', array( $this, 'filter_pre_wp_unique_post_slug' ), 10, 6 );
+	}
+
+	function filter_pre_wp_unique_post_slug( $default, $slug, $post_ID, $post_status, $post_type, $post_parent ) {
+		return 'override-slug-' . $post_type;
+	}
 }

@@ -7,14 +7,15 @@ class Tests_Functions extends WP_UnitTestCase {
 	function test_wp_parse_args_object() {
 		$x        = new MockClass;
 		$x->_baba = 5;
-		$x->yZ    = 'baba';
+		$x->yZ    = 'baba'; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		$x->a     = array( 5, 111, 'x' );
 		$this->assertEquals(
 			array(
 				'_baba' => 5,
 				'yZ'    => 'baba',
 				'a'     => array( 5, 111, 'x' ),
-			), wp_parse_args( $x )
+			),
+			wp_parse_args( $x )
 		);
 		$y = new MockClass;
 		$this->assertEquals( array(), wp_parse_args( $y ) );
@@ -34,14 +35,15 @@ class Tests_Functions extends WP_UnitTestCase {
 				'_baba' => 5,
 				'yZ'    => 'baba',
 				'a'     => array( 5, 111, 'x' ),
-			), wp_parse_args( $b )
+			),
+			wp_parse_args( $b )
 		);
 	}
 
 	function test_wp_parse_args_defaults() {
 		$x        = new MockClass;
 		$x->_baba = 5;
-		$x->yZ    = 'baba';
+		$x->yZ    = 'baba'; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		$x->a     = array( 5, 111, 'x' );
 		$d        = array( 'pu' => 'bu' );
 		$this->assertEquals(
@@ -50,7 +52,8 @@ class Tests_Functions extends WP_UnitTestCase {
 				'_baba' => 5,
 				'yZ'    => 'baba',
 				'a'     => array( 5, 111, 'x' ),
-			), wp_parse_args( $x, $d )
+			),
+			wp_parse_args( $x, $d )
 		);
 		$e = array( '_baba' => 6 );
 		$this->assertEquals(
@@ -58,7 +61,8 @@ class Tests_Functions extends WP_UnitTestCase {
 				'_baba' => 5,
 				'yZ'    => 'baba',
 				'a'     => array( 5, 111, 'x' ),
-			), wp_parse_args( $x, $e )
+			),
+			wp_parse_args( $x, $e )
 		);
 	}
 
@@ -232,44 +236,6 @@ class Tests_Functions extends WP_UnitTestCase {
 		$this->assertFalse( is_serialized( 'C:16:"Serialized_Class":6:{a:0:{}}' ) );
 	}
 
-	/**
-	 * @dataProvider data_is_serialized_string
-	 */
-	public function test_is_serialized_string( $value, $result ) {
-		$this->assertSame( is_serialized_string( $value ), $result );
-	}
-
-	public function data_is_serialized_string() {
-		return array(
-			// Not a string.
-			array( 0, false ),
-
-			// Too short when trimmed.
-			array( 's:3   ', false ),
-
-			// Too short.
-			array( 's:3', false ),
-
-			// No colon in second position.
-			array( 's!3:"foo";', false ),
-
-			// No trailing semicolon.
-			array( 's:3:"foo"', false ),
-
-			// Wrong type.
-			array( 'a:3:"foo";', false ),
-
-			// No closing quote.
-			array( 'a:3:"foo;', false ),
-
-			// Wrong number of characters is close enough for is_serialized_string().
-			array( 's:12:"foo";', true ),
-
-			// Okay.
-			array( 's:3:"foo";', true ),
-
-		);
-	}
 
 	/**
 	 * @group add_query_arg
@@ -299,19 +265,23 @@ class Tests_Functions extends WP_UnitTestCase {
 			$this->assertEquals( "$url?foo=1", add_query_arg( 'foo', '1', $url ) );
 			$this->assertEquals( "$url?foo=1", add_query_arg( array( 'foo' => '1' ), $url ) );
 			$this->assertEquals(
-				"$url?foo=2", add_query_arg(
+				"$url?foo=2",
+				add_query_arg(
 					array(
 						'foo' => '1',
 						'foo' => '2',
-					), $url
+					),
+					$url
 				)
 			);
 			$this->assertEquals(
-				"$url?foo=1&bar=2", add_query_arg(
+				"$url?foo=1&bar=2",
+				add_query_arg(
 					array(
 						'foo' => '1',
 						'bar' => '2',
-					), $url
+					),
+					$url
 				)
 			);
 
@@ -320,7 +290,8 @@ class Tests_Functions extends WP_UnitTestCase {
 			$this->assertEquals( "$url?foo=1", add_query_arg( 'foo', '1' ) );
 			$this->assertEquals( "$url?foo=1", add_query_arg( array( 'foo' => '1' ) ) );
 			$this->assertEquals(
-				"$url?foo=2", add_query_arg(
+				"$url?foo=2",
+				add_query_arg(
 					array(
 						'foo' => '1',
 						'foo' => '2',
@@ -328,7 +299,8 @@ class Tests_Functions extends WP_UnitTestCase {
 				)
 			);
 			$this->assertEquals(
-				"$url?foo=1&bar=2", add_query_arg(
+				"$url?foo=1&bar=2",
+				add_query_arg(
 					array(
 						'foo' => '1',
 						'bar' => '2',
@@ -344,19 +316,23 @@ class Tests_Functions extends WP_UnitTestCase {
 			$this->assertEquals( "$url?foo=1#frag", add_query_arg( 'foo', '1', $frag_url ) );
 			$this->assertEquals( "$url?foo=1#frag", add_query_arg( array( 'foo' => '1' ), $frag_url ) );
 			$this->assertEquals(
-				"$url?foo=2#frag", add_query_arg(
+				"$url?foo=2#frag",
+				add_query_arg(
 					array(
 						'foo' => '1',
 						'foo' => '2',
-					), $frag_url
+					),
+					$frag_url
 				)
 			);
 			$this->assertEquals(
-				"$url?foo=1&bar=2#frag", add_query_arg(
+				"$url?foo=1&bar=2#frag",
+				add_query_arg(
 					array(
 						'foo' => '1',
 						'bar' => '2',
-					), $frag_url
+					),
+					$frag_url
 				)
 			);
 
@@ -365,7 +341,8 @@ class Tests_Functions extends WP_UnitTestCase {
 			$this->assertEquals( "$url?foo=1#frag", add_query_arg( 'foo', '1' ) );
 			$this->assertEquals( "$url?foo=1#frag", add_query_arg( array( 'foo' => '1' ) ) );
 			$this->assertEquals(
-				"$url?foo=2#frag", add_query_arg(
+				"$url?foo=2#frag",
+				add_query_arg(
 					array(
 						'foo' => '1',
 						'foo' => '2',
@@ -373,7 +350,8 @@ class Tests_Functions extends WP_UnitTestCase {
 				)
 			);
 			$this->assertEquals(
-				"$url?foo=1&bar=2#frag", add_query_arg(
+				"$url?foo=1&bar=2#frag",
+				add_query_arg(
 					array(
 						'foo' => '1',
 						'bar' => '2',
@@ -400,19 +378,23 @@ class Tests_Functions extends WP_UnitTestCase {
 			$this->assertEquals( "$url&foo=1", add_query_arg( 'foo', '1', $url ) );
 			$this->assertEquals( "$url&foo=1", add_query_arg( array( 'foo' => '1' ), $url ) );
 			$this->assertEquals(
-				"$url&foo=2", add_query_arg(
+				"$url&foo=2",
+				add_query_arg(
 					array(
 						'foo' => '1',
 						'foo' => '2',
-					), $url
+					),
+					$url
 				)
 			);
 			$this->assertEquals(
-				"$url&foo=1&bar=2", add_query_arg(
+				"$url&foo=1&bar=2",
+				add_query_arg(
 					array(
 						'foo' => '1',
 						'bar' => '2',
-					), $url
+					),
+					$url
 				)
 			);
 
@@ -421,7 +403,8 @@ class Tests_Functions extends WP_UnitTestCase {
 			$this->assertEquals( "$url&foo=1", add_query_arg( 'foo', '1' ) );
 			$this->assertEquals( "$url&foo=1", add_query_arg( array( 'foo' => '1' ) ) );
 			$this->assertEquals(
-				"$url&foo=2", add_query_arg(
+				"$url&foo=2",
+				add_query_arg(
 					array(
 						'foo' => '1',
 						'foo' => '2',
@@ -429,7 +412,8 @@ class Tests_Functions extends WP_UnitTestCase {
 				)
 			);
 			$this->assertEquals(
-				"$url&foo=1&bar=2", add_query_arg(
+				"$url&foo=1&bar=2",
+				add_query_arg(
 					array(
 						'foo' => '1',
 						'bar' => '2',
@@ -452,7 +436,8 @@ class Tests_Functions extends WP_UnitTestCase {
 			array(
 				'foo' => 'bar',
 				'1'   => '2',
-			), '1=1'
+			),
+			'1=1'
 		);
 		$this->assertEquals( '1=2&foo=bar', $url );
 
@@ -547,6 +532,30 @@ class Tests_Functions extends WP_UnitTestCase {
 		$this->assertEquals( 'foobarbaz', get_option( 'blog_charset' ) );
 
 		update_option( 'blog_charset', $orig_blog_charset );
+	}
+
+	/**
+	 * @ticket 43977
+	 * @dataProvider data_wp_parse_list
+	 */
+	function test_wp_parse_list( $expected, $actual ) {
+		$this->assertSame( $expected, array_values( wp_parse_list( $actual ) ) );
+	}
+
+	function data_wp_parse_list() {
+		return array(
+			array( array( '1', '2', '3', '4' ), '1,2,3,4' ),
+			array( array( 'apple', 'banana', 'carrot', 'dog' ), 'apple,banana,carrot,dog' ),
+			array( array( '1', '2', 'apple', 'banana' ), '1,2,apple,banana' ),
+			array( array( '1', '2', 'apple', 'banana' ), '1, 2,apple,banana' ),
+			array( array( '1', '2', 'apple', 'banana' ), '1,2,apple,,banana' ),
+			array( array( '1', '2', 'apple', 'banana' ), ',1,2,apple,banana' ),
+			array( array( '1', '2', 'apple', 'banana' ), '1,2,apple,banana,' ),
+			array( array( '1', '2', 'apple', 'banana' ), '1,2 ,apple,banana' ),
+			array( array(), '' ),
+			array( array(), ',' ),
+			array( array(), ',,' ),
+		);
 	}
 
 	/**
@@ -1095,6 +1104,34 @@ class Tests_Functions extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Tests wp_unique_id().
+	 *
+	 * @covers ::wp_unique_id
+	 * @ticket 44883
+	 */
+	function test_wp_unique_id() {
+
+		// Test without prefix.
+		$ids = array();
+		for ( $i = 0; $i < 20; $i += 1 ) {
+			$id = wp_unique_id();
+			$this->assertInternalType( 'string', $id );
+			$this->assertTrue( is_numeric( $id ) );
+			$ids[] = $id;
+		}
+		$this->assertEquals( $ids, array_unique( $ids ) );
+
+		// Test with prefix.
+		$ids = array();
+		for ( $i = 0; $i < 20; $i += 1 ) {
+			$id = wp_unique_id( 'foo-' );
+			$this->assertRegExp( '/^foo-\d+$/', $id );
+			$ids[] = $id;
+		}
+		$this->assertEquals( $ids, array_unique( $ids ) );
+	}
+
+	/**
 	 * @ticket 40017
 	 * @dataProvider _wp_get_image_mime
 	 */
@@ -1179,7 +1216,7 @@ class Tests_Functions extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Data profider for test_wp_get_image_mime();
+	 * Data provider for test_wp_get_image_mime();
 	 */
 	public function _wp_get_image_mime() {
 		$data = array(
@@ -1250,8 +1287,8 @@ class Tests_Functions extends WP_UnitTestCase {
 				DIR_TESTDATA . '/formatting/big5.txt',
 				'big5.jpg',
 				array(
-					'ext'             => 'jpg',
-					'type'            => 'image/jpeg',
+					'ext'             => false,
+					'type'            => false,
 					'proper_filename' => false,
 				),
 			),
@@ -1265,12 +1302,53 @@ class Tests_Functions extends WP_UnitTestCase {
 					'proper_filename' => false,
 				),
 			),
+			// Non-image file not allowed even if it's named like one.
+			array(
+				DIR_TESTDATA . '/export/crazy-cdata.xml',
+				'crazy-cdata.jpg',
+				array(
+					'ext'             => false,
+					'type'            => false,
+					'proper_filename' => false,
+				),
+			),
+			// Non-image file not allowed if it's named like something else.
+			array(
+				DIR_TESTDATA . '/export/crazy-cdata.xml',
+				'crazy-cdata.doc',
+				array(
+					'ext'             => false,
+					'type'            => false,
+					'proper_filename' => false,
+				),
+			),
+			// Non-image file not allowed even if it's named like one.
+			array(
+				DIR_TESTDATA . '/export/crazy-cdata.xml',
+				'crazy-cdata.jpg',
+				array(
+					'ext'             => false,
+					'type'            => false,
+					'proper_filename' => false,
+				),
+			),
+			// Non-image file not allowed if it's named like something else.
+			array(
+				DIR_TESTDATA . '/export/crazy-cdata.xml',
+				'crazy-cdata.doc',
+				array(
+					'ext'             => false,
+					'type'            => false,
+					'proper_filename' => false,
+				),
+			),
 		);
 
 		// Test a few additional file types on single sites.
 		if ( ! is_multisite() ) {
 			$data = array_merge(
-				$data, array(
+				$data,
+				array(
 					// Standard non-image file.
 					 array(
 						 DIR_TESTDATA . '/formatting/big5.txt',
@@ -1298,6 +1376,35 @@ class Tests_Functions extends WP_UnitTestCase {
 						array(
 							'ext'             => 'flac',
 							'type'            => 'audio/flac',
+							'proper_filename' => false,
+						),
+					),
+					// Assorted text/* sample files
+					array(
+						DIR_TESTDATA . '/uploads/test.vtt',
+						'test.vtt',
+						array(
+							'ext'             => 'vtt',
+							'type'            => 'text/vtt',
+							'proper_filename' => false,
+						),
+					),
+					array(
+						DIR_TESTDATA . '/uploads/test.csv',
+						'test.csv',
+						array(
+							'ext'             => 'csv',
+							'type'            => 'text/csv',
+							'proper_filename' => false,
+						),
+					),
+					// RTF files.
+					array(
+						DIR_TESTDATA . '/uploads/test.rtf',
+						'test.rtf',
+						array(
+							'ext'             => 'rtf',
+							'type'            => 'application/rtf',
 							'proper_filename' => false,
 						),
 					),
@@ -1449,6 +1556,127 @@ class Tests_Functions extends WP_UnitTestCase {
 				3,
 			),
 
+		);
+	}
+
+	/**
+	 * Test stream URL validation.
+	 *
+	 * @dataProvider data_test_wp_is_stream
+	 *
+	 * @param string $path     The resource path or URL.
+	 * @param bool   $expected Expected result.
+	 */
+	public function test_wp_is_stream( $path, $expected ) {
+		if ( ! extension_loaded( 'openssl' ) && false !== strpos( $path, 'https://' ) ) {
+			$this->markTestSkipped( 'The openssl PHP extension is not loaded.' );
+		}
+
+		$this->assertSame( $expected, wp_is_stream( $path ) );
+	}
+
+	/**
+	 * Data provider for stream URL validation.
+	 *
+	 * @return array {
+	 *     @type array $0... {
+	 *         @type string $0 The resource path or URL.
+	 *         @type bool   $1 Expected result.
+	 *     }
+	 * }
+	 */
+	public function data_test_wp_is_stream() {
+		return array(
+			// Legitimate stream examples.
+			array( 'http://example.com', true ),
+			array( 'https://example.com', true ),
+			array( 'ftp://example.com', true ),
+			array( 'file:///path/to/some/file', true ),
+			array( 'php://some/php/file.php', true ),
+
+			// Non-stream examples.
+			array( 'fakestream://foo/bar/baz', false ),
+			array( '../../some/relative/path', false ),
+			array( 'some/other/relative/path', false ),
+			array( '/leading/relative/path', false ),
+		);
+	}
+
+	/**
+	 * Test human_readable_duration().
+	 *
+	 * @ticket 39667
+	 * @dataProvider data_test_human_readable_duration
+	 *
+	 * @param string $input    Duration.
+	 * @param string $expected Expected human readable duration.
+	 */
+	public function test_human_readable_duration( $input, $expected ) {
+		$this->assertSame( $expected, human_readable_duration( $input ) );
+	}
+
+	/**
+	 * Dataprovider for test_duration_format().
+	 *
+	 * @return array {
+	 *     @type array {
+	 *         @type string $input  Duration.
+	 *         @type string $expect Expected human readable duration.
+	 *     }
+	 * }
+	 */
+	public function data_test_human_readable_duration() {
+		return array(
+			// Valid ii:ss cases.
+			array( '0:0', '0 minutes, 0 seconds' ),
+			array( '00:00', '0 minutes, 0 seconds' ),
+			array( '0:5', '0 minutes, 5 seconds' ),
+			array( '0:05', '0 minutes, 5 seconds' ),
+			array( '01:01', '1 minute, 1 second' ),
+			array( '30:00', '30 minutes, 0 seconds' ),
+			array( ' 30:00 ', '30 minutes, 0 seconds' ),
+			// Valid HH:ii:ss cases.
+			array( '0:0:0', '0 hours, 0 minutes, 0 seconds' ),
+			array( '00:00:00', '0 hours, 0 minutes, 0 seconds' ),
+			array( '00:30:34', '0 hours, 30 minutes, 34 seconds' ),
+			array( '01:01:01', '1 hour, 1 minute, 1 second' ),
+			array( '1:02:00', '1 hour, 2 minutes, 0 seconds' ),
+			array( '10:30:34', '10 hours, 30 minutes, 34 seconds' ),
+			array( '1234567890:59:59', '1234567890 hours, 59 minutes, 59 seconds' ),
+			// Valid ii:ss cases with negative sign.
+			array( '-00:00', '0 minutes, 0 seconds' ),
+			array( '-3:00', '3 minutes, 0 seconds' ),
+			array( '-03:00', '3 minutes, 0 seconds' ),
+			array( '-30:00', '30 minutes, 0 seconds' ),
+			// Valid HH:ii:ss cases with negative sign.
+			array( '-00:00:00', '0 hours, 0 minutes, 0 seconds' ),
+			array( '-1:02:00', '1 hour, 2 minutes, 0 seconds' ),
+			// Invalid cases.
+			array( null, false ),
+			array( '', false ),
+			array( ':', false ),
+			array( '::', false ),
+			array( array(), false ),
+			array( 'Batman Begins !', false ),
+			array( '', false ),
+			array( '-1', false ),
+			array( -1, false ),
+			array( 0, false ),
+			array( 1, false ),
+			array( '00', false ),
+			array( '30:-10', false ),
+			array( ':30:00', false ), // Missing HH.
+			array( 'MM:30:00', false ), // Invalid HH.
+			array( '30:MM:00', false ), // Invalid ii.
+			array( '30:30:MM', false ), // Invalid ss.
+			array( '30:MM', false ), // Invalid ss.
+			array( 'MM:00', false ), // Invalid ii.
+			array( 'MM:MM', false ), // Invalid ii and ss.
+			array( '10 :30', false ), // Containing a space.
+			array( '59:61', false ), // Out of bound.
+			array( '61:59', false ), // Out of bound.
+			array( '3:59:61', false ), // Out of bound.
+			array( '03:61:59', false ), // Out of bound.
 		);
 	}
 }

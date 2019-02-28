@@ -17,6 +17,7 @@ class Tests_Theme extends WP_UnitTestCase {
 		'twentyfifteen',
 		'twentysixteen',
 		'twentyseventeen',
+		'twentynineteen',
 	);
 
 	function setUp() {
@@ -324,7 +325,8 @@ class Tests_Theme extends WP_UnitTestCase {
 	 */
 	function test_wp_keep_alive_customize_changeset_dependent_auto_drafts() {
 		$nav_created_post_ids = $this->factory()->post->create_many(
-			2, array(
+			2,
+			array(
 				'post_status' => 'auto-draft',
 				'post_date'   => gmdate( 'Y-m-d H:i:s', strtotime( '-2 days' ) ),
 			)

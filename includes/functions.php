@@ -1,6 +1,22 @@
 <?php
 
 /**
+ * Retrieves PHPUnit runner version.
+ */
+function tests_get_phpunit_version() {
+	if ( class_exists( 'PHPUnit_Runner_Version' ) ) {
+		$version = PHPUnit_Runner_Version::id();
+	} elseif ( class_exists( 'PHPUnit\Runner\Version' ) ) {
+		// Must be parsable by PHP 5.2.x.
+		$version = call_user_func( 'PHPUnit\Runner\Version::id' );
+	} else {
+		$version = 0;
+	}
+
+	return $version;
+}
+
+/**
  * Resets various `$_SERVER` variables that can get altered during tests.
  */
 function tests_reset__SERVER() {
@@ -16,8 +32,16 @@ function tests_reset__SERVER() {
 	unset( $_SERVER['HTTPS'] );
 }
 
-// For adding hooks before loading WP
-function tests_add_filter( $tag, $function_to_add, $priority = 10, $accepted_args = 5 ) {
+/**
+ * Adds hooks before loading WP.
+ *
+ * @param string       $tag             The name for the filter to add.
+ * @param object|array $function_to_add The function/callback to execute on call.
+ * @param int          $priority        The priority.
+ * @param int          $accepted_args   The amount of accepted arguments.
+ * @return bool Always true.
+ */
+function tests_add_filter( $tag, $function_to_add, $priority = 10, $accepted_args = 1 ) {
 	global $wp_filter;
 
 	if ( function_exists( 'add_filter' ) ) {
@@ -32,13 +56,21 @@ function tests_add_filter( $tag, $function_to_add, $priority = 10, $accepted_arg
 	return true;
 }
 
+/**
+ * Generates a unique function ID based on the given arguments.
+ *
+ * @param string       $tag      Unused. The name of the filter to build ID for.
+ * @param object|array $function The function to generate ID for.
+ * @param int          $priority Unused. The priority.
+ * @return string Unique function ID.
+ */
 function _test_filter_build_unique_id( $tag, $function, $priority ) {
 	if ( is_string( $function ) ) {
 		return $function;
 	}
 
 	if ( is_object( $function ) ) {
-		// Closures are currently implemented as objects
+		// Closures are currently implemented as objects.
 		$function = array( $function, '' );
 	} else {
 		$function = (array) $function;
@@ -47,11 +79,14 @@ function _test_filter_build_unique_id( $tag, $function, $priority ) {
 	if ( is_object( $function[0] ) ) {
 		return spl_object_hash( $function[0] ) . $function[1];
 	} elseif ( is_string( $function[0] ) ) {
-		// Static Calling
+		// Static Calling.
 		return $function[0] . $function[1];
 	}
 }
 
+/**
+ * Deletes all data from the database.
+ */
 function _delete_all_data() {
 	global $wpdb;
 
@@ -79,6 +114,9 @@ function _delete_all_data() {
 	$wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE user_id != 1" );
 }
 
+/**
+ * Deletes all posts from the database.
+ */
 function _delete_all_posts() {
 	global $wpdb;
 
@@ -190,3 +228,17 @@ function _wp_rest_server_class_filter() {
 // Skip `setcookie` calls in auth_cookie functions due to warning:
 // Cannot modify header information - headers already sent by ...
 tests_add_filter( 'send_auth_cookies', '__return_false' );
+
+/**
+ * After the init action has been run once, trying to re-register block types can cause
+ * _doing_it_wrong warnings. To avoid this, unhook the block registration functions.
+ *
+ * @since 5.0.0
+ */
+function _unhook_block_registration() {
+	remove_action( 'init', 'register_block_core_archives' );
+	remove_action( 'init', 'register_block_core_categories' );
+	remove_action( 'init', 'register_block_core_latest_posts' );
+	remove_action( 'init', 'register_block_core_shortcode' );
+}
+tests_add_filter( 'init', '_unhook_block_registration', 1000 );

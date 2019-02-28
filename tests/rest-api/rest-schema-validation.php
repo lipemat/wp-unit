@@ -120,6 +120,7 @@ class WP_Test_REST_Schema_Validation extends WP_UnitTestCase {
 		);
 		$this->assertTrue( rest_validate_value_from_schema( array( 1 ), $schema ) );
 		$this->assertWPError( rest_validate_value_from_schema( array( true ), $schema ) );
+		$this->assertWPError( rest_validate_value_from_schema( null, $schema ) );
 	}
 
 	public function test_type_array_nested() {
@@ -145,6 +146,8 @@ class WP_Test_REST_Schema_Validation extends WP_UnitTestCase {
 		$this->assertTrue( rest_validate_value_from_schema( '1', $schema ) );
 		$this->assertTrue( rest_validate_value_from_schema( '1,2,3', $schema ) );
 		$this->assertWPError( rest_validate_value_from_schema( 'lol', $schema ) );
+		$this->assertTrue( rest_validate_value_from_schema( '1,,', $schema ) );
+		$this->assertTrue( rest_validate_value_from_schema( '', $schema ) );
 	}
 
 	public function test_type_array_with_enum() {
@@ -169,6 +172,8 @@ class WP_Test_REST_Schema_Validation extends WP_UnitTestCase {
 		);
 		$this->assertTrue( rest_validate_value_from_schema( 'ribs,chicken', $schema ) );
 		$this->assertWPError( rest_validate_value_from_schema( 'chicken,coleslaw', $schema ) );
+		$this->assertTrue( rest_validate_value_from_schema( 'ribs,chicken,', $schema ) );
+		$this->assertTrue( rest_validate_value_from_schema( '', $schema ) );
 	}
 
 	public function test_type_array_is_associative() {
@@ -183,7 +188,8 @@ class WP_Test_REST_Schema_Validation extends WP_UnitTestCase {
 				array(
 					'first'  => '1',
 					'second' => '2',
-				), $schema
+				),
+				$schema
 			)
 		);
 	}
@@ -203,7 +209,8 @@ class WP_Test_REST_Schema_Validation extends WP_UnitTestCase {
 				array(
 					'a' => 1,
 					'b' => 2,
-				), $schema
+				),
+				$schema
 			)
 		);
 		$this->assertWPError( rest_validate_value_from_schema( array( 'a' => 'invalid' ), $schema ) );
@@ -225,7 +232,8 @@ class WP_Test_REST_Schema_Validation extends WP_UnitTestCase {
 				array(
 					'a' => 1,
 					'b' => 2,
-				), $schema
+				),
+				$schema
 			)
 		);
 	}
@@ -261,7 +269,8 @@ class WP_Test_REST_Schema_Validation extends WP_UnitTestCase {
 						'b' => 1,
 						'c' => 'invalid',
 					),
-				), $schema
+				),
+				$schema
 			)
 		);
 		$this->assertWPError( rest_validate_value_from_schema( array( 'a' => 1 ), $schema ) );

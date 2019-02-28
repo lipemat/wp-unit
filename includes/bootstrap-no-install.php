@@ -9,6 +9,7 @@
  *         have the wp-tests-config pointed to a production db.
  */
 
-define( 'WP_TESTS_NO_INSTALL', true );
+// New version
+putenv( 'WP_TESTS_SKIP_INSTALL=1' );
 
 require dirname( __FILE__ ) . '/bootstrap.php';

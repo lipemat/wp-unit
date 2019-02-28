@@ -93,7 +93,8 @@ class Tests_Link_GetAdjacentPost extends WP_UnitTestCase {
 		// Bump term_taxonomy to mimic shared term offsets.
 		global $wpdb;
 		$wpdb->insert(
-			$wpdb->term_taxonomy, array(
+			$wpdb->term_taxonomy,
+			array(
 				'taxonomy'    => 'foo',
 				'term_id'     => 12345,
 				'description' => '',
@@ -250,7 +251,8 @@ class Tests_Link_GetAdjacentPost extends WP_UnitTestCase {
 		register_taxonomy( 'wptests_tax', 'post' );
 
 		$terms = self::factory()->term->create_many(
-			2, array(
+			2,
+			array(
 				'taxonomy' => 'wptests_tax',
 			)
 		);
@@ -283,7 +285,42 @@ class Tests_Link_GetAdjacentPost extends WP_UnitTestCase {
 		register_taxonomy( 'wptests_tax', 'post' );
 
 		$terms = self::factory()->term->create_many(
-			2, array(
+			2,
+			array(
+				'taxonomy' => 'wptests_tax',
+			)
+		);
+
+		$p1 = self::factory()->post->create( array( 'post_date' => '2015-08-27 12:00:00' ) );
+		$p2 = self::factory()->post->create( array( 'post_date' => '2015-08-26 12:00:00' ) );
+		$p3 = self::factory()->post->create( array( 'post_date' => '2015-08-25 12:00:00' ) );
+
+		wp_set_post_terms( $p1, array( $terms[0], $terms[1] ), 'wptests_tax' );
+		wp_set_post_terms( $p2, array( $terms[1] ), 'wptests_tax' );
+		wp_set_post_terms( $p3, array( $terms[0] ), 'wptests_tax' );
+
+		$this->go_to( get_permalink( $p1 ) );
+
+		$this->exclude_term = $terms[1];
+		add_filter( 'get_previous_post_excluded_terms', array( $this, 'filter_excluded_terms' ) );
+
+		$found = get_adjacent_post( false, array(), true, 'wptests_tax' );
+
+		remove_filter( 'get_previous_post_excluded_terms', array( $this, 'filter_excluded_terms' ) );
+		unset( $this->exclude_term );
+
+		$this->assertSame( $p3, $found->ID );
+	}
+
+	/**
+	 * @ticket 43521
+	 */
+	public function test_excluded_terms_filter_empty() {
+		register_taxonomy( 'wptests_tax', 'post' );
+
+		$terms = self::factory()->term->create_many(
+			2,
+			array(
 				'taxonomy' => 'wptests_tax',
 			)
 		);

@@ -14,7 +14,9 @@ class WP_Test_REST_Controller extends WP_Test_REST_TestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->request = new WP_REST_Request(
-			'GET', '/wp/v2/testroute', array(
+			'GET',
+			'/wp/v2/testroute',
+			array(
 				'args' => array(
 					'someinteger' => array(
 						'type' => 'integer',
@@ -199,5 +201,98 @@ class WP_Test_REST_Controller extends WP_Test_REST_TestCase {
 		$args = $controller->get_endpoint_args_for_item_schema();
 
 		$this->assertEquals( 'a', $args['somedefault']['default'] );
+	}
+
+	/**
+	 * @dataProvider data_get_fields_for_response,
+	 */
+	public function test_get_fields_for_response( $param, $expected ) {
+		$controller = new WP_REST_Test_Controller();
+		$request    = new WP_REST_Request( 'GET', '/wp/v2/testroute' );
+		$fields     = $controller->get_fields_for_response( $request );
+		$this->assertEquals(
+			array(
+				'somestring',
+				'someinteger',
+				'someboolean',
+				'someurl',
+				'somedate',
+				'someemail',
+				'someenum',
+				'someargoptions',
+				'somedefault',
+			),
+			$fields
+		);
+		$request->set_param( '_fields', $param );
+		$fields = $controller->get_fields_for_response( $request );
+		$this->assertEquals( $expected, $fields );
+	}
+
+	public function data_get_fields_for_response() {
+		return array(
+			array(
+				'somestring,someinteger',
+				array(
+					'somestring',
+					'someinteger',
+				),
+			),
+			array(
+				',,',
+				array(
+					'somestring',
+					'someinteger',
+					'someboolean',
+					'someurl',
+					'somedate',
+					'someemail',
+					'someenum',
+					'someargoptions',
+					'somedefault',
+				),
+			),
+		);
+	}
+
+	public function test_add_additional_fields_to_object_respects_fields_param() {
+		$controller = new WP_REST_Test_Controller();
+		$request    = new WP_REST_Request( 'GET', '/wp/v2/testroute' );
+		$schema     = $controller->get_item_schema();
+		$field      = 'somefield';
+
+		$listener = new MockAction();
+		$method   = 'action';
+
+		register_rest_field(
+			$schema['title'],
+			$field,
+			array(
+				'get_callback' => array( $listener, $method ),
+				'schema'       => array(
+					'type' => 'string',
+				),
+			)
+		);
+
+		$item = array();
+
+		$controller->prepare_item_for_response( $item, $request );
+
+		$first_call_count = $listener->get_call_count( $method );
+
+		$this->assertTrue( $first_call_count > 0 );
+
+		$request->set_param( '_fields', 'somestring' );
+
+		$controller->prepare_item_for_response( $item, $request );
+
+		$this->assertSame( $first_call_count, $listener->get_call_count( $method ) );
+
+		$request->set_param( '_fields', $field );
+
+		$controller->prepare_item_for_response( $item, $request );
+
+		$this->assertTrue( $listener->get_call_count( $method ) > $first_call_count );
 	}
 }

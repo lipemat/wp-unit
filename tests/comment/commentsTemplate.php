@@ -200,7 +200,8 @@ class Tests_Comment_CommentsTemplate extends WP_UnitTestCase {
 			array(
 				'cpage'             => 2,
 				'comments_per_page' => 2,
-			), get_permalink( $p )
+			),
+			get_permalink( $p )
 		);
 
 		$this->go_to( $link );
@@ -270,7 +271,8 @@ class Tests_Comment_CommentsTemplate extends WP_UnitTestCase {
 			array(
 				'cpage'             => 2,
 				'comments_per_page' => 2,
-			), get_permalink( $p )
+			),
+			get_permalink( $p )
 		);
 
 		$this->go_to( $link );
@@ -326,7 +328,8 @@ class Tests_Comment_CommentsTemplate extends WP_UnitTestCase {
 			array(
 				'cpage'             => 2,
 				'comments_per_page' => 2,
-			), get_permalink( $p )
+			),
+			get_permalink( $p )
 		);
 
 		$this->go_to( $link );
@@ -382,7 +385,8 @@ class Tests_Comment_CommentsTemplate extends WP_UnitTestCase {
 			array(
 				'cpage'             => 2,
 				'comments_per_page' => 2,
-			), get_permalink( $p )
+			),
+			get_permalink( $p )
 		);
 
 		$this->go_to( $link );
@@ -433,7 +437,8 @@ class Tests_Comment_CommentsTemplate extends WP_UnitTestCase {
 			array(
 				'cpage'             => 1,
 				'comments_per_page' => 2,
-			), get_permalink( $p )
+			),
+			get_permalink( $p )
 		);
 
 		$this->go_to( $link );
@@ -484,7 +489,8 @@ class Tests_Comment_CommentsTemplate extends WP_UnitTestCase {
 			array(
 				'cpage'             => 2,
 				'comments_per_page' => 2,
-			), get_permalink( $p )
+			),
+			get_permalink( $p )
 		);
 
 		$this->go_to( $link );
@@ -539,7 +545,8 @@ class Tests_Comment_CommentsTemplate extends WP_UnitTestCase {
 		$link_p1 = add_query_arg(
 			array(
 				'comments_per_page' => 2,
-			), get_permalink( $p )
+			),
+			get_permalink( $p )
 		);
 
 		$this->go_to( $link_p1 );
@@ -558,7 +565,8 @@ class Tests_Comment_CommentsTemplate extends WP_UnitTestCase {
 			array(
 				'cpage'             => 2,
 				'comments_per_page' => 2,
-			), get_permalink( $p )
+			),
+			get_permalink( $p )
 		);
 
 		$this->go_to( $link_p2 );
@@ -630,7 +638,8 @@ class Tests_Comment_CommentsTemplate extends WP_UnitTestCase {
 		$link_p0 = add_query_arg(
 			array(
 				'comments_per_page' => 2,
-			), get_permalink( $p )
+			),
+			get_permalink( $p )
 		);
 
 		$this->go_to( $link_p0 );
@@ -648,7 +657,8 @@ class Tests_Comment_CommentsTemplate extends WP_UnitTestCase {
 			array(
 				'cpage'             => 2,
 				'comments_per_page' => 2,
-			), get_permalink( $p )
+			),
+			get_permalink( $p )
 		);
 
 		$this->go_to( $link_p2 );
@@ -668,7 +678,8 @@ class Tests_Comment_CommentsTemplate extends WP_UnitTestCase {
 			array(
 				'cpage'             => 1,
 				'comments_per_page' => 2,
-			), get_permalink( $p )
+			),
+			get_permalink( $p )
 		);
 
 		$this->go_to( $link_p1 );
@@ -818,6 +829,42 @@ class Tests_Comment_CommentsTemplate extends WP_UnitTestCase {
 	public function fake_current_commenter( $commenter ) {
 		$commenter['comment_author_email'] = 'foo@example.com';
 		return $commenter;
+	}
+
+	/**
+	 * @ticket 43857
+	 */
+	public function test_comments_list_should_include_just_posted_unapproved_comment() {
+		$now     = time();
+		$p       = self::factory()->post->create();
+		$c       = self::factory()->comment->create(
+			array(
+				'comment_post_ID'      => $p,
+				'comment_content'      => '1',
+				'comment_approved'     => '0',
+				'comment_date_gmt'     => date( 'Y-m-d H:i:s', $now ),
+				'comment_author_email' => 'foo@bar.mail',
+			)
+		);
+		$comment = get_comment( $c );
+
+		$this->go_to(
+			add_query_arg(
+				array(
+					'unapproved'      => $comment->comment_ID,
+					'moderation-hash' => wp_hash( $comment->comment_date_gmt ),
+				),
+				get_comment_link( $comment )
+			)
+		);
+
+		$found = get_echo( 'comments_template' );
+
+		// Find the found comment in the markup.
+		preg_match( '|id="comment-([0-9]+)|', $found, $matches );
+
+		$found_cid = (int) $matches[1];
+		$this->assertSame( $c, $found_cid );
 	}
 
 	/**

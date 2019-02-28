@@ -21,7 +21,7 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 			)
 		);
 
-		self::$author        = $factory->user->create(
+		self::$author = $factory->user->create(
 			array(
 				'role' => 'author',
 			)
@@ -88,7 +88,6 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 			'posts_per_page',
 			'default_ping_status',
 			'default_comment_status',
-			'permalink_structure',
 		);
 
 		if ( ! is_multisite() ) {
@@ -118,7 +117,9 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 		wp_set_current_user( self::$administrator );
 
 		register_setting(
-			'somegroup', 'mycustomsetting', array(
+			'somegroup',
+			'mycustomsetting',
+			array(
 				'show_in_rest' => array(
 					'name'   => 'mycustomsettinginrest',
 					'schema' => array(
@@ -152,7 +153,9 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 		wp_set_current_user( self::$administrator );
 
 		register_setting(
-			'somegroup', 'mycustomsetting', array(
+			'somegroup',
+			'mycustomsetting',
+			array(
 				'show_in_rest' => array(
 					'schema' => array(
 						'type'  => 'array',
@@ -200,7 +203,9 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 		wp_set_current_user( self::$administrator );
 
 		register_setting(
-			'somegroup', 'mycustomsetting', array(
+			'somegroup',
+			'mycustomsetting',
+			array(
 				'show_in_rest' => array(
 					'schema' => array(
 						'type'       => 'object',
@@ -235,7 +240,8 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 
 		// Invalid value
 		update_option(
-			'mycustomsetting', array(
+			'mycustomsetting',
+			array(
 				'a' => 1,
 				'b' => 2,
 			)
@@ -262,7 +268,9 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 		add_filter( 'rest_pre_get_setting', array( $this, 'get_setting_custom_callback' ), 10, 3 );
 
 		register_setting(
-			'somegroup', 'mycustomsetting1', array(
+			'somegroup',
+			'mycustomsetting1',
+			array(
 				'show_in_rest' => array(
 					'name' => 'mycustomsettinginrest1',
 				),
@@ -271,7 +279,9 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 		);
 
 		register_setting(
-			'somegroup', 'mycustomsetting2', array(
+			'somegroup',
+			'mycustomsetting2',
+			array(
 				'show_in_rest' => array(
 					'name' => 'mycustomsettinginrest2',
 				),
@@ -302,7 +312,9 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 		wp_set_current_user( self::$administrator );
 
 		register_setting(
-			'somegroup', 'mycustomsetting', array(
+			'somegroup',
+			'mycustomsetting',
+			array(
 				'show_in_rest' => array(
 					'name'   => 'mycustomsettinginrest',
 					'schema' => array(
@@ -326,7 +338,9 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 		wp_set_current_user( self::$administrator );
 
 		register_setting(
-			'somegroup', 'mycustomsetting', array(
+			'somegroup',
+			'mycustomsetting',
+			array(
 				'show_in_rest' => array(
 					'name'   => 'mycustomsettinginrest',
 					'schema' => array(
@@ -374,7 +388,9 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 
 	public function test_update_item_with_array() {
 		register_setting(
-			'somegroup', 'mycustomsetting', array(
+			'somegroup',
+			'mycustomsetting',
+			array(
 				'show_in_rest' => array(
 					'schema' => array(
 						'type'  => 'array',
@@ -418,7 +434,9 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 
 	public function test_update_item_with_nested_object() {
 		register_setting(
-			'somegroup', 'mycustomsetting', array(
+			'somegroup',
+			'mycustomsetting',
+			array(
 				'show_in_rest' => array(
 					'schema' => array(
 						'type'       => 'object',
@@ -445,7 +463,8 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 
 		$request = new WP_REST_Request( 'PUT', '/wp/v2/settings' );
 		$request->set_param(
-			'mycustomsetting', array(
+			'mycustomsetting',
+			array(
 				'a' => array(
 					'b' => 1,
 					'c' => 1,
@@ -458,7 +477,9 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 
 	public function test_update_item_with_object() {
 		register_setting(
-			'somegroup', 'mycustomsetting', array(
+			'somegroup',
+			'mycustomsetting',
+			array(
 				'show_in_rest' => array(
 					'schema' => array(
 						'type'       => 'object',
@@ -496,7 +517,8 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 		// Provide more keys.
 		$request = new WP_REST_Request( 'PUT', '/wp/v2/settings' );
 		$request->set_param(
-			'mycustomsetting', array(
+			'mycustomsetting',
+			array(
 				'a' => 1,
 				'b' => 2,
 			)
@@ -598,7 +620,9 @@ class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase 
 		wp_set_current_user( self::$administrator );
 
 		register_setting(
-			'somegroup', 'mycustomsetting', array(
+			'somegroup',
+			'mycustomsetting',
+			array(
 				'show_in_rest' => true,
 				'type'         => 'string',
 			)
