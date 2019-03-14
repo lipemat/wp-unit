@@ -189,8 +189,11 @@ require dirname( __FILE__ ) . '/testcase-canonical.php';
 require dirname( __FILE__ ) . '/exceptions.php';
 require dirname( __FILE__ ) . '/utils.php';
 require dirname( __FILE__ ) . '/spy-rest-server.php';
-require dirname( __FILE__ ) . '/class-wp-rest-test-search-handler.php';
-require dirname( __FILE__ ) . '/class-wp-fake-block-type.php';
+// WP 5.0.0+
+if ( class_exists( 'WP_REST_Search_Handler' ) ) {
+	require dirname( __FILE__ ) . '/class-wp-rest-test-search-handler.php';
+	require dirname( __FILE__ ) . '/class-wp-fake-block-type.php';
+}
 
 /**
  * A class to handle additional command line arguments passed to the script.
