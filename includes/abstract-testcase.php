@@ -347,8 +347,11 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
 		global $wpdb;
 		$wpdb->query( 'SET autocommit = 0;' );
 		$wpdb->query( 'START TRANSACTION;' );
+
 		add_filter( 'query', array( $this, '_create_temporary_tables' ) );
 		add_filter( 'query', array( $this, '_drop_temporary_tables' ) );
+		add_filter( 'query', array( __CLASS__, '_prevent_premature_commit' ) );
+		add_filter( 'query', array( __CLASS__, '_prevent_second_transaction' ) );
 	}
 
 	/**
@@ -358,7 +361,9 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
 	 */
 	public static function commit_transaction() {
 		global $wpdb;
+		remove_filter( 'query', array( __CLASS__, '_prevent_premature_commit' ) );
 		$wpdb->query( 'COMMIT;' );
+		add_filter( 'query', array( __CLASS__, '_prevent_premature_commit' ) );
 	}
 
 	function _create_temporary_tables( $query ) {
@@ -374,6 +379,22 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
 		}
 		return $query;
 	}
+
+	static function _prevent_premature_commit( $query ) {
+		if( 'COMMIT' === substr( trim( $query ), 0, 6 ) ) {
+			return 'SELECT "Bypassed COMMIT transaction _prevent_premature_commit"';
+		}
+		return $query;
+	}
+
+	static function _prevent_second_transaction( $query ) {
+		if( 'START TRANSACTION' === substr( trim( $query ), 0, 17 ) ) {
+			return 'SELECT "Bypassed START TRANSACTIONT transaction _prevent_second_transaction"';
+		}
+		return $query;
+	}
+
+
 
 	function get_wp_die_handler( $handler ) {
 		return array( $this, 'wp_die_handler' );
@@ -404,7 +425,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
 		add_action( 'deprecated_function_trigger_error', '__return_false' );
 		add_action( 'deprecated_argument_trigger_error', '__return_false' );
 		add_action( 'deprecated_hook_trigger_error', '__return_false' );
-		add_action( 'doing_it_wrong_trigger_error', '__return_false' );
+		//add_action( 'doing_it_wrong_trigger_error', '__return_false' );
 	}
 
 	function expectedDeprecated() {
