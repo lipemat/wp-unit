@@ -146,3 +146,8 @@ From within your wp-tests.config.php add a custom memory limit
 define( 'WP_MEMORY_LIMIT', '128M' );
 ```
 
+#### Prevent plugins from breaking mysql transactions
+
+Some third party plugins use their own transactions which cause unpredictable results with the transactions used by `wp-unit`.
+
+This library automatically accounts for outside transactions. 
