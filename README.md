@@ -140,10 +140,17 @@ define( 'WP_TESTS_SEND_MAIL', true );
 
 #### Set a memory limit 
 
-From within your wp-tests.config.php add a custom memory limit
+From within your wp-tests.config.php add a custom memory limit.
 ```php
 <?php
 define( 'WP_MEMORY_LIMIT', '128M' );
+```
+
+#### Allow an outside languages directory
+From within your wp-tests.config.php add a custom language directory.
+```php
+<?php
+define( 'WP_LANG_DIR', __DIR__ . '/languages' );
 ```
 
 #### Prevent plugins from breaking mysql transactions
