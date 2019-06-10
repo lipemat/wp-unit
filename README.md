@@ -158,3 +158,9 @@ define( 'WP_LANG_DIR', __DIR__ . '/languages' );
 Some third party plugins use their own transactions which cause unpredictable results with the transactions used by `wp-unit`.
 
 This library automatically accounts for outside transactions. 
+
+#### Support custom ajax methods.
+
+Sometimes you want to use ajax repsonses to calls which live outside the `wp_ajax` actions.
+
+This library adds a method to `WP_Ajax_UnitTestCase` called `_handleAjaxCustom` to support this.
