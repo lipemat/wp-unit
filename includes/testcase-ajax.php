@@ -266,4 +266,24 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 			$this->_last_response = $buffer;
 		}
 	}
+
+
+	/**
+	 * Capture the output of any call which uses stanard ajax responses
+	 * such as `wp_send_json_success`.
+	 *
+	 * Mimics `wp_ajax_` action handling for uses which do not use
+	 * the standard WP ajax handling.
+	 *
+	 * @author Mat Lipe
+	 *
+	 * @since 1.6.0
+	 *
+	 * @param callable $callable
+	 */
+	protected function _handleAjaxCustom( callable $callable ) {
+		$hash = spl_object_hash( (object)$callable );
+		add_action( 'wp_ajax_' . $hash, $callable );
+		$this->_handleAjax( $hash );
+	}
 }
