@@ -244,6 +244,8 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 	 * it in $this->_last_response.
 	 *
 	 * @param string $action
+	 *
+	 * @throws WPAjaxDieContinueException
 	 */
 	protected function _handleAjax( $action ) {
 
@@ -269,21 +271,59 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 
 
 	/**
-	 * Capture the output of any call which uses stanard ajax responses
-	 * such as `wp_send_json_success`.
+	 * Capture the output of any call which echos then exits.
+	 * For testing Rest and Ajax endpoints.
 	 *
 	 * Mimics `wp_ajax_` action handling for uses which do not use
 	 * the standard WP ajax handling.
+	 *
+	 * @notice Your endpoint must use `wp_die()` to exit the same way
+	 *         as `wp_send_json_*` function or the die handler will
+	 *         not be replaced and this will fail.
+	 *
+	 * @notice
+	 *
+	 * @see WP_Ajax_UnitTestCase::_getJsonResult()
+	 *
 	 *
 	 * @author Mat Lipe
 	 *
 	 * @since 1.6.0
 	 *
 	 * @param callable $callable
+	 *
+	 * @throws WPAjaxDieContinueException
 	 */
 	protected function _handleAjaxCustom( callable $callable ) {
 		$hash = spl_object_hash( (object)$callable );
 		add_action( 'wp_ajax_' . $hash, $callable );
 		$this->_handleAjax( $hash );
+	}
+
+
+	/**
+	 * Capture and return the "data" key from any call to
+	 * `wp_send_json_success` or `wp_send_json_error`.
+	 *
+	 * Automatically handles:
+	 * 1. Reset $this->_last_response
+	 * 2. Catch the exception
+	 * 3. Return the result that would be sent as `data`.
+	 *
+	 * @author Mat Lipe
+	 *
+	 * @since 1.7.0
+	 *
+	 * @param callable $callable
+	 *
+	 * @return mixed
+	 */
+	protected function _getJsonResult( callable $callable ) {
+		unset( $this->_last_response );
+		try {
+			$this->_handleAjaxCustom( $callable );
+		} catch ( \Exception $exception ) {
+			return json_decode( $this->_last_response )->data;
+		}
 	}
 }
