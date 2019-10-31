@@ -1,5 +1,14 @@
 # WP Unit
 
+<p>
+<a href="https://github.com/lipemat/wp-unitreleases">
+<img src="https://img.shields.io/packagist/v/lipemat/wp-unit.svg?label=version" />
+</a>
+    <img alt="" src="https://img.shields.io/badge/wordpress->=5.1.0-green.svg">
+    <img src="https://img.shields.io/packagist/php-v/lipemat/wp-unit.svg?color=brown" />
+    <img alt="Packagist" src="https://img.shields.io/packagist/l/lipemat/wp-unit.svg">
+</p>
+
 Fork of wp-unit to support bootstrapping an existing database and many other enhancements.
 
 Original may be cloned from here: **git://develop.git.wordpress.org/tests/phpunit**

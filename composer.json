@@ -1,16 +1,18 @@
 {
-    "name": "lipemat/wp-unit",
-    "description": "Forked Wp-unit with support for testing against existing database and other environment enhancements",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "lipemat",
-            "email": "mat@matlipe.com"
-        }
-    ],
-    "minimum-stability": "stable",
-    "require": {
-
+  "name": "lipemat/wp-unit",
+  "description": "Forked Wp-unit with support for testing against existing database and other environment enhancements",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": ">=7.1.3"
+  },
+  "authors": [
+    {
+      "name": "lipemat",
+      "email": "mat@matlipe.com"
     }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+  }
 }
