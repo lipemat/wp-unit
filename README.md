@@ -64,6 +64,7 @@ define( 'DB_HOST', 'localhost' );
 define( 'WP_TESTS_DOMAIN', 'tests.loc' );
 //Root of your site
 define( 'WP_TESTS_DIR', dirname( __DIR__ ) );
+define( 'WP_UNIT_DIR', __DIR__ . '/vendor/lipemat/wp-unit' );
 
 define( 'DOMAIN_CURRENT_SITE', 'starting-point.loc' );
 ```
@@ -172,4 +173,25 @@ This library automatically accounts for outside transactions.
 
 Sometimes you want to use ajax responses to calls which live outside the `wp_ajax` actions.
 
-This library adds a method to `WP_Ajax_UnitTestCase` called `_handleAjaxCustom` to support this.
+This library adds a methods to `WP_Ajax_UnitTestCase`:
+ 1.  `_handleAjaxCustom` which will turn any callable into an `wp_ajax` action then call it via `_handleAjax`.
+ 2. `_getJsonResult` call any callable which uses `wp_send_json_success` or `wp_send_json_error` and return the result.
+
+
+#### Automatically generate files for Attachment factory.
+
+Many follow up attachment calls require the attachment to have an actual file attached to it.
+For example `get_the_post_thumbnail_url` will always be empty if a file does not exist.
+
+This automatically adds files to the `create` call via `self::factory()->attachment`.
+
+```php
+<?php
+$post = self::factory()->post->create_and_get();
+$attachment = self::factory()->attachment->create_and_get();
+set_post_thumbnail( $post->ID, $attachment->ID );
+// Will return something like `http:///wp-content/uploads//tmp/canola.jpg`
+get_the_post_thumbnail_url( $post->ID );
+
+```
+
