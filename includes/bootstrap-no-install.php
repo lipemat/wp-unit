@@ -11,5 +11,8 @@
 
 // New version
 putenv( 'WP_TESTS_SKIP_INSTALL=1' );
+if ( ! defined( 'WP_TESTS_SKIP_INSTALL') ) {
+	define( 'WP_TESTS_SKIP_INSTALL', true );
+}
 
 require dirname( __FILE__ ) . '/bootstrap.php';

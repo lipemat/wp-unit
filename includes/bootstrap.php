@@ -10,8 +10,6 @@ if ( class_exists( 'PHPUnit\Runner\Version' ) ) {
 	require_once dirname( __FILE__ ) . '/phpunit6/compat.php';
 }
 
-
-
 if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) ) {
 	$config_file_path = WP_TESTS_CONFIG_FILE_PATH;
 } else {
@@ -43,13 +41,17 @@ if ( is_readable( $config_file_path ) ) {
 }
 require_once dirname( __FILE__ ) . '/functions.php';
 
-
 if ( version_compare( tests_get_phpunit_version(), '8.0', '>=' ) ) {
 	printf(
 		"ERROR: Looks like you're using PHPUnit %s. WordPress is currently only compatible with PHPUnit up to 7.x.\n",
 		tests_get_phpunit_version()
 	);
 	echo "Please use the latest PHPUnit version from the 7.x branch.\n";
+	exit( 1 );
+}
+
+if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS && ! is_dir( ABSPATH ) ) {
+	echo "ERROR: The /build/ directory is missing! Please run `npm run build` prior to running PHPUnit.\n";
 	exit( 1 );
 }
 
@@ -99,7 +101,7 @@ if ( file_exists( DIR_TESTDATA . '/themedir1' ) ) {
 	$wp_theme_directories[] = DIR_TESTDATA . '/themedir1';
 }
 
-if ( '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
+if (  ( ! defined( 'WP_TESTS_SKIP_INSTALL' ) || ! WP_TESTS_SKIP_INSTALL ) && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
 	system( WP_PHP_BINARY . ' ' . escapeshellarg( dirname( __FILE__ ) . '/install.php' ) . ' ' . escapeshellarg( $config_file_path ) . ' ' . $multisite, $retval );
 	if ( 0 !== $retval ) {
 		exit( $retval );
