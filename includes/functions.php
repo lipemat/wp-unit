@@ -1,4 +1,21 @@
 <?php
+require_once __DIR__ . '/class-basic-object.php';
+
+/**
+ * Should we skip installing WordPress
+ *
+ * @since 1.8.0
+ * @see ./bootstrap-no-install.php
+ *
+ * @return bool
+ */
+function tests_skip_install() {
+	if ( defined( 'WP_TESTS_SKIP_INSTALL' ) &&  WP_TESTS_SKIP_INSTALL ) {
+		return true;
+	}
+
+	return '1' === getenv( 'WP_TESTS_SKIP_INSTALL' );
+}
 
 /**
  * Retrieves PHPUnit runner version.
