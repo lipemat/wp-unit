@@ -9,6 +9,8 @@ class Tests_Query_SetupPostdata extends WP_UnitTestCase {
 
 	protected $global_data = array();
 
+	protected $pages_global;
+
 	public function setUp() {
 		parent::setUp();
 		return;
@@ -401,7 +403,8 @@ class Tests_Query_SetupPostdata extends WP_UnitTestCase {
 	 */
 	function test_setup_postdata_loop() {
 		$post_id                   = self::factory()->post->create( array( 'post_content' => 'global post' ) );
-		$GLOBALS['wp_query']->post = $GLOBALS['post'] = get_post( $post_id );
+		$GLOBALS['post']           = get_post( $post_id );
+		$GLOBALS['wp_query']->post = $GLOBALS['post'];
 
 		$ids = self::factory()->post->create_many( 5 );
 		foreach ( $ids as $id ) {
@@ -416,4 +419,24 @@ class Tests_Query_SetupPostdata extends WP_UnitTestCase {
 		}
 	}
 
+	/**
+	 * @ticket 47114
+	 *
+	 * setup_postdata() should set the globals before `the_post` action is fired.
+	 */
+	public function test_the_post_action() {
+		$post = self::factory()->post->create_and_get();
+		add_action( 'the_post', array( $this, 'the_post_action_callback' ) );
+
+		setup_postdata( $post );
+
+		$this->assertEquals( $GLOBALS['pages'], $this->pages_global );
+	}
+
+	/**
+	 * Helpers
+	 */
+	public function the_post_action_callback() {
+		$this->pages_global = $GLOBALS['pages'];
+	}
 }

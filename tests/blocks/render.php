@@ -60,7 +60,7 @@ class WP_Test_Block_Render extends WP_UnitTestCase {
 
 		$actual_html = do_blocks( $original_html );
 
-		$this->assertEquals( $expected_html, $actual_html );
+		$this->assertEqualsIgnoreEOL( $expected_html, $actual_html );
 	}
 
 	/**
@@ -84,6 +84,32 @@ class WP_Test_Block_Render extends WP_UnitTestCase {
 	}
 
 	function handle_shortcode( $atts, $content ) {
+		return $content;
+	}
+
+	/**
+	 * @ticket 45495
+	 */
+	function test_nested_calls_to_the_content() {
+		register_block_type(
+			'core/test',
+			array(
+				'render_callback' => array(
+					$this,
+					'dynamic_the_content_call',
+				),
+			)
+		);
+
+		$content = "foo\n\nbar";
+
+		$the_content = apply_filters( 'the_content', '<!-- wp:core/test -->' . $content . '<!-- /wp:core/test -->' );
+
+		$this->assertSame( $content, $the_content );
+	}
+
+	function dynamic_the_content_call( $attrs, $content ) {
+		apply_filters( 'the_content', '' );
 		return $content;
 	}
 
@@ -358,7 +384,7 @@ class WP_Test_Block_Render extends WP_UnitTestCase {
 	 * @return string The cleaned fixture name.
 	 */
 	protected function clean_fixture_filename( $filename ) {
-		$filename = basename( $filename );
+		$filename = wp_basename( $filename );
 		$filename = preg_replace( '/\..+$/', '', $filename );
 		return $filename;
 	}

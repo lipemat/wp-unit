@@ -12,6 +12,7 @@ if ( is_multisite() ) :
 		protected $suppress                = false;
 		protected $site_status_hooks       = array();
 		protected $wp_initialize_site_args = array();
+		protected $wp_initialize_site_meta = array();
 		protected static $network_ids;
 		protected static $site_ids;
 		protected static $uninitialized_site_id;
@@ -165,16 +166,21 @@ if ( is_multisite() ) :
 
 			// Check existence of each database table for the created site.
 			foreach ( $wpdb->tables( 'blog', false ) as $table ) {
-				$suppress     = $wpdb->suppress_errors();
+				$suppress = $wpdb->suppress_errors();
+
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$table_fields = $wpdb->get_results( "DESCRIBE $prefix$table;" );
+
 				$wpdb->suppress_errors( $suppress );
 
 				// The table should exist.
 				$this->assertNotEmpty( $table_fields );
 
 				// And the table should not be empty, unless commentmeta, termmeta, or links.
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$result = $wpdb->get_results( "SELECT * FROM $prefix$table LIMIT 1" );
-				if ( 'commentmeta' == $table || 'termmeta' == $table || 'links' == $table ) {
+
+				if ( 'commentmeta' === $table || 'termmeta' === $table || 'links' === $table ) {
 					$this->assertEmpty( $result );
 				} else {
 					$this->assertNotEmpty( $result );
@@ -243,8 +249,11 @@ if ( is_multisite() ) :
 
 			$prefix = $wpdb->get_blog_prefix( $blog_id );
 			foreach ( $wpdb->tables( 'blog', false ) as $table ) {
-				$suppress     = $wpdb->suppress_errors();
+				$suppress = $wpdb->suppress_errors();
+
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$table_fields = $wpdb->get_results( "DESCRIBE $prefix$table;" );
+
 				$wpdb->suppress_errors( $suppress );
 				$this->assertNotEmpty( $table_fields, $prefix . $table );
 			}
@@ -281,8 +290,11 @@ if ( is_multisite() ) :
 
 			$prefix = $wpdb->get_blog_prefix( $blog_id );
 			foreach ( $wpdb->tables( 'blog', false ) as $table ) {
-				$suppress     = $wpdb->suppress_errors();
+				$suppress = $wpdb->suppress_errors();
+
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$table_fields = $wpdb->get_results( "DESCRIBE $prefix$table;" );
+
 				$wpdb->suppress_errors( $suppress );
 				$this->assertEmpty( $table_fields );
 			}
@@ -319,8 +331,11 @@ if ( is_multisite() ) :
 
 			$prefix = $wpdb->get_blog_prefix( $blog_id );
 			foreach ( $wpdb->tables( 'blog', false ) as $table ) {
-				$suppress     = $wpdb->suppress_errors();
+				$suppress = $wpdb->suppress_errors();
+
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$table_fields = $wpdb->get_results( "DESCRIBE $prefix$table;" );
+
 				$wpdb->suppress_errors( $suppress );
 				$this->assertNotEmpty( $table_fields, $prefix . $table );
 			}
@@ -854,7 +869,7 @@ if ( is_multisite() ) :
 		 * the testing of the filter and for a test which does not need the database.
 		 */
 		function _domain_exists_cb( $exists, $domain, $path, $site_id ) {
-			if ( 'foo' == $domain && 'bar/' == $path ) {
+			if ( 'foo' === $domain && 'bar/' === $path ) {
 				return 1234;
 			} else {
 				return null;
@@ -2347,6 +2362,128 @@ if ( is_multisite() ) :
 			get_site( $blog_id )->siteurl;
 			// Set siteurl
 			update_option( 'siteurl', 'http://testsite1.example.org/test' );
+		}
+
+		/**
+		 * Tests whether all expected meta are provided in deprecated `wpmu_new_blog` action.
+		 *
+		 * @dataProvider data_wpmu_new_blog_action_backward_commpatible
+		 *
+		 * @ticket 46351
+		 */
+		public function test_wpmu_new_blog_action_backward_compatible( $meta, $expected_meta ) {
+			// We are testing deprecated hook. Register it to expected deprecated notices.
+			$this->setExpectedDeprecated( 'wpmu_new_blog' );
+			add_action( 'wpmu_new_blog', array( $this, 'wpmu_new_blog_callback' ), 10, 6 );
+
+			wpmu_create_blog( 'testsite1.example.org', '/new-blog/', 'New Blog', get_current_user_id(), $meta, 1 );
+
+			$this->assertEquals( $expected_meta, $this->wp_initialize_site_meta );
+
+			$this->wp_initialize_site_meta = array();
+		}
+
+		/**
+		 * @ticket 42251
+		 */
+		public function test_get_site_not_found_cache() {
+			global $wpdb;
+
+			$new_site_id = $this->_get_next_site_id();
+			$this->assertNull( get_site( $new_site_id ) );
+
+			$num_queries = $wpdb->num_queries;
+			$this->assertNull( get_site( $new_site_id ) );
+			$this->assertSame( $num_queries, $wpdb->num_queries );
+		}
+
+		/**
+		 * @ticket 42251
+		 */
+		public function test_get_site_not_found_cache_clear() {
+			$new_site_id = $this->_get_next_site_id();
+			$this->assertNull( get_site( $new_site_id ) );
+
+			$new_site = $this->factory()->blog->create_and_get();
+
+			// Double-check we got the ID of the new site correct.
+			$this->assertEquals( $new_site_id, $new_site->blog_id );
+
+			// Verify that if we fetch the site now, it's no longer false.
+			$fetched_site = get_site( $new_site_id );
+			$this->assertInstanceOf( 'WP_Site', $fetched_site );
+			$this->assertEquals( $new_site_id, $fetched_site->blog_id );
+
+		}
+
+		/**
+		 * Gets the ID of the next site that will get inserted
+		 * @return int
+		 */
+		protected function _get_next_site_id() {
+			global $wpdb;
+			//create an entry
+			static::factory()->blog->create();
+			//get the ID after it
+			return (int) $wpdb->get_var( 'SELECT blog_id FROM ' . $wpdb->blogs . ' ORDER BY blog_ID DESC LIMIT 1' ) + 1;
+		}
+
+		/**
+		 * Capture the $meta value passed to the wpmu_new_blog action and compare it.
+		 */
+		public function wpmu_new_blog_callback( $blog_id, $user_id, $domain, $path, $network_id, $meta ) {
+			$this->wp_initialize_site_meta = $meta;
+		}
+
+		public function data_wpmu_new_blog_action_backward_commpatible() {
+			return array(
+				'default values'  => array(
+					array(),
+					array(
+						'public' => 0, // `public` is one of the defaults metas in `wpmu_create_blog' function prior WordPress 5.1.0
+						'WPLANG' => 'en_US', // WPLANG is another default meta in `wpmu_create_blog` function prior WordPress 5.1.0.
+					),
+				),
+				'public site'     => array(
+					array(
+						'public' => 1,
+					),
+					array(
+						'public' => 1,
+						'WPLANG' => 'en_US',
+					),
+				),
+				'all whitelisted' => array(
+					array(
+						'public'   => -1,
+						'archived' => 0,
+						'mature'   => 0,
+						'spam'     => 0,
+						'deleted'  => 0,
+						'lang_id'  => 11,
+
+					),
+					array(
+						'public'   => -1,
+						'WPLANG'   => 'en_US',
+						'archived' => 0,
+						'mature'   => 0,
+						'spam'     => 0,
+						'deleted'  => 0,
+						'lang_id'  => 11,
+					),
+				),
+				'extra meta key'  => array(
+					array(
+						'foo' => 'bar',
+					),
+					array(
+						'public' => 0,
+						'WPLANG' => 'en_US',
+						'foo'    => 'bar',
+					),
+				),
+			);
 		}
 	}
 

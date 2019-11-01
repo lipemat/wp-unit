@@ -161,20 +161,22 @@ class Tests_Query_Conditionals extends WP_UnitTestCase {
 	// '(about)/trackback/?$' => 'index.php?pagename=$matches[1]&tb=1'
 	function test_page_trackback() {
 		$page_ids   = array();
-		$page_ids[] = $page_id = self::factory()->post->create(
+		$page_id    = self::factory()->post->create(
 			array(
 				'post_type'  => 'page',
 				'post_title' => 'parent-page',
 			)
 		);
-		$page_ids[] = $page_id = self::factory()->post->create(
+		$page_ids[] = $page_id;
+		$page_id    = self::factory()->post->create(
 			array(
 				'post_type'   => 'page',
 				'post_title'  => 'child-page-1',
 				'post_parent' => $page_id,
 			)
 		);
-		$page_ids[] = $page_id = self::factory()->post->create(
+		$page_ids[] = $page_id;
+		$page_ids[] = self::factory()->post->create(
 			array(
 				'post_type'   => 'page',
 				'post_title'  => 'child-page-2',
@@ -197,20 +199,22 @@ class Tests_Query_Conditionals extends WP_UnitTestCase {
 	//'(about)/feed/(feed|rdf|rss|rss2|atom)/?$' => 'index.php?pagename=$matches[1]&feed=$matches[2]'
 	function test_page_feed() {
 		$page_ids   = array();
-		$page_ids[] = $page_id = self::factory()->post->create(
+		$page_id    = self::factory()->post->create(
 			array(
 				'post_type'  => 'page',
 				'post_title' => 'parent-page',
 			)
 		);
-		$page_ids[] = $page_id = self::factory()->post->create(
+		$page_ids[] = $page_id;
+		$page_id    = self::factory()->post->create(
 			array(
 				'post_type'   => 'page',
 				'post_title'  => 'child-page-1',
 				'post_parent' => $page_id,
 			)
 		);
-		$page_ids[] = $page_id = self::factory()->post->create(
+		$page_ids[] = $page_id;
+		$page_ids[] = self::factory()->post->create(
 			array(
 				'post_type'   => 'page',
 				'post_title'  => 'child-page-2',
@@ -233,20 +237,22 @@ class Tests_Query_Conditionals extends WP_UnitTestCase {
 
 	function test_page_feed_with_no_comments() {
 		$page_ids   = array();
-		$page_ids[] = $page_id = self::factory()->post->create(
+		$page_id    = self::factory()->post->create(
 			array(
 				'post_type'  => 'page',
 				'post_title' => 'parent-page',
 			)
 		);
-		$page_ids[] = $page_id = self::factory()->post->create(
+		$page_ids[] = $page_id;
+		$page_id    = self::factory()->post->create(
 			array(
 				'post_type'   => 'page',
 				'post_title'  => 'child-page-1',
 				'post_parent' => $page_id,
 			)
 		);
-		$page_ids[] = $page_id = self::factory()->post->create(
+		$page_ids[] = $page_id;
+		$page_ids[] = self::factory()->post->create(
 			array(
 				'post_type'   => 'page',
 				'post_title'  => 'child-page-2',
@@ -269,20 +275,22 @@ class Tests_Query_Conditionals extends WP_UnitTestCase {
 	// '(about)/feed/(feed|rdf|rss|rss2|atom)/?$' => 'index.php?pagename=$matches[1]&feed=$matches[2]'
 	function test_page_feed_atom() {
 		$page_ids   = array();
-		$page_ids[] = $page_id = self::factory()->post->create(
+		$page_id    = self::factory()->post->create(
 			array(
 				'post_type'  => 'page',
 				'post_title' => 'parent-page',
 			)
 		);
-		$page_ids[] = $page_id = self::factory()->post->create(
+		$page_ids[] = $page_id;
+		$page_id    = self::factory()->post->create(
 			array(
 				'post_type'   => 'page',
 				'post_title'  => 'child-page-1',
 				'post_parent' => $page_id,
 			)
 		);
-		$page_ids[] = $page_id = self::factory()->post->create(
+		$page_ids[] = $page_id;
+		$page_ids[] = self::factory()->post->create(
 			array(
 				'post_type'   => 'page',
 				'post_title'  => 'child-page-2',
@@ -1590,4 +1598,24 @@ class Tests_Query_Conditionals extends WP_UnitTestCase {
 		$this->assertTrue( is_single( $p2 ) );
 		$this->assertFalse( is_single( $p1 ) );
 	}
+
+	/**
+	 * @ticket 44005
+	 * @group privacy
+	 */
+	public function test_is_privacy_policy() {
+		$page_id = self::factory()->post->create(
+			array(
+				'post_type'  => 'page',
+				'post_title' => 'Privacy Policy',
+			)
+		);
+
+		update_option( 'wp_page_for_privacy_policy', $page_id );
+
+		$this->go_to( get_permalink( $page_id ) );
+
+		$this->assertQueryTrue( 'is_page', 'is_singular', 'is_privacy_policy' );
+	}
+
 }
