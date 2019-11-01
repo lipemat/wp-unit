@@ -32,8 +32,8 @@ class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
 
 		// @since 1.8.0
 		if ( empty( $args['file']) ) {
-			$this->test_file = '/tmp/canola.jpg';
-			copy( DIR_TESTDATA . '/images/canola.jpg', $this->test_file );
+			$this->test_file =  trailingslashit( wp_get_upload_dir()['basedir'] ) . 'test-image.jpg';
+			copy( DIR_TESTDATA . '/images/test-image.jpg', $this->test_file );
 			$args['file'] = $this->test_file;
 		}
 
@@ -41,7 +41,7 @@ class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
 			array(
 				'file'        => '',
 				'post_parent' => 0,
-				'post_mime_type' => 'import'
+				'post_mime_type' => 'image/jpg'
 			),
 			$args
 		);
