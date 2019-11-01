@@ -2,6 +2,9 @@
 
 class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
 
+
+
+
 	/**
 	 * Create an attachment fixture.
 	 *
@@ -14,6 +17,8 @@ class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
 	 * @param int   $legacy_parent Deprecated.
 	 * @param array $legacy_args   Deprecated.
 	 *
+	 * @since 1.8.0 (Automatically generate file to go with attachment)
+	 *
 	 * @return  int|WP_Error The attachment ID on success. The value 0 or WP_Error on failure.
 	 */
 	function create_object( $args, $legacy_parent = 0, $legacy_args = array() ) {
@@ -25,10 +30,18 @@ class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
 			$args['file']        = $file;
 		}
 
+		// @since 1.8.0
+		if ( empty( $args['file']) ) {
+			$this->test_file = '/tmp/canola.jpg';
+			copy( DIR_TESTDATA . '/images/canola.jpg', $this->test_file );
+			$args['file'] = $this->test_file;
+		}
+
 		$r = array_merge(
 			array(
 				'file'        => '',
 				'post_parent' => 0,
+				'post_mime_type' => 'import'
 			),
 			$args
 		);
