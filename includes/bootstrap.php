@@ -24,7 +24,7 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) ) {
 }
 
 /*
- * Globalize some WordPress variables, because PHPUnit loads this file inside a function
+ * Globalize some WordPress variables, because PHPUnit loads this file inside a function.
  * See: https://github.com/sebastianbergmann/phpunit/issues/325
  */
 global $wpdb, $current_site, $current_blog, $wp_rewrite, $shortcode_tags, $wp, $phpmailer, $wp_theme_directories, $wp_version;
@@ -69,7 +69,10 @@ if ( ! defined( 'WP_TESTS_FORCE_KNOWN_BUGS' ) ) {
 	define( 'WP_TESTS_FORCE_KNOWN_BUGS', false );
 }
 
-// Cron tries to make an HTTP request to the blog, which always fails, because tests are run in CLI mode only
+/*
+ * Cron tries to make an HTTP request to the site, which always fails,
+ * because tests are run in CLI mode only.
+ */
 define( 'DISABLE_WP_CRON', true );
 
 if( !defined( 'WP_MEMORY_LIMIT' ) ) {
@@ -79,10 +82,12 @@ define( 'WP_MAX_MEMORY_LIMIT', WP_MEMORY_LIMIT );
 
 define( 'REST_TESTS_IMPOSSIBLY_HIGH_NUMBER', 99999999 );
 
-$PHP_SELF = $GLOBALS['PHP_SELF'] = $_SERVER['PHP_SELF'] = '/index.php';
+$PHP_SELF            = '/index.php';
+$GLOBALS['PHP_SELF'] = '/index.php';
+$_SERVER['PHP_SELF'] = '/index.php';
 
 // Should we run in multisite mode?
-$multisite = '1' == getenv( 'WP_MULTISITE' );
+$multisite = ( '1' === getenv( 'WP_MULTISITE' ) );
 $multisite = $multisite || ( defined( 'WP_TESTS_MULTISITE' ) && WP_TESTS_MULTISITE );
 $multisite = $multisite || ( defined( 'MULTISITE' ) && MULTISITE );
 
@@ -101,7 +106,7 @@ if ( file_exists( DIR_TESTDATA . '/themedir1' ) ) {
 	$wp_theme_directories[] = DIR_TESTDATA . '/themedir1';
 }
 
-if (  ( ! defined( 'WP_TESTS_SKIP_INSTALL' ) || ! WP_TESTS_SKIP_INSTALL ) && '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
+if ( ! tests_skip_install() ) {
 	system( WP_PHP_BINARY . ' ' . escapeshellarg( dirname( __FILE__ ) . '/install.php' ) . ' ' . escapeshellarg( $config_file_path ) . ' ' . $multisite, $retval );
 	if ( 0 !== $retval ) {
 		exit( $retval );
@@ -174,7 +179,7 @@ unset( $multisite );
 
 
 // Delete any default posts & related data
-if ( '1' !== getenv( 'WP_TESTS_SKIP_INSTALL' ) ) {
+if ( ! tests_skip_install() ) {
 	_delete_all_posts();
 }
 
@@ -193,11 +198,8 @@ require dirname( __FILE__ ) . '/testcase-canonical.php';
 require dirname( __FILE__ ) . '/exceptions.php';
 require dirname( __FILE__ ) . '/utils.php';
 require dirname( __FILE__ ) . '/spy-rest-server.php';
-// WP 5.0.0+
-if ( class_exists( 'WP_REST_Search_Handler' ) ) {
-	require dirname( __FILE__ ) . '/class-wp-rest-test-search-handler.php';
-	require dirname( __FILE__ ) . '/class-wp-fake-block-type.php';
-}
+require dirname( __FILE__ ) . '/class-wp-rest-test-search-handler.php';
+require dirname( __FILE__ ) . '/class-wp-fake-block-type.php';
 
 /**
  * A class to handle additional command line arguments passed to the script.
@@ -237,7 +239,7 @@ class WP_PHPUnit_Util_Getopt {
 					}
 
 					foreach ( $skipped_groups as $group_name => $skipped ) {
-						if ( in_array( $group_name, $groups ) ) {
+						if ( in_array( $group_name, $groups, true ) ) {
 							$skipped_groups[ $group_name ] = false;
 						}
 					}
@@ -260,4 +262,3 @@ class WP_PHPUnit_Util_Getopt {
 
 }
 new WP_PHPUnit_Util_Getopt( $_SERVER['argv'] );
-

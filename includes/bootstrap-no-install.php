@@ -7,6 +7,9 @@
  *
  * @notice Even with this set it is still recommended to never
  *         have the wp-tests-config pointed to a production db.
+ *
+ * @notice If your DB tables are not `INNODB` any data created by
+ *         these tests will still persist.
  */
 
 // New version
