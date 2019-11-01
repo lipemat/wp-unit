@@ -2,6 +2,8 @@
 
 /**
  * Retrieves PHPUnit runner version.
+ *
+ * @return double The version number.
  */
 function tests_get_phpunit_version() {
 	if ( class_exists( 'PHPUnit_Runner_Version' ) ) {
@@ -19,7 +21,7 @@ function tests_get_phpunit_version() {
 /**
  * Resets various `$_SERVER` variables that can get altered during tests.
  */
-function tests_reset__SERVER() {
+function tests_reset__SERVER() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
 	$_SERVER['HTTP_HOST']       = WP_TESTS_DOMAIN;
 	$_SERVER['REMOTE_ADDR']     = '127.0.0.1';
 	$_SERVER['REQUEST_METHOD']  = 'GET';
@@ -98,6 +100,7 @@ function _delete_all_data() {
 		$wpdb->term_relationships,
 		$wpdb->termmeta,
 	) as $table ) {
+		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DELETE FROM {$table}" );
 	}
 
@@ -105,6 +108,7 @@ function _delete_all_data() {
 		$wpdb->terms,
 		$wpdb->term_taxonomy,
 	) as $table ) {
+		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DELETE FROM {$table} WHERE term_id != 1" );
 	}
 
@@ -134,6 +138,13 @@ function _delete_all_posts() {
 	}
 }
 
+/**
+ * Handles the WP die handler by outputting the given values as text.
+ *
+ * @param string $message The message.
+ * @param string $title   The title.
+ * @param array  $args    Array with arguments.
+ */
 function _wp_die_handler( $message, $title = '', $args = array() ) {
 	if ( ! $GLOBALS['_wp_die_disabled'] ) {
 		_wp_die_handler_txt( $message, $title, $args );
@@ -142,22 +153,45 @@ function _wp_die_handler( $message, $title = '', $args = array() ) {
 	}
 }
 
+/**
+ * Disables the WP die handler.
+ */
 function _disable_wp_die() {
 	$GLOBALS['_wp_die_disabled'] = true;
 }
 
+/**
+ * Enables the WP die handler.
+ */
 function _enable_wp_die() {
 	$GLOBALS['_wp_die_disabled'] = false;
 }
 
+/**
+ * Returns the die handler.
+ *
+ * @return string The die handler.
+ */
 function _wp_die_handler_filter() {
 	return '_wp_die_handler';
 }
 
+/**
+ * Returns the die handler.
+ *
+ * @return string The die handler.
+ */
 function _wp_die_handler_filter_exit() {
 	return '_wp_die_handler_exit';
 }
 
+/**
+ * Dies without an exit.
+ *
+ * @param string $message The message.
+ * @param string $title   The title.
+ * @param array  $args    Array with arguments.
+ */
 function _wp_die_handler_txt( $message, $title, $args ) {
 	echo "\nwp_die called\n";
 	echo "Message : $message\n";
@@ -170,6 +204,13 @@ function _wp_die_handler_txt( $message, $title, $args ) {
 	}
 }
 
+/**
+ * Dies with an exit.
+ *
+ * @param string $message The message.
+ * @param string $title   The title.
+ * @param array  $args    Array with arguments.
+ */
 function _wp_die_handler_exit( $message, $title, $args ) {
 	echo "\nwp_die called\n";
 	echo "Message : $message\n";
@@ -197,6 +238,8 @@ function _set_default_permalink_structure_for_tests() {
 
 /**
  * Helper used with the `upload_dir` filter to remove the /year/month sub directories from the uploads path and URL.
+ *
+ * @return array The altered array.
  */
 function _upload_dir_no_subdir( $uploads ) {
 	$subdir = $uploads['subdir'];
@@ -210,6 +253,8 @@ function _upload_dir_no_subdir( $uploads ) {
 
 /**
  * Helper used with the `upload_dir` filter to set https upload URL.
+ *
+ * @return array The altered array.
  */
 function _upload_dir_https( $uploads ) {
 	$uploads['url']     = str_replace( 'http://', 'https://', $uploads['url'] );
@@ -220,6 +265,8 @@ function _upload_dir_https( $uploads ) {
 
 /**
  * Use the Spy_REST_Server class for the REST server.
+ *
+ * @return string The server class name.
  */
 function _wp_rest_server_class_filter() {
 	return 'Spy_REST_Server';
@@ -237,8 +284,15 @@ tests_add_filter( 'send_auth_cookies', '__return_false' );
  */
 function _unhook_block_registration() {
 	remove_action( 'init', 'register_block_core_archives' );
+	remove_action( 'init', 'register_block_core_block' );
+	remove_action( 'init', 'register_block_core_calendar' );
 	remove_action( 'init', 'register_block_core_categories' );
+	remove_action( 'init', 'register_block_core_latest_comments' );
 	remove_action( 'init', 'register_block_core_latest_posts' );
+	remove_action( 'init', 'register_block_core_rss' );
+	remove_action( 'init', 'register_block_core_search' );
 	remove_action( 'init', 'register_block_core_shortcode' );
+	remove_action( 'init', 'register_block_core_social_link' );
+	remove_action( 'init', 'register_block_core_tag_cloud' );
 }
 tests_add_filter( 'init', '_unhook_block_registration', 1000 );

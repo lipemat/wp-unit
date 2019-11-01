@@ -5,6 +5,7 @@ if ( class_exists( 'PHPUnit\Runner\Version' ) && version_compare( PHPUnit\Runner
 	class_alias( 'PHPUnit\Framework\TestCase', 'PHPUnit_Framework_TestCase' );
 	class_alias( 'PHPUnit\Framework\Exception', 'PHPUnit_Framework_Exception' );
 	class_alias( 'PHPUnit\Framework\ExpectationFailedException', 'PHPUnit_Framework_ExpectationFailedException' );
+	class_alias( 'PHPUnit\Framework\Error\Deprecated', 'PHPUnit_Framework_Error_Deprecated' );
 	class_alias( 'PHPUnit\Framework\Error\Notice', 'PHPUnit_Framework_Error_Notice' );
 	class_alias( 'PHPUnit\Framework\Error\Warning', 'PHPUnit_Framework_Error_Warning' );
 	class_alias( 'PHPUnit\Framework\Test', 'PHPUnit_Framework_Test' );
@@ -17,8 +18,9 @@ if ( class_exists( 'PHPUnit\Runner\Version' ) && version_compare( PHPUnit\Runner
 
 	class PHPUnit_Util_Test {
 
-		public static function getTickets( $className, $methodName ) {
-			$annotations = PHPUnit\Util\Test::parseTestMethodAnnotations( $className, $methodName );
+		// phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+		public static function getTickets( $class_name, $method_name ) {
+			$annotations = PHPUnit\Util\Test::parseTestMethodAnnotations( $class_name, $method_name );
 
 			$tickets = array();
 

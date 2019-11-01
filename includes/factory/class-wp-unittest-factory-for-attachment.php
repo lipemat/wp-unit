@@ -2,9 +2,6 @@
 
 class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
 
-
-
-
 	/**
 	 * Create an attachment fixture.
 	 *
@@ -21,7 +18,7 @@ class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
 	 *
 	 * @return  int|WP_Error The attachment ID on success. The value 0 or WP_Error on failure.
 	 */
-	function create_object( $args, $legacy_parent = 0, $legacy_args = array() ) {
+	public function create_object( $args, $legacy_parent = 0, $legacy_args = array() ) {
 		// Backward compatibility for legacy argument format.
 		if ( is_string( $args ) ) {
 			$file                = $args;
@@ -30,21 +27,21 @@ class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
 			$args['file']        = $file;
 		}
 
+		$r = array_merge(
+			array(
+				'file'        => '',
+				'post_parent' => 0
+			),
+			$args
+		);
+
 		// @since 1.8.0
 		if ( empty( $args['file']) ) {
 			$this->test_file =  trailingslashit( wp_get_upload_dir()['basedir'] ) . 'test-image.jpg';
 			copy( DIR_TESTDATA . '/images/test-image.jpg', $this->test_file );
-			$args['file'] = $this->test_file;
+			$r['file'] = $this->test_file;
+			$r['post_mime_type'] = 'image/jpg';
 		}
-
-		$r = array_merge(
-			array(
-				'file'        => '',
-				'post_parent' => 0,
-				'post_mime_type' => 'image/jpg'
-			),
-			$args
-		);
 
 		return wp_insert_attachment( $r, $r['file'], $r['post_parent'] );
 	}
@@ -57,9 +54,9 @@ class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
 	 *
 	 * @return int|WP_Error The attachment ID on success. The value 0 or WP_Error on failure.
 	 */
-	function create_upload_object( $file, $parent = 0 ) {
+	public function create_upload_object( $file, $parent = 0 ) {
 		$contents = file_get_contents( $file );
-		$upload   = wp_upload_bits( basename( $file ), null, $contents );
+		$upload   = wp_upload_bits( wp_basename( $file ), null, $contents );
 
 		$type = '';
 		if ( ! empty( $upload['type'] ) ) {
@@ -72,7 +69,7 @@ class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
 		}
 
 		$attachment = array(
-			'post_title'     => basename( $upload['file'] ),
+			'post_title'     => wp_basename( $upload['file'] ),
 			'post_content'   => '',
 			'post_type'      => 'attachment',
 			'post_parent'    => $parent,
