@@ -195,3 +195,22 @@ get_the_post_thumbnail_url( $post->ID );
 
 ```
 
+## Internal Merging Core Process
+The original repo this is forked from contains the entire WordPress structure along with the tests directory and is not feasible for typical git merges.
+
+Instead merging in changes from core is done via patches.
+
+1. Checkout the lastest master from `git://develop.git.wordpress.org/tests/phpunit`
+2. cd `tests/phpunit`
+3. `git diff <last commit merged in> master --relative > <lastest master commit>.patch`
+    1. Change `<lastest master commit>` latest commit of master.
+    2. Change `<date>` to today's date.
+4. Move new patch file to `/patches` directory:
+5. Apply patch:
+    1 Terminal:
+        1. `git apply --reject --whitespace=fix patches/<lastest master commit>.patch`
+        2. Use log or search for `.rej` and solve the rejections manually.
+    2. Use PHPStorm's interactive built in "Apply Patch":
+        1. Right click and select "Apply Patch"
+        2. Follow status prompts and fix.
+6. Make sure to note the commit merged in in the git log and release notes if applicable.    
