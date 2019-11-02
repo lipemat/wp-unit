@@ -203,8 +203,9 @@ Instead merging in changes from core is done via patches.
 1. Checkout the lastest master from `git://develop.git.wordpress.org/tests/phpunit`
 2. cd `tests/phpunit`
 3. `git diff <last commit merged in> master --relative > <lastest master commit>.patch`
-    1. Change `<lastest master commit>` latest commit of master.
-    2. Change `<date>` to today's date.
+    1. Change `<last commit merged in>` to name of latest patch in the `/patches` directory which will matches the latest commit merged it.
+    2. Change `<lastest master commit>` latest commit of master.
+    3. Change `<date>` to today's date.
 4. Move new patch file to `/patches` directory:
 5. Apply patch:
     1 Terminal:

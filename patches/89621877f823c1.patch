@@ -4362,7 +4362,7 @@ index c3f7cde405..7fd7e3840e 100644
 +	</body>
 +</tt>
 diff --git a/includes/abstract-testcase.php b/includes/abstract-testcase.php
-index e84f80d1c3..749803dffc 100644
+index c90a1614e8..749803dffc 100644
 --- a/includes/abstract-testcase.php
 +++ b/includes/abstract-testcase.php
 @@ -23,11 +23,11 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
@@ -4451,21 +4451,7 @@ index e84f80d1c3..749803dffc 100644
  		set_time_limit( 0 );
  
  		if ( ! self::$ignore_files ) {
-@@ -136,21 +141,10 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
- 		add_filter( 'wp_die_handler', array( $this, 'get_wp_die_handler' ) );
- 	}
- 
--	/**
--	 * Detect post-test failure conditions.
--	 *
--	 * We use this method to detect expectedDeprecated and expectedIncorrectUsage annotations.
--	 *
--	 * @since 4.2.0
--	 */
--	protected function assertPostConditions() {
--		$this->expectedDeprecated();
--	}
--
+@@ -139,7 +144,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
  	/**
  	 * After a test method runs, reset any state in WordPress the test method might have changed.
  	 */
@@ -4474,7 +4460,7 @@ index e84f80d1c3..749803dffc 100644
  		global $wpdb, $wp_query, $wp;
  		$wpdb->query( 'ROLLBACK' );
  		if ( is_multisite() ) {
-@@ -176,7 +170,10 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
+@@ -165,7 +170,10 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
  		wp_set_current_user( 0 );
  	}
  
@@ -4486,7 +4472,7 @@ index e84f80d1c3..749803dffc 100644
  		$_GET  = array();
  		$_POST = array();
  		self::flush_cache();
-@@ -280,7 +277,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
+@@ -269,7 +277,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
  	 * @global array $wp_actions
  	 * @global array $wp_current_filter
  	 * @global array $wp_filter
@@ -4494,7 +4480,7 @@ index e84f80d1c3..749803dffc 100644
  	 */
  	protected function _backup_hooks() {
  		$globals = array( 'wp_actions', 'wp_current_filter' );
-@@ -300,7 +296,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
+@@ -289,7 +296,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
  	 * @global array $wp_actions
  	 * @global array $wp_current_filter
  	 * @global array $wp_filter
@@ -4502,7 +4488,7 @@ index e84f80d1c3..749803dffc 100644
  	 */
  	protected function _restore_hooks() {
  		$globals = array( 'wp_actions', 'wp_current_filter' );
-@@ -317,7 +312,10 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
+@@ -306,7 +312,10 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
  		}
  	}
  
@@ -4514,7 +4500,7 @@ index e84f80d1c3..749803dffc 100644
  		global $wp_object_cache;
  		$wp_object_cache->group_ops      = array();
  		$wp_object_cache->stats          = array();
-@@ -338,7 +336,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
+@@ -327,7 +336,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
  	 *
  	 * @global array $wp_meta_keys
  	 */
@@ -4523,7 +4509,7 @@ index e84f80d1c3..749803dffc 100644
  		global $wp_meta_keys;
  		if ( ! is_array( $wp_meta_keys ) ) {
  			return;
-@@ -352,7 +350,10 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
+@@ -341,7 +350,10 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
  		}
  	}
  
@@ -4535,7 +4521,7 @@ index e84f80d1c3..749803dffc 100644
  		global $wpdb;
  		$wpdb->query( 'SET autocommit = 0;' );
  		$wpdb->query( 'START TRANSACTION;' );
-@@ -370,25 +371,54 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
+@@ -359,25 +371,54 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
  		$wpdb->query( 'COMMIT;' );
  	}
  
@@ -4596,7 +4582,7 @@ index e84f80d1c3..749803dffc 100644
  		if ( ! is_scalar( $message ) ) {
  			$message = '0';
  		}
-@@ -396,7 +426,10 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
+@@ -385,7 +426,10 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
  		throw new WPDieException( $message );
  	}
  
@@ -4608,7 +4594,7 @@ index e84f80d1c3..749803dffc 100644
  		$annotations = $this->getAnnotations();
  		foreach ( array( 'class', 'method' ) as $depth ) {
  			if ( ! empty( $annotations[ $depth ]['expectedDeprecated'] ) ) {
-@@ -416,7 +449,12 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
+@@ -405,7 +449,12 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
  		add_action( 'doing_it_wrong_trigger_error', '__return_false' );
  	}
  
@@ -4622,24 +4608,7 @@ index e84f80d1c3..749803dffc 100644
  		$errors = array();
  
  		$not_caught_deprecated = array_diff( $this->expected_deprecated, $this->caught_deprecated );
-@@ -448,16 +486,27 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
- 		}
- 	}
- 
-+	/**
-+	 * Detect post-test failure conditions.
-+	 *
-+	 * We use this method to detect expectedDeprecated and expectedIncorrectUsage annotations.
-+	 *
-+	 * @since 4.2.0
-+	 */
-+	protected function assertPostConditions() {
-+		$this->expectedDeprecated();
-+	}
-+
- 	/**
- 	 * Declare an expected `_deprecated_function()` or `_deprecated_argument()` call from within a test.
- 	 *
+@@ -454,10 +503,10 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
  	 * @since 4.2.0
  	 *
  	 * @param string $deprecated Name of the function, method, class, or argument that is deprecated. Must match
@@ -5078,7 +5047,7 @@ index e84f80d1c3..749803dffc 100644
  	 */
  	protected function update_post_modified( $post_id, $date ) {
 diff --git a/includes/bootstrap.php b/includes/bootstrap.php
-index 2ec40603ac..97003ae7ff 100644
+index 0390d62312..97003ae7ff 100644
 --- a/includes/bootstrap.php
 +++ b/includes/bootstrap.php
 @@ -24,7 +24,7 @@ if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) ) {
@@ -5090,7 +5059,7 @@ index 2ec40603ac..97003ae7ff 100644
   * See: https://github.com/sebastianbergmann/phpunit/issues/325
   */
  global $wpdb, $current_site, $current_blog, $wp_rewrite, $shortcode_tags, $wp, $phpmailer, $wp_theme_directories;
-@@ -33,9 +33,24 @@ if ( ! is_readable( $config_file_path ) ) {
+@@ -33,6 +33,7 @@ if ( ! is_readable( $config_file_path ) ) {
  	echo "ERROR: wp-tests-config.php is missing! Please use wp-tests-config-sample.php to create a config file.\n";
  	exit( 1 );
  }
@@ -5098,15 +5067,10 @@ index 2ec40603ac..97003ae7ff 100644
  require_once $config_file_path;
  require_once dirname( __FILE__ ) . '/functions.php';
  
-+if ( version_compare( tests_get_phpunit_version(), '8.0', '>=' ) ) {
-+	printf(
-+		"ERROR: Looks like you're using PHPUnit %s. WordPress is currently only compatible with PHPUnit up to 7.x.\n",
-+		tests_get_phpunit_version()
-+	);
-+	echo "Please use the latest PHPUnit version from the 7.x branch.\n";
-+	exit( 1 );
-+}
-+
+@@ -45,6 +46,11 @@ if ( version_compare( tests_get_phpunit_version(), '8.0', '>=' ) ) {
+ 	exit( 1 );
+ }
+ 
 +if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS && ! is_dir( ABSPATH ) ) {
 +	echo "ERROR: The /build/ directory is missing! Please run `npm run build` prior to running PHPUnit.\n";
 +	exit( 1 );
@@ -5115,7 +5079,7 @@ index 2ec40603ac..97003ae7ff 100644
  tests_reset__SERVER();
  
  define( 'WP_TESTS_TABLE_PREFIX', $table_prefix );
-@@ -48,7 +63,10 @@ if ( ! defined( 'WP_TESTS_FORCE_KNOWN_BUGS' ) ) {
+@@ -57,7 +63,10 @@ if ( ! defined( 'WP_TESTS_FORCE_KNOWN_BUGS' ) ) {
  	define( 'WP_TESTS_FORCE_KNOWN_BUGS', false );
  }
  
@@ -5127,7 +5091,7 @@ index 2ec40603ac..97003ae7ff 100644
  define( 'DISABLE_WP_CRON', true );
  
  define( 'WP_MEMORY_LIMIT', -1 );
-@@ -56,10 +74,12 @@ define( 'WP_MAX_MEMORY_LIMIT', -1 );
+@@ -65,10 +74,12 @@ define( 'WP_MAX_MEMORY_LIMIT', -1 );
  
  define( 'REST_TESTS_IMPOSSIBLY_HIGH_NUMBER', 99999999 );
  
@@ -5142,7 +5106,7 @@ index 2ec40603ac..97003ae7ff 100644
  $multisite = $multisite || ( defined( 'WP_TESTS_MULTISITE' ) && WP_TESTS_MULTISITE );
  $multisite = $multisite || ( defined( 'MULTISITE' ) && MULTISITE );
  
-@@ -174,7 +194,7 @@ class WP_PHPUnit_Util_Getopt {
+@@ -183,7 +194,7 @@ class WP_PHPUnit_Util_Getopt {
  					}
  
  					foreach ( $skipped_groups as $group_name => $skipped ) {
@@ -6445,18 +6409,6 @@ index 60b61891dc..c27fbc21cd 100644
 +		return isset( $ann['method']['slowThreshold'][0] ) ? $ann['method']['slowThreshold'][0] : $this->slow_threshold;
  	}
  }
-diff --git a/includes/phpunit7/testcase.php b/includes/phpunit7/testcase.php
-index 325c553eed..9edc885e6a 100644
---- a/includes/phpunit7/testcase.php
-+++ b/includes/phpunit7/testcase.php
-@@ -12,6 +12,7 @@ require_once dirname( dirname( __FILE__ ) ) . '/abstract-testcase.php';
-  * All WordPress unit tests should inherit from this class.
-  */
- class WP_UnitTestCase extends WP_UnitTestCase_Base {
-+
- 	/**
- 	 * Asserts that a condition is not false.
- 	 *
 diff --git a/includes/speed-trap-listener.php b/includes/speed-trap-listener.php
 index eaf738a25e..0de9d9ae86 100644
 --- a/includes/speed-trap-listener.php
@@ -13332,48 +13284,8 @@ index 5b44094767..30d0867033 100644
  		$wpdb->query( $schema );
  
  		$schema_update = "
-diff --git a/tests/dependencies/backbonejs.php b/tests/dependencies/backbonejs.php
-deleted file mode 100644
-index 4c276ad898..0000000000
---- a/tests/dependencies/backbonejs.php
-+++ /dev/null
-@@ -1,15 +0,0 @@
--<?php
--
--/**
-- * @group dependencies
-- * @group scripts
-- */
--class Tests_Dependencies_Backbonejs extends WP_UnitTestCase {
--
--	function test_exclusion_of_sourcemaps() {
--		$file = ABSPATH . WPINC . '/js/backbone.min.js';
--		$this->assertFileExists( $file );
--		$contents = trim( file_get_contents( $file ) );
--		$this->assertFalse( strpos( $contents, 'sourceMappingURL' ), 'Presence of sourceMappingURL' );
--	}
--}
-diff --git a/tests/dependencies/jquery.php b/tests/dependencies/jquery.php
-index 8f8bc7e1f0..30ea876e2f 100644
---- a/tests/dependencies/jquery.php
-+++ b/tests/dependencies/jquery.php
-@@ -82,14 +82,6 @@ class Tests_Dependencies_jQuery extends WP_UnitTestCase {
- 		set_current_screen( 'front' );
- 	}
- 
--	/**
--	 * @ticket 24994
--	 */
--	function test_exclusion_of_sourcemaps() {
--		$contents = trim( file_get_contents( ABSPATH . WPINC . '/js/jquery/jquery.js' ) );
--		$this->assertFalse( strpos( $contents, 'sourceMappingURL' ), 'Presence of sourceMappingURL' );
--	}
--
- 	/**
- 	 * @ticket 28404
- 	 */
 diff --git a/tests/dependencies/scripts.php b/tests/dependencies/scripts.php
-index b1e8e6c8f8..2b3b4538d8 100644
+index 1812919f2a..2b3b4538d8 100644
 --- a/tests/dependencies/scripts.php
 +++ b/tests/dependencies/scripts.php
 @@ -44,6 +44,7 @@ JS;
@@ -13606,23 +13518,6 @@ index b1e8e6c8f8..2b3b4538d8 100644
  	}
  
  	/**
-@@ -1341,4 +1379,16 @@ JS;
- 			array_keys( $wp_enqueue_code_editor['htmlhint'] )
- 		);
- 	}
-+
-+	function test_no_source_mapping() {
-+		$all_files = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( dirname( ABSPATH ) . '/build/' ) );
-+		$js_files  = new RegexIterator( $all_files, '/\.js$/' );
-+		foreach ( $js_files as $js_file ) {
-+			$contents = trim( file_get_contents( $js_file ) );
-+
-+			// We allow data: URLs.
-+			$found = preg_match( '/sourceMappingURL=((?!data:).)/', $contents );
-+			$this->assertSame( $found, 0, "sourceMappingURL found in $js_file" );
-+		}
-+	}
- }
 diff --git a/tests/dependencies/styles.php b/tests/dependencies/styles.php
 index 30ed7799ce..174a8e48b6 100644
 --- a/tests/dependencies/styles.php
@@ -14508,41 +14403,10 @@ index 7d5befcdd1..a990ad42ff 100644
 +
  }
 diff --git a/tests/formatting/SanitizeTextField.php b/tests/formatting/SanitizeTextField.php
-index 62ee5573c3..5e87ff1c89 100644
+index c6f978484b..5e87ff1c89 100644
 --- a/tests/formatting/SanitizeTextField.php
 +++ b/tests/formatting/SanitizeTextField.php
-@@ -97,6 +97,30 @@ class Tests_Formatting_SanitizeTextField extends WP_UnitTestCase {
- 				array(),
- 				'',
- 			),
-+			array(
-+				array( 1, 2, 'foo' ),
-+				'',
-+			),
-+			array(
-+				new WP_Query,
-+				'',
-+			),
-+			array(
-+				2,
-+				'2',
-+			),
-+			array(
-+				false,
-+				'',
-+			),
-+			array(
-+				true,
-+				'1',
-+			),
-+			array(
-+				10.1,
-+				'10.1',
-+			),
- 		);
- 	}
- 
-@@ -109,10 +133,11 @@ class Tests_Formatting_SanitizeTextField extends WP_UnitTestCase {
+@@ -133,10 +133,11 @@ class Tests_Formatting_SanitizeTextField extends WP_UnitTestCase {
  			$expected_oneline   = $expected['oneline'];
  			$expected_multiline = $expected['multiline'];
  		} else {
@@ -18387,7 +18251,7 @@ index 6ec7f16c42..0318998129 100644
  
  endif;
 diff --git a/tests/multisite/site.php b/tests/multisite/site.php
-index cb3c3d9a05..f0aa28a06d 100644
+index 5397e85dcf..f0aa28a06d 100644
 --- a/tests/multisite/site.php
 +++ b/tests/multisite/site.php
 @@ -12,6 +12,7 @@ if ( is_multisite() ) :
@@ -18470,38 +18334,10 @@ index cb3c3d9a05..f0aa28a06d 100644
  				return 1234;
  			} else {
  				return null;
-@@ -2320,6 +2335,156 @@ if ( is_multisite() ) :
- 
- 			return $args;
+@@ -2348,6 +2363,128 @@ if ( is_multisite() ) :
+ 			// Set siteurl
+ 			update_option( 'siteurl', 'http://testsite1.example.org/test' );
  		}
-+
-+		/**
-+		 * @ticket 46125
-+		 */
-+		public function test_wpmu_create_blog_cache_cleanup_backward_compatible() {
-+			add_action( 'populate_options', array( $this, 'populate_options_callback' ) );
-+
-+			$blog_id = wpmu_create_blog( 'testsite1.example.org', '/test', 'test', 1, array( 'public' => 1 ), 2 );
-+
-+			// Should not hit blog_details cache initialised in $this->populate_options_callback tirggered during
-+			// populate_options callback's call of get_blog_details.
-+			$this->assertEquals( 'http://testsite1.example.org/test', get_blog_details( $blog_id )->siteurl );
-+			$this->assertEquals( 'http://testsite1.example.org/test', get_site( $blog_id )->siteurl );
-+
-+			remove_action( 'populate_options', array( $this, 'populate_options_callback' ) );
-+		}
-+
-+		/**
-+		 * Populate options callback to warm cache for blog-details / site-details cache group
-+		 */
-+		public function populate_options_callback() {
-+			// Cache blog details
-+			$blog_id = get_current_blog_id();
-+			get_blog_details( $blog_id );
-+			get_site( $blog_id )->siteurl;
-+			// Set siteurl
-+			update_option( 'siteurl', 'http://testsite1.example.org/test' );
-+		}
 +
 +		/**
 +		 * Tests whether all expected meta are provided in deprecated `wpmu_new_blog` action.
@@ -27484,7 +27320,7 @@ index 01be5de452..d90793958b 100644
  		$administrator = self::factory()->user->create(
  			array(
 diff --git a/tests/user/capabilities.php b/tests/user/capabilities.php
-index 69742c3972..487dcf25bf 100644
+index 3bc5264d52..487dcf25bf 100644
 --- a/tests/user/capabilities.php
 +++ b/tests/user/capabilities.php
 @@ -76,77 +76,80 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
@@ -27793,23 +27629,7 @@ index 69742c3972..487dcf25bf 100644
  
  		);
  
-@@ -257,7 +263,6 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
- 			'export_others_personal_data' => array( 'administrator' ),
- 			'erase_others_personal_data'  => array( 'administrator' ),
- 			'manage_privacy_options'      => array( 'administrator' ),
--			'resume_themes'               => array( 'administrator' ),
- 
- 			'edit_categories'             => array( 'administrator', 'editor' ),
- 			'delete_categories'           => array( 'administrator', 'editor' ),
-@@ -297,7 +302,6 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
- 			'customize'                   => array( 'administrator' ),
- 			'delete_site'                 => array( 'administrator' ),
- 			'add_users'                   => array( 'administrator' ),
--			'resume_themes'               => array( 'administrator' ),
- 
- 			'edit_categories'             => array( 'administrator', 'editor' ),
- 			'delete_categories'           => array( 'administrator', 'editor' ),
-@@ -394,7 +398,11 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
+@@ -392,7 +398,11 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
  			$actual['editor'],
  			$actual['author'],
  			$actual['subscriber'],
@@ -27822,15 +27642,16 @@ index 69742c3972..487dcf25bf 100644
  		);
  
  		unset(
-@@ -457,6 +465,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
+@@ -454,6 +464,8 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
+ 			// Singular object meta capabilities (where an object ID is passed) are not tested:
  			$expected['activate_plugin'],
  			$expected['deactivate_plugin'],
- 			$expected['resume_plugin'],
++			$expected['resume_plugin'],
 +			$expected['resume_theme'],
  			$expected['remove_user'],
  			$expected['promote_user'],
  			$expected['edit_user'],
-@@ -1194,7 +1203,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
+@@ -1191,7 +1203,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
  		$this->assertFalse( $contributor->has_cap( 'publish_post', $post ) );
  		$this->assertFalse( $contributor->has_cap( 'edit_post', $post ) );
  		$this->assertFalse( $contributor->has_cap( 'delete_post', $post ) );
@@ -27839,7 +27660,7 @@ index 69742c3972..487dcf25bf 100644
  	}
  
  	/**
-@@ -1537,7 +1546,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
+@@ -1534,7 +1546,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
  	function _nullify_current_user() {
  		// Prevents fatal errors in ::tearDown()'s and other uses of restore_current_blog()
  		$function_stack = wp_debug_backtrace_summary( null, 0, false );
@@ -27848,7 +27669,7 @@ index 69742c3972..487dcf25bf 100644
  			return;
  		}
  		$GLOBALS['current_user'] = null;
-@@ -1741,7 +1750,6 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
+@@ -1738,7 +1750,6 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
  	 * @ticket 17253
  	 */
  	function test_cpt_with_page_capability_type() {
@@ -27856,7 +27677,7 @@ index 69742c3972..487dcf25bf 100644
  		register_post_type(
  			'page_capability',
  			array(
-@@ -1790,8 +1798,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
+@@ -1787,8 +1798,7 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
  
  	}
  
@@ -27866,7 +27687,7 @@ index 69742c3972..487dcf25bf 100644
  		$this->assertFalse( is_user_logged_in() );
  
  		$caps = $this->getAllCapsAndRoles();
-@@ -1808,6 +1815,20 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
+@@ -1805,6 +1815,20 @@ class Tests_User_Capabilities extends WP_UnitTestCase {
  		$this->assertFalse( current_user_can( 'do_not_allow' ), 'Non-logged-in user should not have the do_not_allow capability' );
  	}
  
