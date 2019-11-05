@@ -195,6 +195,26 @@ get_the_post_thumbnail_url( $post->ID );
 
 ```
 
+#### Support assertEqualSetsValues on all TestCases
+Support testing two arrays of values while accounting for order but ignoring array keys.
+Useful for testing things like pagination.
+
+Example:
+```php
+$categories = \get_categories( [
+			'orderby' => 'term_id',
+			'order'   => 'ASC',
+		] );
+$per_page = 20;
+$this->assertEqualSetsValues(
+			wp_list_pluck( array_slice( $categories, $per_page * 4, $per_page ), 'term_id' ),
+			wp_list_pluck( $this->get_results( 5 )->categories, 'id' )
+		)
+
+```
+
+
+
 ## Internal Merging Core Process
 The original repo this is forked from contains the entire WordPress structure along with the tests directory and is not feasible for typical git merges.
 

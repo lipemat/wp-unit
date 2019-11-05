@@ -696,6 +696,21 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $expected, $actual );
 	}
 
+
+	/**
+	 * Asserts the content of two arrays are equal regardless of the keys, while accounting
+	 * for the order of elements
+	 *
+	 * @param array  $expected Expected array.
+	 * @param array  $actual   Array to check.
+	 * @param string $message  Message to return on failure.
+	 *
+	 * @since 1.9.0
+	 */
+	public function assertEqualSetsValues( $expected, $actual, $message = '' ) {
+		$this->assertEquals( array_values( $expected ), array_values( $actual ), $message );
+	}
+
 	/**
 	 * Asserts that the given variable is a multidimensional array, and that all arrays are non-empty.
 	 *
