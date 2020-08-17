@@ -16,4 +16,9 @@ abstract class WP_Test_REST_TestCase extends WP_UnitTestCase {
 			$this->assertEquals( $status, $data['status'] );
 		}
 	}
+
+
+	protected function assertNotErrorResponse( $response ) {
+		$this->assertNotInstanceOf( 'WP_Error', $response );
+	}
 }
