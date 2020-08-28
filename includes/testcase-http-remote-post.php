@@ -24,19 +24,20 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 
 	public function setUp() {
 		parent::setUp();
-		self::$mock_sent = [];
-		self::$mock_response = [];
 		putenv( 'PHP_MOCKED_REMOTE_POST=1' );
 		Requests::$transport[ serialize( [] ) ] = __CLASS__;
 		Requests::$transport[ serialize( [ 'ssl' => false ] ) ] = __CLASS__;
 		Requests::$transport[ serialize( [ 'ssl' => true ] ) ] = __CLASS__;
-		add_filter( 'http_api_transports', [ $this, 'use_this_class_for_transport' ] );
+		add_filter( 'http_api_transports', [ $this, 'use_this_class_for_transport' ], 99 );
 	}
 
 
 	public function tearDown() {
+		self::$mock_sent = [];
+		self::$mock_response = [];
 		putenv( 'PHP_MOCKED_REMOTE_POST' );
 		Requests::$transport = [];
+		remove_filter( 'http_api_transports', [ $this, 'use_this_class_for_transport' ], 99 );
 		return parent::tearDown();
 	}
 
