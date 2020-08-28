@@ -14,7 +14,7 @@ Fork of wp-unit to support bootstrapping an existing database and many other enh
 Original may be cloned from here: **git://develop.git.wordpress.org/tests/phpunit**
 
 ## Usage
-Install via composer either in you project or in a global location to be used among all projects.
+Install using composer either in you project or in a global location to be used among all projects.
 
 ```bash
 composer require --dev lipemat/wp-unit
@@ -94,7 +94,7 @@ phpunit
 #### Network Options
 
 Setting a wp_tests_options value may also be used to set a network option. 
-Set test options like normal and they will automatically replace network option values as well.
+Set test options like normal, and they will automatically replace network option values as well.
 ```php
 <?php
 $GLOBALS['wp_tests_options'][ 'site_name' ] = 'Example Site Name';
@@ -128,7 +128,7 @@ require __DIR__ . '/wp-tests-config.php';
 require __DIR__ . '/vendor/lipemat/wp-unit/includes/bootstrap-no-install.php';
 ```
 **Gotchas:**
-1. If you override the WP_UnitTestCase::setUp() method in your test class, be sure to call parent::setUp(). Otherwise any data you set during tests will persist to the database.
+1. If you override the WP_UnitTestCase::setUp() method in your test class, be sure to call parent::setUp(). Otherwise, any data you set during tests will persist to the database.
 2. If your database tables are using MyISAM storage engines, data will persist. They may be converted to InnoDB or any other engine which supports transactions. 
 
 
@@ -173,14 +173,14 @@ This library automatically accounts for outside transactions.
 
 Sometimes you want to use ajax responses to calls which live outside the `wp_ajax` actions.
 
-This library adds a methods to `WP_Ajax_UnitTestCase`:
+This library adds methods to `WP_Ajax_UnitTestCase`:
  1.  `_handleAjaxCustom` which will turn any callable into an `wp_ajax` action then call it via `_handleAjax`.
  2. `_getJsonResult` call any callable which uses `wp_send_json_success` or `wp_send_json_error` and return the result.
 
 
 #### Automatically generate files for Attachment factory.
 
-Many follow up attachment calls require the attachment to have an actual file attached to it.
+Many follow-up attachment calls require the attachment to have an actual file attached to it.
 For example `get_the_post_thumbnail_url` will always be empty if a file does not exist.
 
 This automatically adds files to the `create` call via `self::factory()->attachment`.
@@ -216,22 +216,22 @@ $this->assertEqualSetsValues(
 
 
 ## Internal Merging Core Process
-The original repo this is forked from contains the entire WordPress structure along with the tests directory and is not feasible for typical git merges.
+The original repo this is forked from contains the entire WordPress code base along with the tests directory and is not feasible for a typical git merge.
 
-Instead merging in changes from core is done via patches.
+Instead, merging in changes from WordPress core is done via patches.
 
-1. Checkout the lastest master from `git://develop.git.wordpress.org/tests/phpunit`
+1. Checkout the latest master from `git://develop.git.wordpress.org/tests/phpunit`
 2. cd `tests/phpunit`
 3. `git diff <last commit merged in> master --relative > <lastest master commit>.patch`
-    1. Change `<last commit merged in>` to name of latest patch in the `/patches` directory which will matches the latest commit merged it.
+    1. Change `<last commit merged in>` to name of the latest patch in the `/patches` directory which matches the latest commit merged it.
     2. Change `<lastest master commit>` latest commit of master.
     3. Change `<date>` to today's date.
 4. Move new patch file to `/patches` directory:
-5. Apply patch:
+5. Apply the patch:
     1 Terminal:
         1. `git apply --reject --whitespace=fix patches/<lastest master commit>.patch`
         2. Use log or search for `.rej` and solve the rejections manually.
     2. Use PHPStorm's interactive built in "Apply Patch":
         1. Right click and select "Apply Patch"
         2. Follow status prompts and fix.
-6. Make sure to note the commit merged in in the git log and release notes if applicable.    
+6. Make sure to note the commit merged in the git log and release notes if applicable.    
