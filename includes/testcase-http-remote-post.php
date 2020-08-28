@@ -134,11 +134,14 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 	 * Use by \WP_Http::_get_first_available_transport to determine
 	 * this transport may be used.
 	 *
+	 * PHPUnit will think this is a test method but we can't rename it.
+	 *
 	 * @internal
 	 *
 	 * @return bool
 	 */
 	public static function test() {
+		self::assertTrue( true ); // Do nothing silently.
 		return true;
 	}
 
