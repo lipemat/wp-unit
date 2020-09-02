@@ -682,6 +682,24 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $expected, $actual );
 	}
 
+
+	/**
+	 * Asserts that the keys of two arrays are equal, regardless of the contents,
+	 * without accounting for the order of elements.
+	 *
+	 * @param array $expected Expected array.
+	 * @param array $actual   Array to check.
+	 *
+	 * @since 1.10.0
+	 *
+	 */
+	public function assertEqualSetsIndex( $expected, $actual ) {
+		ksort( $expected );
+		ksort( $actual );
+		$this->assertEquals( array_keys( $expected ), array_keys( $actual ) );
+	}
+
+
 	/**
 	 * Asserts that the contents of two keyed, single arrays are equal, without accounting for the order of elements.
 	 *
