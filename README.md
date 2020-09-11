@@ -234,16 +234,16 @@ The original repo this is forked from contains the entire WordPress code base al
 
 Instead, merging in changes from WordPress core is done via patches.
 
-1. Checkout the latest master from `git://develop.git.wordpress.org/tests/phpunit`
-2. cd `tests/phpunit`
-3. `git diff <last commit merged in> master --relative > <lastest master commit>.patch`
+1. Checkout the latest master from `git clone git://develop.git.wordpress.org/tests`
+2. `cd tests/tests/phpunit`
+3. `git diff <last commit merged in> master --relative > <lastest master commit>.<date>.patch`
     1. Change `<last commit merged in>` to name of the latest patch in the `/patches` directory which matches the latest commit merged it.
     2. Change `<lastest master commit>` latest commit of master.
     3. Change `<date>` to today's date.
 4. Move new patch file to `/patches` directory:
-5. Apply the patch:
+5. Apply the patch to this repository:
     1 Terminal:
-        1. `git apply --reject --whitespace=fix patches/<lastest master commit>.patch`
+        1. `git apply --reject --whitespace=fix patches/<lastest master commit>.<date>.patch`
         2. Use log or search for `.rej` and solve the rejections manually.
     2. Use PHPStorm's interactive built in "Apply Patch":
         1. Right click and select "Apply Patch"
