@@ -52,10 +52,10 @@ array('[Lorem ipsum dolor sit amet, quo id ignota repudiare, ius iracundia ratio
  Cu bonorum graecis ius. Duo id ancillae probatus. Tota latine pri an. Cum ei iudico semper. Eum in blandit voluptaria.
 
  Illud debet vitae ex vis numquam.'),
- 
+
 /* DIVIDER */
 
-// based on https://core.trac.wordpress.org/attachment/ticket/29557/ChatTranscript.txt
+// Based on https://core.trac.wordpress.org/attachment/ticket/29557/ChatTranscript.txt
 
 array('hello!-- world. [caption arg1="Aenean consectetur ipsum ante, vel egestas enim tincidunt quis. Pellentesque vitae congue neque, vel mattis ante. In vitae tempus nunc. Etiam adipiscing enim sed condimentum ultrices. Aenean consectetur ipsum ante, vel egestas enim tincidunt qu. In vitae tempus nunc. In vitaentbnbsdgsdsdgsdhsdhdsdhdsh Aenean consectetur ipsum ante, vel egestas enim tincidunt quis. Pellentesque vitae congue neque, vel mattis ante. In vitae tempus nunc. Etiam adipiscing enim sed condimentum ultrices. Aenean consectetur ipsum ante, vel egestas enim tincidunt qu. In vitae tempus nunc. In vitaentbnbsdgsdsdgsdhsdhdsdhdsh" /] hello world.
 
@@ -85,7 +85,7 @@ Two of you!</p>-
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">OH MY GO.... oh it\'s just Tim Cook</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">They probably paid more for that video than Phil’s yearly salary.</p>
+<p class="triangle-right left">They probably paid more for that video than Philï¿½s yearly salary.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">Flower petals!</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
@@ -102,7 +102,7 @@ But first, I have a lot of large numbers to show you!</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">STUNNING</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">Should be “formerly of the Wall Street Journal”.
+<p class="triangle-right left">Should be ï¿½formerly of the Wall Street Journalï¿½.
 I also hope they bring up Pogue.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">Hey made a new video for you Aaron!</p>
@@ -117,11 +117,11 @@ I also hope they bring up Pogue.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">This better all be shot on an iPhone</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">“Shot on Film”</p>
+<p class="triangle-right left">ï¿½Shot on Filmï¿½</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">The Chinese are a happy people, when you give them iPhones</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">I’d be happy too if I had the money to blow on an unsubsidized iPhone 5s.
+<p class="triangle-right left">Iï¿½d be happy too if I had the money to blow on an unsubsidized iPhone 5s.
 Or eight.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">Look, this guy bought 5 of them!</p>
@@ -134,7 +134,7 @@ Or eight.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">Hundreds of millions of customers.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">“Formerly of the New York Times”</p>
+<p class="triangle-right left">ï¿½Formerly of the New York Timesï¿½</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">MORE BIG NUMBERS!!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
@@ -149,11 +149,11 @@ That is pretty stunning. We still have Windows XP running here.</p>
 <p class="triangle-right right">He seems a little under prepared... is he excited or did he only practice this 12 times?</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right left">Apple is hopefully smart enough to stay out of government.
-“Thar be dragons!”</p>
+ï¿½Thar be dragons!ï¿½</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">"After we paid him a hundred thousand dollars to say that..."</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">I’d do it for half that.</p>
+<p class="triangle-right left">Iï¿½d do it for half that.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">ANOTHER BIG NUMBER!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
@@ -182,7 +182,7 @@ LOL</p>
 <p class="triangle-right right">Dead</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right left">I bet Tim has it.
-And we’re giving Mavericks away for free today! Sorry Siracusa!</p>
+And weï¿½re giving Mavericks away for free today! Sorry Siracusa!</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">Was Tim around at the beginning? How does he know that that has always been the single purpose?</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
@@ -193,7 +193,7 @@ I think Steve probably left him a note in his desk.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">Ooooo.... competition! Take a drink.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">“Dear Tim, this is what Apple is about.”</p>
+<p class="triangle-right left">ï¿½Dear Tim, this is what Apple is about.ï¿½</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">I\'d hit that.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
@@ -211,7 +211,7 @@ HAIR FORCE ONE!!</p>
 <p class="triangle-right lefttwo">10 10</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right left">I like the fact that he owns up to the fact that his hair is greying.
-He’s like “I have grey hair ... so I’m going to have a ton of it.”</p>
+Heï¿½s like ï¿½I have grey hair ... so Iï¿½m going to have a ton of it.ï¿½</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">Smooth the Mac experience.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
@@ -243,13 +243,13 @@ Whoa! That\'s a small number!</p>
 <p class="triangle-right right">LOL
 Seems legit.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">They love their “x”s.</p>
+<p class="triangle-right left">They love their ï¿½xï¿½s.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">Yay! updates to a browser I don\'t use!
 You can play tag in the finder!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right left">Display-handling is much better.
-Ah, I love flubs. They aren’t robots.</p>
+Ah, I love flubs. They arenï¿½t robots.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">...is with a new computer!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
@@ -286,7 +286,7 @@ No.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">Free shipping to Mars.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">He hasn’t said it yet ...</p>
+<p class="triangle-right left">He hasnï¿½t said it yet ...</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">That would make sense, because it would be silly for them to give old features... but those are new icons!
 PAGES 2014!!!</p>
@@ -322,12 +322,12 @@ It\'s more of a comic routine than anything new.</p>
 <p class="triangle-right right">... Wait... wait
 wait...</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">It’s free.
+<p class="triangle-right left">Itï¿½s free.
 Has to be free.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">New era.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">Or they’re going to pay you!</p>
+<p class="triangle-right left">Or theyï¿½re going to pay you!</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">has to be fre:OIHSEg;kuahrg ouhWTPOIUGGSR:IGH SK&gt;JGu;SFghe
 a;ofg ;SFUY[OISDUg;aefgn.kajefhg ;oadufghd
@@ -342,7 +342,7 @@ Come on Craig ...</p>
 <p class="triangle-right right">FREE FOR EVERYONE
 LIKE LINUX</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">That’s awesome. Great work.</p>
+<p class="triangle-right left">Thatï¿½s awesome. Great work.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">Wow
 Wow
@@ -369,7 +369,7 @@ A:OIY POGUSRH:IGUHSFPIUG&amp;SF*I</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">I WASN\'T PREPARED FOR THIS</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">This is great news. I like that they’re going free for everyone. That’s awesome.</p>
+<p class="triangle-right left">This is great news. I like that theyï¿½re going free for everyone. Thatï¿½s awesome.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">Cue Video of People screaming and running out of Apple stores with free OS</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
@@ -383,14 +383,14 @@ I still remember paying $129 for Tiger.</p>
 <p class="triangle-right left">FOR A BOX!
 That poor tree.
 Haswell.
-I’m guessing non-Retina is dead.</p>
+Iï¿½m guessing non-Retina is dead.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">WHAT? HOW CAN THEY DO THIS BLACK MAGIC!?!?</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">So thin you can cut yourself on the edges.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right left">... and it is purple.
-That’s good news.
+Thatï¿½s good news.
 Prices Phil.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">The Black Knight.</p>
@@ -403,7 +403,7 @@ Prices Phil.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">WIFI has air conditioning now!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">I’m guessing hardware decoding helps with that.</p>
+<p class="triangle-right left">Iï¿½m guessing hardware decoding helps with that.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">!!!!
 That\'s not much more than my air...
@@ -438,20 +438,20 @@ BLAH!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">Free Mercury!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">That $1299 13” is tempting.</p>
+<p class="triangle-right left">That $1299 13ï¿½ is tempting.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">Mac Pro.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right left">A very significant, if unsurprising update.
-“blown away”</p>
+ï¿½blown awayï¿½</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right lefttwo">Blown away by the trash can.</p>
+<p class="triangle-right lefttwo">Blown away by the Trash can.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right left">That is one powerful fan.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">I think this is all cinema 4D... I don\'t think they actually built one.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">They’re just going to bring out an old case.</p>
+<p class="triangle-right left">Theyï¿½re just going to bring out an old case.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">"Simply remarkable."</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
@@ -470,11 +470,11 @@ Yup, spinning rust taps out at about 120 MB/sec.</p>
 <p class="triangle-right right">We\'ll even sell you this case that matches to put your drives into!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right left">For a single drive.
-Who is going to be the first to mod a real trash can with a RAID array to Thunderbolt?</p>
+Who is going to be the first to mod a real Trash can with a RAID array to Thunderbolt?</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">I can\'t wait to see the enclosures people make to go with this device.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right lefttwo">Row of trash cans daisy chained together.</p>
+<p class="triangle-right lefttwo">Row of Trash cans daisy chained together.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">Packed and built for expansion.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
@@ -484,7 +484,7 @@ Who is going to be the first to mod a real trash can with a RAID array to Thunde
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">"We can\'t imagine what people can do with this."</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">So we’ve decided to not sell it to people ... only robots!</p>
+<p class="triangle-right left">So weï¿½ve decided to not sell it to people ... only robots!</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">FREE</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
@@ -507,14 +507,14 @@ This is going to get expensive fast.</p>
 <p class="triangle-right left">Not terrible. However, now I need to price out the TOP OF THE LINE model and find out if it can cost more than my house.
 Should be able to do it.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
-<p class="triangle-right right">SO RECYCLABLE that you can throw it into the trash... or use it as a trash can.</p>
+<p class="triangle-right right">SO RECYCLABLE that you can throw it into the Trash... or use it as a Trash can.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">30k</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">"THIS CHART PROVES IT"</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right left">That cannot be understated, less power is a big deal when you get some space heaters together.
-Whew. That’s nuts.
+Whew. Thatï¿½s nuts.
 I have a Mac mini under my desk right now.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">You\'re nuts.
@@ -593,7 +593,7 @@ Another drink?</p>
 IT\'S ALL FREE!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right left">I wish I could get a free Mac Pro.
-I spent $2000 on my original 15” PowerBook G4 ... $3K on a Mac Pro ...</p>
+I spent $2000 on my original 15ï¿½ PowerBook G4 ... $3K on a Mac Pro ...</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">I you have iOS, because, let\'s be honest, we know you do, and if you don\'t security will escort you out.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
@@ -605,7 +605,7 @@ I spent $2000 on my original 15” PowerBook G4 ... $3K on a Mac Pro ...</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">iPhoto! The same, but we changed the icon!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">“amazing”</p>
+<p class="triangle-right left">ï¿½amazingï¿½</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">iMovie is new from the ground up! Because we like to do that every so often...
 You don\'t need to edit!</p>
@@ -618,7 +618,7 @@ You don\'t need to edit!</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">We simplified the interface, so that you can\'t actually do anything with the things... because that\'s complicated and we want it to be simple.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">I think we call this “value add.”</p>
+<p class="triangle-right left">I think we call this ï¿½value add.ï¿½</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">iMovie theater. More file management users won\'t understand.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
@@ -627,7 +627,7 @@ You don\'t need to edit!</p>
 <p class="triangle-right right">The most popular musical creation app... in the world... that is part of ilife...
 It\'s asterisks all the way down.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">Remember when we couldn’t even make phone calls from our phones because we didn’t have one ... now you can record whole albums from one.
+<p class="triangle-right left">Remember when we couldnï¿½t even make phone calls from our phones because we didnï¿½t have one ... now you can record whole albums from one.
 LOL</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">Everything is killer .</p>
@@ -714,7 +714,7 @@ That is what he meant.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">WHAT!?!?!?</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">I’m sure no one noticed.
+<p class="triangle-right left">Iï¿½m sure no one noticed.
 Plus, if it crashes, no one will care.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">PLOT TWIST</p>
@@ -753,7 +753,7 @@ Steve is rolling in his grave.</p>
 <p class="triangle-right right">Bob, did you see John Siracusa\'s tweet?</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right left">Yes I did.
-I have a feeling “scrambling” doesn’t get to the heart of that.</p>
+I have a feeling ï¿½scramblingï¿½ doesnï¿½t get to the heart of that.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">Oh geez.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
@@ -788,13 +788,13 @@ CRUDDY CRUD CRUD!</p>
 I only saw 3
 or 4</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">They’re pushing updates for 20 apps today.</p>
+<p class="triangle-right left">Theyï¿½re pushing updates for 20 apps today.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">iPad announcement?</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">On it\'s ear!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">I’m guessing that is next. We’re only one hour in.</p>
+<p class="triangle-right left">Iï¿½m guessing that is next. Weï¿½re only one hour in.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">ON IT\'S EAR
 $1.99 upgrades!
@@ -805,7 +805,7 @@ FREE MACS FOR EVERYONE!</p>
 <p class="triangle-right right">TIM COOK FOR PRESIDENT!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right left">I remember paying $10 for the iPod touch update.
-The sad part, they could give away almost everything and they’d still make money.
+The sad part, they could give away almost everything and theyï¿½d still make money.
 Netbooks are old Chromebooks ...</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">LOOK AT ALL THESE LARGE NUMBERS!
@@ -823,7 +823,7 @@ this chart proves that bigger numbers are near the top of the chart!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">Blueberry Pie chart.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">Too bad I don’t like blueberries.</p>
+<p class="triangle-right left">Too bad I donï¿½t like blueberries.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">Look at this pie chart! We\'re larger than the thing that isn\'t us!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
@@ -843,13 +843,13 @@ this chart proves that bigger numbers are near the top of the chart!</p>
 Look a racing game!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right left">Too much exposition.
-“No new iPads!”
-“We designed iPad ...”
+ï¿½No new iPads!ï¿½
+ï¿½We designed iPad ...ï¿½
 Like a family pet.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">Video!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">“We fed Molly...”</p>
+<p class="triangle-right left">ï¿½We fed Molly...ï¿½</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">Video!</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
@@ -871,7 +871,7 @@ Like a family pet.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">Surgeons playing ERT2</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">I’ve personally used my iPad for business meetings.
+<p class="triangle-right left">Iï¿½ve personally used my iPad for business meetings.
 How are these people getting cell reception in these areas!?</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">It\'s much more interesting to look at the world through your iPad if you\'re at the great wall of China.</p>
@@ -886,7 +886,7 @@ And amazing stories...</p>
 <p class="triangle-right right">...so we hire pixar to make movies about every scene in that video.
 HEY! IT\'S OTHER ME!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">Phil’s back!
+<p class="triangle-right left">Philï¿½s back!
 BRING US CRAIG!</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">Hello!
@@ -915,7 +915,7 @@ In VIDEO FORM!</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">Wait, what?</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">I didn’t see it.</p>
+<p class="triangle-right left">I didnï¿½t see it.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">NEW NEW IPAD</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
@@ -954,7 +954,7 @@ WHAT THE FREAK!?</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">Lightest Full size tablet in the world*</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">“We’ve made it out of lead!”
+<p class="triangle-right left">ï¿½Weï¿½ve made it out of lead!ï¿½
 A7 ...</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">The AIR... BLOWS everything away... get it? get it? get it?</p>
@@ -965,8 +965,8 @@ A7 ...</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">Too thin for touch id.</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">That’s important because IT IS PUSHING DESKTOP RESOLUTION!
-That’s my thought as well.</p>
+<p class="triangle-right left">Thatï¿½s important because IT IS PUSHING DESKTOP RESOLUTION!
+Thatï¿½s my thought as well.</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">What\'s MIMO?</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
@@ -975,7 +975,7 @@ That’s my thought as well.</p>
 <p class="triangle-right right">hmmm</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right left">Faster, better range, etc.
-“It is better, you’re going to buy it, so just go now.”</p>
+ï¿½It is better, youï¿½re going to buy it, so just go now.ï¿½</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">Dual microphones! Stereo recordings!
 No gold?</p>
@@ -1011,7 +1011,7 @@ I was afraid that Jony has left ...</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">Airplanes!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">Don’t know yet. We’ll see.
+<p class="triangle-right left">Donï¿½t know yet. Weï¿½ll see.
 AND AIRPLANES!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/aarone.jpeg" alt="" width="50" height="50" />
 <p class="triangle-right lefttwo">More planes.</p>
@@ -1037,7 +1037,7 @@ BRING OUT CRAIG!</p>
 <p class="triangle-right right">Tom Merritt: "We have machined the tears of unicorns into the edge and compressed babies wishes into it\'s case. It weighs 1 butterfly kiss."
 "The newest thing we built is the most advanced thing we have ever built"</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />
-<p class="triangle-right left">And now we’ve decided to discontinue it and release the iPad nano!</p>
+<p class="triangle-right left">And now weï¿½ve decided to discontinue it and release the iPad nano!</p>
 <img class="alignright" src="http://www.example.com/postimages/2013/philipmetroid.jpg" alt="" width="50" height="50" />
 <p class="triangle-right right">He\'s struggling for a list of things that people do with their iPad... CRASH AND BURN!</p>
 <img class="alignleft" src="http://www.example.com/postimages/2013/bobm.jpeg" alt="" width="50" height="50" />

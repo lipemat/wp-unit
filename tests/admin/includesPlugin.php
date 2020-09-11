@@ -23,7 +23,7 @@ class Tests_Admin_includesPlugin extends WP_UnitTestCase {
 
 		foreach ( $default_headers as $name => $value ) {
 			$this->assertTrue( isset( $data[ $name ] ) );
-			$this->assertEquals( $value, $data[ $name ] );
+			$this->assertSame( $value, $data[ $name ] );
 		}
 	}
 
@@ -32,7 +32,7 @@ class Tests_Admin_includesPlugin extends WP_UnitTestCase {
 		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
 		update_option( 'siteurl', 'http://example.com' );
 
-		// add some pages
+		// Add some pages.
 		add_options_page( 'Test Settings', 'Test Settings', 'manage_options', 'testsettings', 'mt_settings_page' );
 		add_management_page( 'Test Tools', 'Test Tools', 'manage_options', 'testtools', 'mt_tools_page' );
 		add_menu_page( 'Test Toplevel', 'Test Toplevel', 'manage_options', 'mt-top-level-handle', 'mt_toplevel_page' );
@@ -51,7 +51,7 @@ class Tests_Admin_includesPlugin extends WP_UnitTestCase {
 		$expected['testpages']           = 'http://example.com/wp-admin/edit.php?post_type=page&#038;page=testpages';
 
 		foreach ( $expected as $name => $value ) {
-			$this->assertEquals( $value, menu_page_url( $name, false ) );
+			$this->assertSame( $value, menu_page_url( $name, false ) );
 		}
 
 		wp_set_current_user( $current_user );
@@ -98,6 +98,7 @@ class Tests_Admin_includesPlugin extends WP_UnitTestCase {
 	 * Tests the priority parameter for menu helper functions.
 	 *
 	 * @ticket 39776
+	 * @group ms-excluded
 	 *
 	 * @covers ::add_management_page
 	 * @covers ::add_options_page
@@ -119,11 +120,6 @@ class Tests_Admin_includesPlugin extends WP_UnitTestCase {
 	function test_submenu_helpers_priority( $priority, $expected_position ) {
 		global $submenu;
 		global $menu;
-
-		// Skip for multisite.
-		if ( is_multisite() ) {
-			return;
-		}
 
 		// Reset menus.
 		$submenu = array();
@@ -259,6 +255,67 @@ class Tests_Admin_includesPlugin extends WP_UnitTestCase {
 		);
 	}
 
+	/**
+	 * Test that when a submenu has the same slug as a parent item, that it's just appended and ignores the priority.
+	 *
+	 * @ticket 48599
+	 */
+	function test_priority_when_parent_slug_child_slug_are_the_same() {
+		global $submenu, $menu;
+
+		// Reset menus.
+		$submenu      = array();
+		$menu         = array();
+		$current_user = get_current_user_id();
+		$admin_user   = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $admin_user );
+		set_current_screen( 'dashboard' );
+
+		// Setup a menu with some items.
+		add_menu_page( 'Main Menu', 'Main Menu', 'manage_options', 'main_slug', 'main_page_callback' );
+		add_submenu_page( 'main_slug', 'SubMenu 1', 'SubMenu 1', 'manage_options', 'main_slug', 'submenu_callback_1', 1 );
+		add_submenu_page( 'main_slug', 'SubMenu 2', 'SubMenu 2', 'manage_options', 'submenu_page2', 'submenu_callback_2', 2 );
+		add_submenu_page( 'main_slug', 'SubMenu 3', 'SubMenu 3', 'manage_options', 'submenu_page3', 'submenu_callback_3', 3 );
+
+		// Clean up the temporary user.
+		wp_set_current_user( $current_user );
+		wp_delete_user( $admin_user );
+
+		// Verify the menu was inserted at the expected position.
+		$this->assertSame( 'main_slug', $submenu['main_slug'][0][2] );
+		$this->assertSame( 'submenu_page2', $submenu['main_slug'][1][2] );
+		$this->assertSame( 'submenu_page3', $submenu['main_slug'][2][2] );
+	}
+
+	/**
+	 * Passing a string as priority will fail.
+	 *
+	 * @ticket 48599
+	 */
+	function test_passing_string_as_priority_fires_doing_it_wrong() {
+		$this->setExpectedIncorrectUsage( 'add_submenu_page' );
+		global $submenu, $menu;
+
+		// Reset menus.
+		$submenu      = array();
+		$menu         = array();
+		$current_user = get_current_user_id();
+		$admin_user   = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $admin_user );
+		set_current_screen( 'dashboard' );
+
+		// Setup a menu with some items.
+		add_menu_page( 'Main Menu', 'Main Menu', 'manage_options', 'main_slug', 'main_page_callback' );
+		add_submenu_page( 'main_slug', 'SubMenu 1', 'SubMenu 1', 'manage_options', 'submenu_page_1', 'submenu_callback_1', '2' );
+
+		// Clean up the temporary user.
+		wp_set_current_user( $current_user );
+		wp_delete_user( $admin_user );
+
+		// Verify the menu was inserted at the expected position.
+		$this->assertSame( 'submenu_page_1', $submenu['main_slug'][1][2] );
+	}
+
 	function test_is_plugin_active_true() {
 		activate_plugin( 'hello.php' );
 		$test = is_plugin_active( 'hello.php' );
@@ -292,7 +349,7 @@ class Tests_Admin_includesPlugin extends WP_UnitTestCase {
 	 */
 	public function test_get_plugin_files_single() {
 		$name = 'hello.php';
-		$this->assertEquals( array( $name ), get_plugin_files( $name ) );
+		$this->assertSame( array( $name ), get_plugin_files( $name ) );
 	}
 
 	/**
@@ -312,7 +369,7 @@ class Tests_Admin_includesPlugin extends WP_UnitTestCase {
 			'list_files_test_plugin/list_files_test_plugin.php',
 			'list_files_test_plugin/subdir/subfile.php',
 		);
-		$this->assertEquals( $expected, $plugin_files );
+		$this->assertSame( $expected, $plugin_files );
 
 		unlink( $sub_dir . '/subfile.php' );
 		unlink( $plugin[1] );
@@ -332,7 +389,7 @@ class Tests_Admin_includesPlugin extends WP_UnitTestCase {
 			mkdir( WPMU_PLUGIN_DIR );
 		}
 
-		$this->assertEquals( array(), get_mu_plugins() );
+		$this->assertSame( array(), get_mu_plugins() );
 
 		// Clean up.
 		if ( $exists ) {
@@ -353,7 +410,7 @@ class Tests_Admin_includesPlugin extends WP_UnitTestCase {
 			rmdir( WPMU_PLUGIN_DIR );
 		}
 
-		$this->assertEquals( array(), get_mu_plugins() );
+		$this->assertSame( array(), get_mu_plugins() );
 
 		// Clean up.
 		if ( $exists ) {
@@ -375,7 +432,7 @@ class Tests_Admin_includesPlugin extends WP_UnitTestCase {
 		}
 
 		$this->_create_plugin( '<?php\n//Silence is golden.', 'index.php', WPMU_PLUGIN_DIR );
-		$this->assertEquals( array(), get_mu_plugins() );
+		$this->assertSame( array(), get_mu_plugins() );
 
 		// Clean up.
 		unlink( WPMU_PLUGIN_DIR . '/index.php' );
@@ -400,7 +457,7 @@ class Tests_Admin_includesPlugin extends WP_UnitTestCase {
 
 		$this->_create_plugin( '<?php\n//Silence is not golden.', 'index.php', WPMU_PLUGIN_DIR );
 		$found = get_mu_plugins();
-		$this->assertEquals( array( 'index.php' ), array_keys( $found ) );
+		$this->assertSame( array( 'index.php' ), array_keys( $found ) );
 
 		// Clean up.
 		unlink( WPMU_PLUGIN_DIR . '/index.php' );
@@ -426,7 +483,7 @@ class Tests_Admin_includesPlugin extends WP_UnitTestCase {
 		$this->_create_plugin( '<?php\n//Test', 'foo.php', WPMU_PLUGIN_DIR );
 		$this->_create_plugin( '<?php\n//Test 2', 'bar.txt', WPMU_PLUGIN_DIR );
 		$found = get_mu_plugins();
-		$this->assertEquals( array( 'foo.php' ), array_keys( $found ) );
+		$this->assertSame( array( 'foo.php' ), array_keys( $found ) );
 
 		// Clean up.
 		unlink( WPMU_PLUGIN_DIR . '/foo.php' );
@@ -444,7 +501,7 @@ class Tests_Admin_includesPlugin extends WP_UnitTestCase {
 	public function test__sort_uname_callback() {
 		$this->assertLessThan( 0, _sort_uname_callback( array( 'Name' => 'a' ), array( 'Name' => 'b' ) ) );
 		$this->assertGreaterThan( 0, _sort_uname_callback( array( 'Name' => 'c' ), array( 'Name' => 'b' ) ) );
-		$this->assertEquals( 0, _sort_uname_callback( array( 'Name' => 'a' ), array( 'Name' => 'a' ) ) );
+		$this->assertSame( 0, _sort_uname_callback( array( 'Name' => 'a' ), array( 'Name' => 'a' ) ) );
 	}
 
 	/**
@@ -453,7 +510,7 @@ class Tests_Admin_includesPlugin extends WP_UnitTestCase {
 	public function test_get_dropins_empty() {
 		$this->_back_up_drop_ins();
 
-		$this->assertEquals( array(), get_dropins() );
+		$this->assertSame( array(), get_dropins() );
 
 		// Clean up.
 		$this->_restore_drop_ins();
@@ -469,7 +526,7 @@ class Tests_Admin_includesPlugin extends WP_UnitTestCase {
 		$p2 = $this->_create_plugin( "<?php\n//Test", 'not-a-dropin.php', WP_CONTENT_DIR );
 
 		$dropins = get_dropins();
-		$this->assertEquals( array( 'advanced-cache.php' ), array_keys( $dropins ) );
+		$this->assertSame( array( 'advanced-cache.php' ), array_keys( $dropins ) );
 
 		unlink( $p1[1] );
 		unlink( $p2[1] );
@@ -533,7 +590,7 @@ class Tests_Admin_includesPlugin extends WP_UnitTestCase {
 	 * @covers ::validate_active_plugins
 	 */
 	public function test_validate_active_plugins_empty() {
-		$this->assertEquals( array(), validate_active_plugins() );
+		$this->assertSame( array(), validate_active_plugins() );
 	}
 
 	/**
