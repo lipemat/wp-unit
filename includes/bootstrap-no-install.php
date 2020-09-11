@@ -11,11 +11,21 @@
  * @notice If your DB tables are not `INNODB` any data created by
  *         these tests will still persist.
  */
-
-// New version
 putenv( 'WP_TESTS_SKIP_INSTALL=1' );
 if ( ! defined( 'WP_TESTS_SKIP_INSTALL') ) {
 	define( 'WP_TESTS_SKIP_INSTALL', true );
 }
 
-require dirname( __FILE__ ) . '/bootstrap.php';
+// Required as of WP version 1.11.0.
+if ( ! defined( 'WP_TESTS_EMAIL' ) ) {
+	define( 'WP_TESTS_EMAIL', 'unit-tests@test.com' );
+}
+if ( ! defined( 'WP_PHP_BINARY' ) ) {
+	define( 'WP_PHP_BINARY', 'php' );
+}
+if ( ! defined( 'WP_TESTS_TITLE' ) ) {
+	define( 'WP_TESTS_TITLE', 'WordPress Unit Tests' );
+}
+
+
+require __DIR__ . '/bootstrap.php';
