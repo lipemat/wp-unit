@@ -178,6 +178,17 @@ This library adds methods to `WP_Ajax_UnitTestCase`:
  2. `_getJsonResult` call any callable which uses `wp_send_json_success` or `wp_send_json_error` and return the result.
 
 
+#### Support raw request testing.
+
+Sometimes you want to verify requests are actually going out and not just 
+assert that a method which sends requests is being called.
+
+1. Extend the `WP_Http_Remote_Post_TestCase` from your test's class.
+2. All requests will not send but instead be stored in the test's class' properties.
+3. Retrieve sent via `$this->get_sent()`.
+4. Mock raw responses via `$this->mock_response`.
+
+
 #### Automatically generate files for Attachment factory.
 
 Many follow-up attachment calls require the attachment to have an actual file attached to it.
@@ -213,6 +224,9 @@ $this->assertEqualSetsValues(
 
 ```
 
+#### Support assertEqualSetsIndex on all TestCases
+
+Asserts that the keys of two arrays are equal, regardless of the contents, without accounting for the order of elements.
 
 
 ## Internal Merging Core Process
