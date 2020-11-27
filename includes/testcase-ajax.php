@@ -1,4 +1,7 @@
 <?php
+
+use Lipe\Project\Woo\Pro_Plugins\Endpoint;
+
 /**
  * Ajax test case class
  *
@@ -196,6 +199,17 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 	 *
 	 * Save the output for analysis, stop execution by throwing an exception.
 	 *
+	 * You test for results and continue with a try/catch block like so
+	 * <code>
+	 * try {
+	 *      $this->_handleAjaxCustom( [ Endpoint::instance(), 'beanstalk_webhook' ] );
+	 * } catch ( WPAjaxDieStopException | WPAjaxDieContinueException $e ) {
+	 *      $ran = true;
+	 *      $this->assertEquals( 'Message passed to wp_die', $e->getMessage() );
+	 * }
+	 * $this->assertTrue( $ran ?? false );
+	 * </code>
+	 *
 	 * Error conditions (no output, just die) will throw <code>WPAjaxDieStopException( $message )</code>
 	 * You can test for this with:
 	 * <code>
@@ -206,6 +220,9 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 	 * <code>
 	 * $this->setExpectedException( 'WPAjaxDieContinueException', 'something contained in $message' );
 	 * </code>
+	 *
+	 * @notice If the call is not surrounded by a try/catch block the
+	 *         test will stop executing after this is called.
 	 *
 	 * @param string $message The message to set.
 	 *
@@ -249,6 +266,9 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 	 *
 	 * @param string $action The action to handle.
 	 *
+	 * @notice If the call is not surrounded by a try/catch block the
+	 *         test will stop executing after this is called.
+	 *
 	 * @throws WPAjaxDieContinueException
 	 */
 	protected function _handleAjax( $action ) {
@@ -276,25 +296,27 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 
 	/**
 	 * Capture the output of any call which echos then exits.
-	 * For testing Rest and Ajax endpoints.
+	 * For testing REST and AJAX endpoints.
 	 *
 	 * Mimics `wp_ajax_` action handling for uses which do not use
-	 * the standard WP ajax handling.
+	 * the standard WP AJAX handling.
 	 *
 	 * @notice Your endpoint must use `wp_die()` to exit the same way
 	 *         as `wp_send_json_*` function or the die handler will
 	 *         not be replaced and this will fail.
 	 *
-	 * @notice
+	 * @notice If the call is not surrounded by a try/catch block the
+	 *         test will stop executing after this is called.
 	 *
-	 * @see WP_Ajax_UnitTestCase::_getJsonResult()
-	 *
+	 * @param callable $callable
 	 *
 	 * @author Mat Lipe
 	 *
-	 * @since 1.6.0
+	 * @see    WP_Ajax_UnitTestCase::_getJsonResult()
+	 * @see    WP_Ajax_UnitTestCase::_getResult()
 	 *
-	 * @param callable $callable
+	 *
+	 * @since  1.6.0
 	 *
 	 * @throws WPAjaxDieContinueException
 	 */
@@ -302,6 +324,36 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 		$hash = spl_object_hash( (object)$callable );
 		add_action( 'wp_ajax_' . $hash, $callable );
 		$this->_handleAjax( $hash );
+	}
+
+
+	/**
+	 * Capture and return the output from any call which
+	 * ends with `wp_die()` and does not use `wp_send_json_success`
+	 * or `wp_send_json_error`.
+	 *
+	 * Automatically handles:
+	 * 1. Reset $this->_last_response
+	 * 2. Catch the exception
+	 * 3. Return the result that would be sent.
+	 *
+	 * @param callable $callable
+	 *
+	 * @author Mat Lipe
+	 *
+	 * @see WP_Ajax_UnitTestCase::_getJsonResult()
+	 *
+	 * @since  1.12.0
+	 *
+	 * @return mixed
+	 */
+	protected function _getResult( callable $callable ) {
+		unset( $this->_last_response );
+		try {
+			$this->_handleAjaxCustom( $callable );
+		} catch ( \Exception $exception ) {
+			return $this->_last_response;
+		}
 	}
 
 
