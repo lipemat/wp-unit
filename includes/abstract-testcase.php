@@ -1,5 +1,7 @@
 <?php
 
+use Lipe\Project\Core;
+
 require_once __DIR__ . '/factory.php';
 require_once __DIR__ . '/trac.php';
 
@@ -172,12 +174,19 @@ abstract class WP_UnitTestCase_Base extends PHPUnit\Framework\TestCase {
 		remove_filter( 'wp_die_handler', array( $this, 'get_wp_die_handler' ) );
 		$this->_restore_hooks();
 		wp_set_current_user( 0 );
+		
+		
 	}
 
 	/**
 	 * Cleans the global scope (e.g `$_GET` and `$_POST`).
 	 */
 	public function clean_up_global_scope() {
+		// Reset a project container if available.
+		if ( function_exists( 'tests_reset_container' ) ) {
+			tests_reset_container();
+		}
+
 		$_GET  = array();
 		$_POST = array();
 		self::flush_cache();
