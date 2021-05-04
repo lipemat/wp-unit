@@ -168,7 +168,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit\Framework\TestCase {
 		$GLOBALS['wp_sitemaps'] = null;
 
 		$this->unregister_all_meta_keys();
-		remove_theme_support( 'html5' );
 		remove_filter( 'query', array( $this, '_create_temporary_tables' ) );
 		remove_filter( 'query', array( $this, '_drop_temporary_tables' ) );
 		remove_filter( 'wp_die_handler', array( $this, 'get_wp_die_handler' ) );
