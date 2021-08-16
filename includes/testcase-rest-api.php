@@ -54,7 +54,7 @@ abstract class WP_Test_REST_TestCase extends WP_UnitTestCase {
 	 *
 	 * @return WP_REST_Response
 	 */
-	protected function get_response( string $route, array $args, string $method = 'POST' ) : WP_REST_Response {
+	protected function get_response( $route, array $args, $method = 'POST' ) {
 		$request = new \WP_REST_Request( $method, $route );
 		$request->set_query_params( $args );
 		return rest_get_server()->dispatch( $request );
