@@ -171,21 +171,21 @@ abstract class WP_UnitTestCase_Base extends PHPUnit\Framework\TestCase {
 		remove_filter( 'query', array( $this, '_create_temporary_tables' ) );
 		remove_filter( 'query', array( $this, '_drop_temporary_tables' ) );
 		remove_filter( 'wp_die_handler', array( $this, 'get_wp_die_handler' ) );
+
+		// Reset a project container if available.
+		if ( function_exists( 'tests_reset_container' ) ) {
+			tests_reset_container();
+		}
 		$this->_restore_hooks();
 		wp_set_current_user( 0 );
-		
-		
+
+
 	}
 
 	/**
 	 * Cleans the global scope (e.g `$_GET` and `$_POST`).
 	 */
 	public function clean_up_global_scope() {
-		// Reset a project container if available.
-		if ( function_exists( 'tests_reset_container' ) ) {
-			tests_reset_container();
-		}
-
 		$_GET  = array();
 		$_POST = array();
 		self::flush_cache();
