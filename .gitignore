@@ -13,3 +13,5 @@ Thumbs.db
 */npm-debug.log
 .revision
 /vendor/
+
+composer.lock
