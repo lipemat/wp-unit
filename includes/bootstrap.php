@@ -4,6 +4,12 @@
  */
 
 /**
+ * Include Composer autoloader.
+ * Polyfills are required from composer.
+ */
+require dirname( __DIR__ ) . '/vendor/autoload.php';
+
+/**
  * Compatibility with PHPUnit 6+
  */
 if ( class_exists( 'PHPUnit\Runner\Version' ) ) {

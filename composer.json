@@ -1,10 +1,14 @@
 {
   "name": "lipemat/wp-unit",
-  "description": "Forked Wp-unit with support for testing against existing database and other environment enhancements",
+  "description": "Forked Wp-unit with support for testing against existing database and other environment enhancements.",
   "type": "library",
   "license": "MIT",
   "require": {
-    "php": ">=5.6.20"
+    "php": ">=5.6.20",
+    "yoast/phpunit-polyfills": "^1.0"
+  },
+  "replace": {
+    "phpunit/phpunit": "*"
   },
   "authors": [
     {

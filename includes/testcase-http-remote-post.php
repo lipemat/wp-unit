@@ -22,8 +22,8 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 	protected static $mock_response = [];
 
 
-	public function setUp() {
-		parent::setUp();
+	public function set_up() {
+		parent::set_up();
 		putenv( 'PHP_MOCKED_REMOTE_POST=1' );
 		Requests::$transport[ serialize( [] ) ] = __CLASS__;
 		Requests::$transport[ serialize( [ 'ssl' => false ] ) ] = __CLASS__;
@@ -32,13 +32,13 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 	}
 
 
-	public function tearDown() {
+	public function tear_down() {
 		self::$mock_sent = [];
 		self::$mock_response = [];
 		putenv( 'PHP_MOCKED_REMOTE_POST' );
 		Requests::$transport = [];
 		remove_filter( 'http_api_transports', [ $this, 'use_this_class_for_transport' ], 99 );
-		return parent::tearDown();
+		parent::tear_down();
 	}
 
 
