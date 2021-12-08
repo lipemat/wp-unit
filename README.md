@@ -24,24 +24,28 @@ composer require --dev lipemat/wp-unit
 Example phpunit.xml
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!-- Version 1.2.0 -->
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
          colors="true"
+         convertDeprecationsToExceptions="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
-         stopOnFailure="false"
-         syntaxCheck="false"
+         stopOnFailure="true"
          bootstrap="bootstrap.php"
-        >
+>
+    <php>
+        <env name="HTTP_HOST" value="starting-point.loc" />
+    </php>
     <testsuites>
-        <testsuite name="My Tests">
+        <testsuite name="Starting Point">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>
+
 ```
 
 Example bootstrap.php file
@@ -49,6 +53,7 @@ Example bootstrap.php file
 ```php
 <?php
 require __DIR__ . '/wp-tests-config.php';
+require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/vendor/lipemat/wp-unit/includes/bootstrap.php';
 ```
 

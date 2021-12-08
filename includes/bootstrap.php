@@ -7,7 +7,9 @@
  * Include Composer autoloader.
  * Polyfills are required from composer.
  */
-require dirname( __DIR__ ) . '/vendor/autoload.php';
+if ( file_exists( dirname( __DIR__ ) . '/vendor/autoload.php' ) ) {
+	require dirname( __DIR__ ) . '/vendor/autoload.php';
+}
 
 if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) ) {
 	$config_file_path = WP_TESTS_CONFIG_FILE_PATH;
