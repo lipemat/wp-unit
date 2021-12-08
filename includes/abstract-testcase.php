@@ -850,14 +850,15 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 *
 	 * @param array $expected Expected array.
 	 * @param array $actual   Array to check.
+	 * @param string $message Optional. Message to display when the assertion fails.
 	 *
 	 * @since 1.10.0
 	 *
 	 */
-	public function assertEqualSetsIndex( $expected, $actual ) {
-		ksort( $expected );
-		ksort( $actual );
-		$this->assertEquals( array_keys( $expected ), array_keys( $actual ) );
+	public function assertEqualSetsIndex( $expected, $actual, $message = '' ) {
+		\ksort( $expected );
+		\ksort( $actual );
+		$this->assertEquals( \array_keys( $expected ), \array_keys( $actual ), $message );
 	}
 
 
