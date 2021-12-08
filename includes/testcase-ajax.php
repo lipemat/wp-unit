@@ -118,7 +118,9 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 		'wp-privacy-erase-personal-data',
 	);
 
-	public static function setUpBeforeClass() {
+	public static function set_up_before_class() {
+		parent::set_up_before_class();
+
 		remove_action( 'admin_init', '_maybe_update_core' );
 		remove_action( 'admin_init', '_maybe_update_plugins' );
 		remove_action( 'admin_init', '_maybe_update_themes' );
@@ -129,8 +131,6 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 				add_action( 'wp_ajax_' . $action, 'wp_ajax_' . str_replace( '-', '_', $action ), 1 );
 			}
 		}
-
-		parent::setUpBeforeClass();
 	}
 
 	/**
@@ -138,8 +138,8 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 	 *
 	 * Overrides wp_die(), pretends to be Ajax, and suppresses E_WARNINGs.
 	 */
-	public function setUp() {
-		parent::setUp();
+	public function set_up() {
+		parent::set_up();
 
 		add_filter( 'wp_doing_ajax', '__return_true' );
 		add_filter( 'wp_die_ajax_handler', array( $this, 'getDieHandler' ), 1, 1 );
@@ -152,9 +152,6 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 		// Suppress warnings from "Cannot modify header information - headers already sent by".
 		$this->_error_level = error_reporting();
 		error_reporting( $this->_error_level & ~E_WARNING );
-
-		// Make some posts.
-		self::factory()->post->create_many( 5 );
 	}
 
 	/**
@@ -162,8 +159,7 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 	 *
 	 * Resets $_POST, removes the wp_die() override, restores error reporting.
 	 */
-	public function tearDown() {
-		parent::tearDown();
+	public function tear_down() {
 		$_POST = array();
 		$_GET  = array();
 		unset( $GLOBALS['post'] );
@@ -172,6 +168,7 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 		remove_action( 'clear_auth_cookie', array( $this, 'logout' ) );
 		error_reporting( $this->_error_level );
 		set_current_screen( 'front' );
+		parent::tear_down();
 	}
 
 	/**
@@ -210,15 +207,18 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 	 * $this->assertTrue( $ran ?? false );
 	 * </code>
 	 *
-	 * Error conditions (no output, just die) will throw <code>WPAjaxDieStopException( $message )</code>
+	 * Error conditions (no output, just die) will throw <code>WPAjaxDieStopException( $message )</code>.
 	 * You can test for this with:
 	 * <code>
-	 * $this->setExpectedException( 'WPAjaxDieStopException', 'something contained in $message' );
+	 * $this->expectException( 'WPAjaxDieStopException' );
+	 * $this->expectExceptionMessage( 'something contained in $message' );
 	 * </code>
-	 * Normal program termination (wp_die called at then end of output) will throw <code>WPAjaxDieContinueException( $message )</code>
+	 *
+	 * Normal program termination (wp_die called at the end of output) will throw <code>WPAjaxDieContinueException( $message )</code>.
 	 * You can test for this with:
 	 * <code>
-	 * $this->setExpectedException( 'WPAjaxDieContinueException', 'something contained in $message' );
+	 * $this->expectException( 'WPAjaxDieContinueException' );
+	 * $this->expectExceptionMessage( 'something contained in $message' );
 	 * </code>
 	 *
 	 * @notice If the call is not surrounded by a try/catch block the

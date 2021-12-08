@@ -1636,9 +1636,9 @@ class WP_Object_Cache {
 				}
 
 				return $this->cache[ $derived_key ];
-			} else {
-				return false;
 			}
+
+			return false;
 		}
 
 		$result = $this->m->increment( $derived_key, $offset );
