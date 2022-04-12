@@ -367,7 +367,7 @@ if ( version_compare( tests_get_phpunit_version(), '6.0', '>=' ) ) {
 
 require __DIR__ . '/phpunit-adapter-testcase.php';
 require __DIR__ . '/abstract-testcase.php';
-require __DIR__ . '/testcase.php';
+require __DIR__ . '/testcase-base.php';
 require __DIR__ . '/testcase-http-remote-post.php';
 require __DIR__ . '/testcase-rest-api.php';
 require __DIR__ . '/testcase-rest-controller.php';
