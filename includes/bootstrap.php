@@ -292,7 +292,7 @@ if ( $multisite ) {
 	defined( 'SUBDOMAIN_INSTALL' ) or define( 'SUBDOMAIN_INSTALL', false );
 	$GLOBALS['base'] = '/';
 } else {
-	echo 'Running as single site... To run multisite, use -c tests/phpunit/multisite.xml' . PHP_EOL;
+	echo 'Running as single site...' . PHP_EOL;
 }
 
 
