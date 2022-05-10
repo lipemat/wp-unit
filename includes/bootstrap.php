@@ -434,7 +434,9 @@ class WP_PHPUnit_Util_Getopt {
 
 		$skipped_groups = array_filter( $skipped_groups );
 		foreach ( $skipped_groups as $group_name => $skipped ) {
-			echo sprintf( 'Not running %1$s tests. To execute these, use --group %1$s.', $group_name ) . PHP_EOL;
+			if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS ) {
+				echo sprintf( 'Not running %1$s tests. To execute these, use --group %1$s.', $group_name ) . PHP_EOL;
+			}
 		}
 
 		if ( ! isset( $skipped_groups['external-http'] ) ) {
