@@ -52,7 +52,8 @@ Example bootstrap.php file
 
 ```php
 <?php
-require __DIR__ . '/wp-tests-config.php';
+define( 'WP_TESTS_CONFIG_FILE_PATH', dirname( __DIR__ ) );
+
 require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/vendor/lipemat/wp-unit/includes/bootstrap.php';
 ```
@@ -67,8 +68,13 @@ define( 'DB_PASSWORD', 'password' );
 define( 'DB_HOST', 'localhost' );
 
 define( 'WP_TESTS_DOMAIN', 'tests.loc' );
-//Root of your site
+define( 'WP_PHP_BINARY', 'php' );
+// Root of your site/
 define( 'WP_TESTS_DIR', dirname( __DIR__ ) );
+define( 'ABSPATH', WP_TESTS_DIR . '/' );
+define( 'WP_TESTS_DOMAIN', 'wp-libs.loc' );
+define( 'WP_TESTS_EMAIL', 'unit-tests@test.com' );
+define( 'WP_TESTS_TITLE', 'WordPress Unit Tests' );
 define( 'WP_UNIT_DIR', __DIR__ . '/vendor/lipemat/wp-unit' );
 
 define( 'DOMAIN_CURRENT_SITE', 'starting-point.loc' );
@@ -79,13 +85,11 @@ Example unit test /tests/ExampleTest.php
 ```php
 <?php
 class ExampleTest extends WP_UnitTestCase {
-	
-	public function test_examples(){
+	public function test_examples() : void {
 		$this->assertTrue( true );
 		$this->assertFalse( false );
 	}
 }
-
 ```
 
 Run the test suite like any other phpunit suite
