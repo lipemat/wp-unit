@@ -75,8 +75,8 @@ define( 'WP_TESTS_DOMAIN', 'wp-libs.loc' );
 define( 'WP_TESTS_EMAIL', 'unit-tests@test.com' );
 define( 'WP_TESTS_TITLE', 'WordPress Unit Tests' );
 define( 'WP_UNIT_DIR', __DIR__ . '/vendor/lipemat/wp-unit' );
-
-define( 'DOMAIN_CURRENT_SITE', 'starting-point.loc' );
+define( 'WP_TESTS_CONFIG_FILE_PATH',  __FILE__ );
+define( 'DOMAIN_CURRENT_SITE', 'wp-libs.loc' );
 ```
 
 Example unit test /tests/ExampleTest.php
