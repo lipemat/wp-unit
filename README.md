@@ -52,8 +52,7 @@ Example bootstrap.php file
 
 ```php
 <?php
-define( 'WP_TESTS_CONFIG_FILE_PATH', dirname( __DIR__ ) );
-
+require __DIR__ . '/wp-tests-config.php'
 require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/vendor/lipemat/wp-unit/includes/bootstrap.php';
 ```
