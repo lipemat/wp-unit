@@ -17,6 +17,12 @@ define( 'WP_INSTALLING', true );
 require_once $config_file_path;
 require_once __DIR__ . '/functions.php';
 
+if ( ! defined( 'WP_TESTS_TABLE_PREFIX' ) && isset( $table_prefix ) ) {
+	define( 'WP_TESTS_TABLE_PREFIX', $table_prefix );
+} else {
+	$table_prefix = WP_TESTS_TABLE_PREFIX;
+}
+
 // Set the theme to our special empty theme, to avoid interference from the current Twenty* theme.
 if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
 	define( 'WP_DEFAULT_THEME', 'default' );
