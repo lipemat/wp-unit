@@ -375,6 +375,7 @@ require __DIR__ . '/testcase-base.php';
 require __DIR__ . '/testcase-http-remote-post.php';
 require __DIR__ . '/testcase-rest-api.php';
 require __DIR__ . '/testcase-rest-controller.php';
+require __DIR__ . '/testcase-object-cache.php';
 require __DIR__ . '/testcase-rest-post-type-controller.php';
 require __DIR__ . '/testcase-xmlrpc.php';
 require __DIR__ . '/testcase-ajax.php';
