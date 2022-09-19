@@ -250,7 +250,7 @@ Instead, merging in changes from WordPress core is done via patches.
     3. Change `<date>` to today's date.
 4. Move new patch file to `/patches` directory:
 5. Apply the patch to this repository:
-    1 Terminal:
+    1. Terminal:
         1. `git apply --reject --whitespace=fix patches/<lastest trunk commit>.<date>.patch`
         2. Use log or search for `.rej` and solve the rejections manually.
     2. Use PHPStorm's interactive built in "Apply Patch":
