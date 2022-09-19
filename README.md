@@ -14,12 +14,12 @@ Fork of wp-unit to support bootstrapping an existing database and many other enh
 Original may be cloned from here: **git://develop.git.wordpress.org/tests/phpunit**
 
 ## Usage
+
 Install using composer either in you project or in a global location to be used among all projects.
 
 ```bash
 composer require --dev lipemat/wp-unit
 ```
-
 
 Example phpunit.xml
 ```xml
@@ -101,7 +101,7 @@ phpunit
 
 #### Network Options
 
-Setting a wp_tests_options value may also be used to set a network option. 
+Setting a wp_tests_options value may also be used to set a network option.
 Set test options like normal, and they will automatically replace network option values as well.
 ```php
 <?php
@@ -109,6 +109,7 @@ $GLOBALS['wp_tests_options'][ 'site_name' ] = 'Example Site Name';
 ```
 
 #### Run all scheduled crons
+
 Used for testing crons by running them if they are schedule to run.
 
 ```php
@@ -123,10 +124,9 @@ You may setup your wp-tests.config.php in the directory of your bootstrap.php an
 require __DIR__ . '/wp-tests-config.php';
 ```
 
-
 #### Bootstrap WP on existing database
 
-Using the bootstrap-no-install.php allows you to test against your current data in the database. Out of the box it supports MySQL transactions to allow tests to set and use data without actually storing it in the database. 
+Using the bootstrap-no-install.php allows you to test against your current data in the database. Out of the box it supports MySQL transactions to allow tests to set and use data without actually storing it in the database.
 
 1. Update your wp-tests-config.php file to point to database you want to use.
 2. Change your bootstrap.php to use the bootstrap-no-install.php file like so;
@@ -137,8 +137,7 @@ require __DIR__ . '/vendor/lipemat/wp-unit/includes/bootstrap-no-install.php';
 ```
 **Gotchas:**
 1. If you override the WP_UnitTestCase::setUp() method in your test class, be sure to call parent::setUp(). Otherwise, any data you set during tests will persist to the database.
-2. If your database tables are using MyISAM storage engines, data will persist. They may be converted to InnoDB or any other engine which supports transactions. 
-
+2. If your database tables are using MyISAM storage engines, data will persist. They may be converted to InnoDB or any other engine which supports transactions.
 
 #### Global filters which apply to all tests
 
@@ -156,7 +155,7 @@ $GLOBALS[ 'wp_tests_filters' ][ 'the_title' ] = function ( $title ) {
 define( 'WP_TESTS_SEND_MAIL', true );
 ```
 
-#### Set a memory limit 
+#### Set a memory limit
 
 From within your wp-tests.config.php add a custom memory limit.
 ```php
@@ -165,6 +164,7 @@ define( 'WP_MEMORY_LIMIT', '128M' );
 ```
 
 #### Allow an outside languages directory
+
 From within your wp-tests.config.php add a custom language directory.
 ```php
 <?php
@@ -175,27 +175,25 @@ define( 'WP_LANG_DIR', __DIR__ . '/languages' );
 
 Some third party plugins use their own transactions which cause unpredictable results with the transactions used by `wp-unit`.
 
-This library automatically accounts for outside transactions. 
+This library automatically accounts for outside transactions.
 
 #### Support custom ajax methods.
 
 Sometimes you want to use ajax responses to calls which live outside the `wp_ajax` actions.
 
 This library adds methods to `WP_Ajax_UnitTestCase`:
- 1.  `_handleAjaxCustom` which will turn any callable into an `wp_ajax` action then call it via `_handleAjax`.
- 2. `_getJsonResult` call any callable which uses `wp_send_json_success` or `wp_send_json_error` and return the result.
-
+1. `_handleAjaxCustom` which will turn any callable into an `wp_ajax` action then call it via `_handleAjax`.
+2. `_getJsonResult` call any callable which uses `wp_send_json_success` or `wp_send_json_error` and return the result.
 
 #### Support raw request testing.
 
-Sometimes you want to verify requests are actually going out and not just 
+Sometimes you want to verify requests are actually going out and not just
 assert that a method which sends requests is being called.
 
 1. Extend the `WP_Http_Remote_Post_TestCase` from your test's class.
 2. All requests will not send but instead be stored in the test's class' properties.
 3. Retrieve sent via `$this->get_sent()`.
 4. Mock raw responses via `$this->mock_response`.
-
 
 #### Automatically generate files for Attachment factory.
 
@@ -215,6 +213,7 @@ get_the_post_thumbnail_url( $post->ID );
 ```
 
 #### Support assertEqualSetsValues on all TestCases
+
 Support testing two arrays of values while accounting for order but ignoring array keys.
 Useful for testing things like pagination.
 
@@ -236,8 +235,8 @@ $this->assertEqualSetsValues(
 
 Asserts that the keys of two arrays are equal, regardless of the contents, without accounting for the order of elements.
 
-
 ## Internal Merging Core Process
+
 The original repo this is forked from contains the entire WordPress code base along with the tests directory and is not feasible for a typical git merge.
 
 Instead, merging in changes from WordPress core is done via patches.
@@ -252,7 +251,8 @@ Instead, merging in changes from WordPress core is done via patches.
 5. Apply the patch to this repository:
     1. Terminal:
         1. `git apply --reject --whitespace=fix patches/<lastest trunk commit>.<date>.patch`
-        2. Use log or search for `.rej` and solve the rejections manually.
+        2. Delete the `tests` directory (not included in this repo).
+        3. Use log or search for `.rej` and solve the rejections manually.
     2. Use PHPStorm's interactive built in "Apply Patch":
         1. Git menu in the toolbar.
         2. Patch -> Apply Patch

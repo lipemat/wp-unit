@@ -1,5 +1,8 @@
 *.log
 
+# Core tests files
+/tests
+
 # system/hidden files
 *~
 .DS_Store
