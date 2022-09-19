@@ -1,7 +1,5 @@
 <?php
 
-use Lipe\Project\Woo\Pro_Plugins\Endpoint;
-
 /**
  * Ajax test case class
  *
