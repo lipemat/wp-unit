@@ -9,6 +9,16 @@
 class Tests_Date_XMLRPC extends WP_XMLRPC_UnitTestCase {
 
 	/**
+	 * Cleans up.
+	 */
+	public function tear_down() {
+		// Reset the timezone option to the default value.
+		update_option( 'timezone_string', '' );
+
+		parent::tear_down();
+	}
+
+	/**
 	 * @ticket 30429
 	 *
 	 * @covers wp_xmlrpc_server::mw_newPost
@@ -221,14 +231,14 @@ class Tests_Date_XMLRPC extends WP_XMLRPC_UnitTestCase {
 		$datetimeutc = $datetime->setTimezone( new DateTimeZone( 'UTC' ) );
 
 		$this->make_user_by_role( 'administrator' );
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 
 		$comment_data = array(
 			'comment_post_ID'      => $post_id,
 			'comment_author'       => 'Test commenter',
 			'comment_author_url'   => 'http://example.com/',
 			'comment_author_email' => 'example@example.com',
-			'comment_content'      => rand_str( 100 ),
+			'comment_content'      => 'Hello, world!',
 			'comment_approved'     => '1',
 		);
 		$comment_id   = wp_insert_comment( $comment_data );

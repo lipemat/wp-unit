@@ -2,6 +2,8 @@
 
 /**
  * @group formatting
+ *
+ * @covers ::ent2ncr
  */
 class Tests_Formatting_Ent2ncr extends WP_UnitTestCase {
 	/**
@@ -34,3 +36,4 @@ class Tests_Formatting_Ent2ncr extends WP_UnitTestCase {
 		return $data_provided;
 	}
 }
+

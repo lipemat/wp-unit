@@ -232,7 +232,11 @@ define( 'DIR_TESTDATA', __DIR__ . '/../data' );
 define( 'DIR_TESTROOT', realpath( dirname( __DIR__ ) ) );
 
 if ( ! defined( 'WP_LANG_DIR' ) ) {
-	define( 'WP_LANG_DIR', DIR_TESTDATA . '/languages' );
+	define( 'WP_LANG_DIR', realpath( DIR_TESTDATA . '/languages' ) );
+}
+
+if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS ) {
+	define( 'WP_PLUGIN_DIR', realpath( DIR_TESTDATA . '/plugins' ) );
 }
 
 if ( ! defined( 'WP_TESTS_FORCE_KNOWN_BUGS' ) ) {
