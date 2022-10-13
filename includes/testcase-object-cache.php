@@ -42,7 +42,7 @@ class Object_Cache_TestCase extends \WP_UnitTestCase {
 	 *
 	 * @return void
 	 */
-	protected function test_cache_local_and_external( $key, $value, $group = 'default' ) {
+	protected function assert_cache_local_and_external( $key, $value, $group = 'default' ) {
 		$built_key = $this->object_cache->key( $key, $group );
 		// Verify correct value and type is returned.
 		$this->assertSame( $value, $this->object_cache->get( $key, $group ) );
