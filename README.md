@@ -77,6 +77,9 @@ define( 'WP_TESTS_TITLE', 'WordPress Unit Tests' );
 define( 'WP_UNIT_DIR', __DIR__ . '/vendor/lipemat/wp-unit' );
 define( 'WP_TESTS_CONFIG_FILE_PATH',  __FILE__ );
 define( 'DOMAIN_CURRENT_SITE', 'wp-libs.loc' );
+
+// If your not bootstrapping an exiting database.
+define( 'WP_TESTS_TABLE_PREFIX', 'tests_' );
 ```
 
 Example unit test /tests/ExampleTest.php
