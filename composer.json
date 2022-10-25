@@ -7,14 +7,15 @@
     "php": ">=5.6.20",
     "yoast/phpunit-polyfills": "^1.0"
   },
-  "replace": {
-    "phpunit/phpunit": "*"
-  },
   "authors": [
     {
       "name": "lipemat",
       "email": "mat@matlipe.com"
     }
   ],
-  "minimum-stability": "stable"
+  "minimum-stability": "stable",
+  "scripts": {
+    "post-install-cmd": "bin/cleanup-unused-dependencies.sh",
+    "post-update-cmd": "bin/cleanup-unused-dependencies.sh"
+  }
 }
