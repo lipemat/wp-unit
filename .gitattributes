@@ -1,0 +1,13 @@
+####################################################################
+#
+# Files and directories excluded when installed via `--prefer-dist`.
+#
+# @notice Will also be excluded for Zip downloads of tags.
+#
+# @link https://git-scm.com/docs/gitattributes#_export_subst
+#
+######################################################################
+/.github export-ignore
+/.gitignore export-ignore
+/bin export-ignore
+/patches export-ignore
