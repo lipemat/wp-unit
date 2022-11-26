@@ -15,6 +15,8 @@ class Object_Cache_TestCase extends \WP_UnitTestCase {
 		parent::set_up();
 		global $wp_object_cache;
 
+		$cache_class = get_class( $wp_object_cache );
+		$wp_object_cache = new $cache_class();
 		$this->object_cache = $wp_object_cache;
 		$this->object_cache->flush();
 	}
