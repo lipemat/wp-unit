@@ -80,6 +80,9 @@ define( 'DOMAIN_CURRENT_SITE', 'wp-libs.loc' );
 
 // If your not bootstrapping an exiting database.
 define( 'WP_TESTS_TABLE_PREFIX', 'tests_' );
+
+// If your tests must use `https` URL.
+define( 'WP_TESTS_SSL', true );
 ```
 
 Example unit test /tests/ExampleTest.php

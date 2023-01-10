@@ -43,11 +43,17 @@ function tests_reset__SERVER() { // phpcs:ignore WordPress.NamingConventions.Val
 	$_SERVER['REQUEST_METHOD']  = 'GET';
 	$_SERVER['REQUEST_URI']     = '';
 	$_SERVER['SERVER_NAME']     = WP_TESTS_DOMAIN;
-	$_SERVER['SERVER_PORT']     = '80';
 	$_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
 
 	unset( $_SERVER['HTTP_REFERER'] );
-	unset( $_SERVER['HTTPS'] );
+
+	if ( defined( 'WP_TESTS_SSL' ) ) {
+		$_SERVER['HTTPS'] = 'on';
+		$_SERVER['SERVER_PORT'] = '443';
+	} else {
+		$_SERVER['SERVER_PORT'] = '80';
+		unset( $_SERVER['HTTPS'] );
+	}
 }
 
 /**
