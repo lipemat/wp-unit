@@ -8,6 +8,9 @@
  *
  */
 class Object_Cache_TestCase extends \WP_UnitTestCase {
+	/**
+	 * @var \WP_Object_Cache
+	 */
 	public $object_cache;
 
 
