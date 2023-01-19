@@ -103,6 +103,15 @@ Run the test suite like any other phpunit suite
 phpunit
 ```
 
+## Excluding PHPUnit From Composer
+If you are using an external PHP Unit executable or .phar and do not want `phpunit/phpunit` be installed as part of your composer vendor, you may add the following configuration to your `composer.json` file.
+
+```json
+ "replace": {
+    "phpunit/phpunit": "*"
+  },
+```
+
 ## Enhancements
 
 #### Network Options
