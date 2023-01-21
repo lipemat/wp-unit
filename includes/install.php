@@ -43,13 +43,13 @@ $_SERVER['PHP_SELF'] = '/index.php';
 
 tests_add_filter( 'wp_die_handler', '_wp_die_handler_filter_exit' );
 
-require_once ABSPATH . '/wp-settings.php';
+require_once ABSPATH . 'wp-settings.php';
 
-require_once ABSPATH . '/wp-admin/includes/upgrade.php';
-if ( file_exists( ABSPATH . '/wp-includes/class-wpdb.php' )) {
-	require_once ABSPATH . '/wp-includes/class-wpdb.php';
+require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+if ( file_exists( ABSPATH . 'wp-includes/class-wpdb.php' )) {
+	require_once ABSPATH . 'wp-includes/class-wpdb.php';
 } else {
-	require_once ABSPATH . '/wp-includes/wp-db.php';
+	require_once ABSPATH . 'wp-includes/wp-db.php';
 }
 
 // Override the PHPMailer.

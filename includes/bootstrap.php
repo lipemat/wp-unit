@@ -344,7 +344,7 @@ if ( isset( $GLOBALS[ 'wp_tests_filters' ] ) ){
 
 
 // Load WordPress.
-require_once ABSPATH . '/wp-settings.php';
+require_once ABSPATH . 'wp-settings.php';
 require_once dirname( __FILE__ ) . '/template-tags/cron.php';
 
 
