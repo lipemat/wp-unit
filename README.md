@@ -104,7 +104,7 @@ phpunit
 ```
 
 ## Excluding PHPUnit From Composer
-If you are using an external PHP Unit executable or .phar and do not want `phpunit/phpunit` be installed as part of your composer vendor, you may add the following configuration to your `composer.json` file.
+If you are using an external PHP Unit executable or .phar and do not want `phpunit/phpunit` to be installed as part of your composer vendor, you may add the following configuration to your `composer.json` file.
 
 ```json
  "replace": {
