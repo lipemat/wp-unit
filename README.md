@@ -276,12 +276,12 @@ Instead, merging in changes from WordPress core is done via patches.
     2. Change `<lastest trunk commit>` latest commit of master.
     3. Change `<date>` to today's date.
 4. Move new patch file to `/patches` directory:
-5. Apply the patch to this repository:
+5. Apply the patch to this repository using either:
     1. Terminal:
         1. `git apply --reject --whitespace=fix patches/<lastest trunk commit>.<date>.patch`
         2. Delete the `tests` directory (not included in this repo).
         3. Use log or search for `.rej` and solve the rejections manually.
-    2. Use PHPStorm's interactive built in "Apply Patch":
+    2. Use PHPStorm's interactive built in "Apply Patch" (preferred):
         1. Git menu in the toolbar.
         2. Patch -> Apply Patch
 6. Make sure to note the commit merged in the git log and release notes if applicable.    
