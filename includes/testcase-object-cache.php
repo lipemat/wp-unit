@@ -4,7 +4,7 @@
  * Base for testing the object cache.
  *
  * @author Mat Lipe
- * @since  September 2022
+ * @since  3.2.0
  *
  */
 class Object_Cache_TestCase extends \WP_UnitTestCase {

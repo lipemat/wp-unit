@@ -210,6 +210,19 @@ assert that a method which sends requests is being called.
 3. Retrieve sent via `$this->get_sent()`.
 4. Mock raw responses via `$this->mock_response`.
 
+#### Support object cache testing
+
+For testing your object cache a helper TestCase is available.
+Automatically resets for a fresh object cache between tests.
+
+1. Extend the `Object_Cache_TestCase` from your test's class.
+2. Interact with `$this->object_cache` to access your object cache.
+3. Use include helper assertions and utilities.
+   1. `assertNotCacheExternal` - Assert a key is not available in the external cache.
+   2. `assertCacheExternal` - Assert a key is available in the external cache.
+   3. `assertCachePropertyAndExternal` - Assert a value is same in runtime cache as external cache.
+   4. `get_cache_key` - Get parsed key sent to external cache.
+
 #### Automatically generate files for Attachment factory.
 
 Many follow-up attachment calls require the attachment to have an actual file attached to it.
