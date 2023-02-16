@@ -32,14 +32,19 @@ class MockPHPMailer extends PHPMailer\PHPMailer\PHPMailer {
 	 * @since 4.5.0
 	 *
 	 * @param int $index Optional. Array index of mock_sent value.
-	 * @return object
+	 * @param array $fields Optional. Limit results to specified fields.
+	 *
+	 * @return object|false
 	 */
-	public function get_sent( $index = 0 ) {
-		$retval = false;
+	public function get_sent( $index = 0, $fields = [] ) {
 		if ( isset( $this->mock_sent[ $index ] ) ) {
-			$retval = (object) $this->mock_sent[ $index ];
+			$sent = $this->mock_sent[ $index ];
+			if ( ! empty( $fields ) ) {
+				$sent = array_intersect_key( $sent, array_flip( $fields ) );
+			}
+			return (object) $sent;
 		}
-		return $retval;
+		return false;
 	}
 
 	/**
