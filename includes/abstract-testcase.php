@@ -198,6 +198,9 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		if ( function_exists( 'tests_reset_container' ) ) {
 			tests_reset_container();
 		}
+		// Reset the PHP mailer.
+		reset_phpmailer_instance();
+
 		$this->_restore_hooks();
 		wp_set_current_user( 0 );
 
