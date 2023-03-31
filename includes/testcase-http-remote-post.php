@@ -1,14 +1,12 @@
 <?php
 
-use WpOrg\Requests\Requests;
-
 /**
  * Test remote requests without actually sending them.
  *
- * Tests the send of the request, not the results.
+ * Tests the sending of the request, not the results.
  *
  * @notice If you need to test the application based on data received from
- *         a remote request it's better to mock the method which send the
+ *         a remote request it's better to mock the method, which send the
  *         request then to use this class because this class only supports
  *         mocking raw response data.
  *         If you want to be sure requests are being sent but are not doing
@@ -24,12 +22,31 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 	protected static $mock_response = [];
 
 
+	/**
+	 * The `Requests` class was deprecated in WP 6.2 in favor
+	 * of a `\WpOrg\Requests\Requests` class.
+	 *
+	 * This method translates the use to the appropriate class
+	 * based on availability.
+	 *
+	 * @todo Remove in favor of simple `use` at the top of the file
+	 *       when WP 6.2 becomes the minimum.
+	 * @return string
+	 */
+	protected function get_request_class() : string {
+		if ( class_exists( \WpOrg\Requests\Requests::class )) {
+			return \WpOrg\Requests\Requests::class;
+		}
+		return Requests::class;
+	}
+
+
 	public function set_up() {
 		parent::set_up();
 		putenv( 'PHP_MOCKED_REMOTE_POST=1' );
-		Requests::$transport[ serialize( [] ) ] = __CLASS__;
-		Requests::$transport[ serialize( [ 'ssl' => false ] ) ] = __CLASS__;
-		Requests::$transport[ serialize( [ 'ssl' => true ] ) ] = __CLASS__;
+		$this->get_request_class()::$transport[ serialize( [] ) ] = __CLASS__;
+		$this->get_request_class()::$transport[ serialize( [ 'ssl' => false ] ) ] = __CLASS__;
+		$this->get_request_class()::$transport[ serialize( [ 'ssl' => true ] ) ] = __CLASS__;
 		add_filter( 'http_api_transports', [ $this, 'use_this_class_for_transport' ], 99 );
 	}
 
@@ -38,7 +55,7 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 		self::$mock_sent = [];
 		self::$mock_response = [];
 		putenv( 'PHP_MOCKED_REMOTE_POST' );
-		Requests::$transport = [];
+		$this->get_request_class()::$transport = [];
 		remove_filter( 'http_api_transports', [ $this, 'use_this_class_for_transport' ], 99 );
 		parent::tear_down();
 	}
