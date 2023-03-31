@@ -1,5 +1,7 @@
 <?php
 
+use WpOrg\Requests\Requests;
+
 /**
  * Test remote requests without actually sending them.
  *
