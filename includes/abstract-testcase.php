@@ -330,14 +330,18 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	}
 
 	/**
-	 * Saves the action and filter-related globals so they can be restored later.
+	 * Saves the action and filter-related globals, so they can be restored later.
 	 *
-	 * Stores $wp_actions, $wp_current_filter, and $wp_filter on a class variable
+	 * Stores $wp_actions, $wp_current_filter, $wp_meta_keys, and $wp_filter on a class variable,
 	 * so they can be restored on tear_down() using _restore_hooks().
+	 *
+	 * * @note This method differs from WP Core as it will also back up the
+	 *       `wp_meta_keys` global.
 	 *
 	 * @global array $wp_actions
 	 * @global array $wp_current_filter
 	 * @global array $wp_filter
+	 * @global array $wp_meta_keys
 	 */
 	protected function _backup_hooks() {
 		$globals = array( 'wp_actions', 'wp_current_filter' );
@@ -348,15 +352,22 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		foreach ( $GLOBALS['wp_filter'] as $hook_name => $hook_object ) {
 			self::$hooks_saved['wp_filter'][ $hook_name ] = clone $hook_object;
 		}
+		if ( ( ! defined( 'WP_RUN_CORE_TESTS' ) || ! WP_RUN_CORE_TESTS ) && isset( $GLOBALS['wp_meta_keys'] ) ) {
+			self::$hooks_saved['wp_meta_keys'] = $GLOBALS['wp_meta_keys'];
+		}
 	}
 
 	/**
 	 * Restores the hook-related globals to their state at set_up()
 	 * so that future tests aren't affected by hooks set during this last test.
 	 *
+	 * @note This method differs from WP Core as it will also restore the
+	 *       `wp_meta_keys` global.
+	 *
 	 * @global array $wp_actions
 	 * @global array $wp_current_filter
 	 * @global array $wp_filter
+	 * @global array $wp_meta_keys
 	 */
 	protected function _restore_hooks() {
 		$globals = array( 'wp_actions', 'wp_current_filter' );
@@ -370,6 +381,9 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 			foreach ( self::$hooks_saved['wp_filter'] as $hook_name => $hook_object ) {
 				$GLOBALS['wp_filter'][ $hook_name ] = clone $hook_object;
 			}
+		}
+		if ( ( ! defined( 'WP_RUN_CORE_TESTS' ) || ! WP_RUN_CORE_TESTS ) && isset( self::$hooks_saved['wp_meta_keys'] ) ) {
+			$GLOBALS['wp_meta_keys'] = self::$hooks_saved['wp_meta_keys'];
 		}
 	}
 
@@ -417,6 +431,11 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 	/**
 	 * Cleans up any registered meta keys.
+	 *
+	 * @notice When not running core tests, the meta keys are restored via
+	 *         `$this->_restore_hooks` so this method does nothing.
+	 *
+	 * @see WP_UnitTestCase_Base::_restore_hooks()
 	 *
 	 * @since 5.1.0
 	 *
