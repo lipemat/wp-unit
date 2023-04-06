@@ -36,7 +36,7 @@ if ( isset($_GET['201-location']) ) {
 }
 if ( isset($_GET['header-check']) ) {
 	$out = array();
-	header("Content-type: text/plain");
+	header("Content-Type: text/plain");
 	foreach ( $_SERVER as $key => $value ) {
 		if ( stripos($key, 'http') === 0 ) {
 			$key = strtolower(substr($key, 5));
@@ -63,7 +63,7 @@ if ( isset( $_GET['post-redirect-to-method'] ) ) {
 
 	echo $method;
 	exit;
-	
+
 }
 
 if ( isset( $_GET['location-with-200'] ) ) {
@@ -136,4 +136,3 @@ echo "Redirect $r of $rt is FINAL.<br/>";
 echo "GET['rt'] = Total times to redirect. Defaults to 5.<br />";
 echo "GET['r'] = Current redirection. Defaults to 0.<br />";
 echo "<a href='$url?source=true'>View Source</a>";
-

@@ -204,6 +204,9 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$this->_restore_hooks();
 		wp_set_current_user( 0 );
 
+		$lazyloader = wp_metadata_lazyloader();
+		$lazyloader->reset_queue( 'term' );
+		$lazyloader->reset_queue( 'comment' );
 
 	}
 
@@ -330,31 +333,38 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	}
 
 	/**
-	 * Saves the action and filter-related globals, so they can be restored later.
+	 * Saves the hook-related globals so they can be restored later.
 	 *
-	 * Stores $wp_actions, $wp_current_filter, $wp_meta_keys, and $wp_filter on a class variable,
-	 * so they can be restored on tear_down() using _restore_hooks().
+	 * Stores $wp_filter, $wp_actions, $wp_filters, $wp_meta_keys and $wp_current_filter
+	 * on a class variable so they can be restored on tear_down() using _restore_hooks().
 	 *
-	 * * @note This method differs from WP Core as it will also back up the
+	 * @note This method differs from WP Core as it will also back up the
 	 *       `wp_meta_keys` global.
 	 *
-	 * @global array $wp_actions
-	 * @global array $wp_current_filter
 	 * @global array $wp_filter
+	 * @global array $wp_actions
+	 * @global array $wp_filters
+	 * @global array $wp_current_filter
 	 * @global array $wp_meta_keys
 	 */
 	protected function _backup_hooks() {
-		$globals = array( 'wp_actions', 'wp_current_filter' );
-		foreach ( $globals as $key ) {
-			self::$hooks_saved[ $key ] = $GLOBALS[ $key ];
-		}
-		self::$hooks_saved['wp_filter'] = array();
+		self::$hooks_saved['wp_filter'] = [];
+
 		foreach ( $GLOBALS['wp_filter'] as $hook_name => $hook_object ) {
 			self::$hooks_saved['wp_filter'][ $hook_name ] = clone $hook_object;
 		}
+
+		$globals = [ 'wp_actions', 'wp_filters', 'wp_current_filter' ];
+
+		foreach ( $globals as $key ) {
+			self::$hooks_saved[ $key ] = $GLOBALS[ $key ];
+		}
+
 		if ( ( ! defined( 'WP_RUN_CORE_TESTS' ) || ! WP_RUN_CORE_TESTS ) && isset( $GLOBALS['wp_meta_keys'] ) ) {
 			self::$hooks_saved['wp_meta_keys'] = $GLOBALS['wp_meta_keys'];
 		}
+
+
 	}
 
 	/**
@@ -370,18 +380,22 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @global array $wp_meta_keys
 	 */
 	protected function _restore_hooks() {
-		$globals = array( 'wp_actions', 'wp_current_filter' );
+		if ( isset( self::$hooks_saved['wp_filter'] ) ) {
+			$GLOBALS['wp_filter'] = [];
+
+			foreach ( self::$hooks_saved['wp_filter'] as $hook_name => $hook_object ) {
+				$GLOBALS['wp_filter'][ $hook_name ] = clone $hook_object;
+			}
+		}
+
+		$globals = [ 'wp_actions', 'wp_filters', 'wp_current_filter' ];
+
 		foreach ( $globals as $key ) {
 			if ( isset( self::$hooks_saved[ $key ] ) ) {
 				$GLOBALS[ $key ] = self::$hooks_saved[ $key ];
 			}
 		}
-		if ( isset( self::$hooks_saved['wp_filter'] ) ) {
-			$GLOBALS['wp_filter'] = array();
-			foreach ( self::$hooks_saved['wp_filter'] as $hook_name => $hook_object ) {
-				$GLOBALS['wp_filter'][ $hook_name ] = clone $hook_object;
-			}
-		}
+
 		if ( ( ! defined( 'WP_RUN_CORE_TESTS' ) || ! WP_RUN_CORE_TESTS ) && isset( self::$hooks_saved['wp_meta_keys'] ) ) {
 			$GLOBALS['wp_meta_keys'] = self::$hooks_saved['wp_meta_keys'];
 		}
@@ -412,9 +426,11 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 				'blog_meta',
 				'global-posts',
 				'networks',
+				'network-queries',
 				'sites',
 				'site-details',
 				'site-options',
+				'site-queries',
 				'site-transient',
 				'rss',
 				'users',
@@ -426,7 +442,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 			)
 		);
 
-		wp_cache_add_non_persistent_groups( array( 'counts', 'plugins' ) );
+		wp_cache_add_non_persistent_groups( array( 'counts', 'plugins', 'theme_json' ) );
 	}
 
 	/**
