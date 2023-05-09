@@ -48,15 +48,26 @@ abstract class WP_Test_REST_TestCase extends WP_UnitTestCase {
 	/**
 	 * Mock a REST request and retrieve its response.
 	 *
-	 * @param string                $route  - e.g. /wp/v2/users
-	 * @param array                 $args   - Query parameters to pass.
-	 * @param GET|POST|PATCH|DELETE $method - Request method
+	 * @param string                                    $route  - e.g. /wp/v2/users
+	 * @param array                                     $args   - Query parameters to pass.
+	 * @param 'GET'|'POST'|'PATCH'|'PUT'|'DELETE'|'URL' $method - Request method
 	 *
 	 * @return WP_REST_Response
 	 */
 	protected function get_response( $route, array $args, $method = 'POST' ) {
 		$request = new \WP_REST_Request( $method, $route );
-		$request->set_query_params( $args );
+		switch( strtoupper( $method ) ) {
+			case 'URL':
+				$request->set_url_params( $args );
+				break;
+			case 'GET':
+				$request->set_query_params( $args );
+				break;
+			default:
+				$request->set_body_params( $args );
+				break;
+
+		}
 		return rest_get_server()->dispatch( $request );
 	}
 }
