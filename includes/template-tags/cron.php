@@ -32,13 +32,14 @@ function wp_cron_run_all() {
  * @return void
  */
 function wp_cron_run_event( $hook ) {
-	foreach ( _get_cron_array() as $crooks ) {
+	foreach ( _get_cron_array() as $timestamp => $crooks ) {
 		foreach ( (array) $crooks as $_hook => $keys ) {
-			if ( $hook !== $_hook ){
+			if ( $hook !== $_hook ) {
 				continue;
 			}
 			foreach ( $keys as $v ) {
 				do_action_ref_array( $hook, $v['args'] );
+				wp_unschedule_event( $timestamp, $_hook, $v['args'] );
 			}
 		}
 	}
