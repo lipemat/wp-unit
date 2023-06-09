@@ -3,14 +3,17 @@
 /**
  * Test remote requests without actually sending them.
  *
- * Tests the sending of the request, not the results.
+ * Results of requests may be mocked or simply recorded to see if the request
+ * was sent.
  *
- * @notice If you need to test the application based on data received from
- *         a remote request it's better to mock the method, which send the
- *         request then to use this class because this class only supports
- *         mocking raw response data.
- *         If you want to be sure requests are being sent but are not doing
- *         anything meaningful with the response, use this class.
+ * No requests will go out within the confines of this test.
+ *
+ * - Use to compare requests being sent.
+ * - Use to mock raw responses using one of the "format_" methods.
+ *
+ * @notice If you are not testing the requests themselves and simply want to
+ *         change the resulting response, you probably want to mock your method
+ *         sending the request instead of using this class.
  *
  * @author Mat Lipe
  * @since  1.10.0
@@ -31,10 +34,13 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 	 *
 	 * @todo Remove in favor of simple `use` at the top of the file
 	 *       when WP 6.2 becomes the minimum.
+	 *
+	 * @phpstan-return class-string
+	 *
 	 * @return string
 	 */
 	protected function get_request_class() : string {
-		if ( class_exists( \WpOrg\Requests\Requests::class )) {
+		if ( class_exists( \WpOrg\Requests\Requests::class ) ) {
 			return \WpOrg\Requests\Requests::class;
 		}
 		return Requests::class;
@@ -81,13 +87,49 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 	/**
 	 * Mock the returned raw response based on a URL.
 	 *
-	 * @see \WpOrg\Requests\Transport\Curl::request for example response.
-	 *
-	 * @param string $url
-	 * @param        $callback_or_value
+	 * @param string         $url
+	 * @param mixed|callable $callback_or_value
 	 */
-	public function mock_response( $url, $callback_or_value ) {
+	public function mock_response( string $url, $callback_or_value ) {
 		self::$mock_response[ $url ] = $callback_or_value;
+	}
+
+
+	/**
+	 * Convert JSON data into a raw request response.
+	 *
+	 * For use when mocking responses.
+	 *
+	 * @see WP_Http_Remote_Post_TestCase::mock_response()
+	 *
+	 * @param array|JsonSerializable $data
+	 *
+	 * @return string
+	 */
+	public function format_json_response( $data ) : string {
+		return 'HTTP/1.1 200 OK
+				Content-Type: application/json; charset=UTF-8'
+		       . "\r\n\r\n" .
+		       wp_json_encode( $data );
+	}
+
+
+	/**
+	 * Convert HTML string into a raw request response.
+	 *
+	 * For use when mocking responses.
+	 *
+	 * @see WP_Http_Remote_Post_TestCase::mock_response()
+	 *
+	 * @param string $html
+	 *
+	 * @return string
+	 */
+	public function format_html_response( string $html ) : string {
+		return 'HTTP/1.1 200 OK
+			   Content-Type: text/html; charset=UTF-8'
+		       . "\r\n\r\n" .
+		       '<!DOCTYPE html />' . $html;
 	}
 
 
@@ -96,7 +138,7 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 	 *
 	 * @return string[]
 	 */
-	public function use_this_class_for_transport() {
+	public function use_this_class_for_transport() : array {
 		return [ 'Remote_Post_TestCase' ];
 	}
 
@@ -138,14 +180,13 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 	/**
 	 * Only store the request, don't actually do anything.
 	 *
-	 * @param array $requests
-	 * @param array $options
-	 *
 	 * @internal
+	 *
+	 * @param array $requests
 	 *
 	 * @return array
 	 */
-	public function request_multiple( $requests, $options ) {
+	public function request_multiple( array $requests ) : array {
 		$return = [];
 		foreach ( $requests as $request ) {
 			$return[] = $this->request( $request['url'], $request );
@@ -158,7 +199,7 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 	 * Use by \WP_Http::_get_first_available_transport to determine
 	 * this transport may be used.
 	 *
-	 * PHPUnit will think this is a test method but we can't rename it.
+	 * PHPUnit will think this is a test method, but we can't rename it.
 	 *
 	 * @internal
 	 *
