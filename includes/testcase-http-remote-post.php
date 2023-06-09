@@ -144,19 +144,20 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 
 
 	/**
-	 * Only store the request, don't actually do anything.
+	 * Return the results of a request without actually making it.
 	 *
-	 * @see \WpOrg\Requests\Transport\Curl::request for example response.
+	 * - If a mock is provided, response will be used.
+	 * - If a mock is not provided, an empty response will be used.
+	 * - The request is store for later comparison.
 	 *
 	 * @internal
 	 *
-	 * @param array  $args
-	 *
-	 * @param string $url
+	 * @param string $url - URL being requested.
+	 * @param array $args - Information about the request like headers and data.
 	 *
 	 * @return string
 	 */
-	public function request( $url, ...$args ) {
+	public function request( string $url, ...$args ) : string {
 		self::$mock_sent[] = [
 			'url'  => $url,
 			'args' => $args,
@@ -169,11 +170,11 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 			return self::$mock_response[ $url ];
 		}
 
-		return 'HTTP/1.1 200 OK
-				Server: Apache
-				Content-Type: text/html; charset=UTF-8
+		if ( isset( $args[0]['Accept'] ) && false !== strpos( $args[0]['Accept'], 'application/json' ) ) {
+			$this->format_json_response( [] );
+		}
 
-				<!DOCTYPE html />';
+		return $this->format_html_response( '' );
 	}
 
 
