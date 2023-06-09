@@ -81,6 +81,8 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 	/**
 	 * Mock the returned raw response based on a URL.
 	 *
+	 * @see \WpOrg\Requests\Transport\Curl::request for example response.
+	 *
 	 * @param string $url
 	 * @param        $callback_or_value
 	 */
@@ -102,10 +104,13 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 	/**
 	 * Only store the request, don't actually do anything.
 	 *
-	 * @param string $url
-	 * @param array  $args
+	 * @see \WpOrg\Requests\Transport\Curl::request for example response.
 	 *
 	 * @internal
+	 *
+	 * @param array  $args
+	 *
+	 * @param string $url
 	 *
 	 * @return string
 	 */
