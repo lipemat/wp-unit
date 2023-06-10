@@ -67,7 +67,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$wpdb->suppress_errors = false;
 		$wpdb->show_errors     = true;
 		$wpdb->db_connect();
-		ini_set( 'display_errors', 1 );
+		ini_set( 'display_errors', '1' );
 
 		$class = get_called_class();
 
