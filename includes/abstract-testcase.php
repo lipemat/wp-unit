@@ -357,7 +357,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$globals = [ 'wp_actions', 'wp_filters', 'wp_current_filter' ];
 
 		foreach ( $globals as $key ) {
-			self::$hooks_saved[ $key ] = $GLOBALS[ $key ];
+			self::$hooks_saved[ $key ] = $GLOBALS[ $key ] ?? [];
 		}
 
 		if ( ( ! defined( 'WP_RUN_CORE_TESTS' ) || ! WP_RUN_CORE_TESTS ) && isset( $GLOBALS['wp_meta_keys'] ) ) {
