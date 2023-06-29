@@ -333,13 +333,13 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	}
 
 	/**
-	 * Saves the hook-related globals so they can be restored later.
+	 * Saves the hook-related globals, so they can be restored later.
 	 *
-	 * Stores $wp_filter, $wp_actions, $wp_filters, $wp_meta_keys and $wp_current_filter
-	 * on a class variable so they can be restored on tear_down() using _restore_hooks().
+	 * Stores $wp_filter, $wp_actions, $wp_filters, $wp_meta_keys, $wp_registered_settings and $wp_current_filter
+	 * on a class variable, so they can be restored on tear_down() using _restore_hooks().
 	 *
 	 * @note This method differs from WP Core as it will also back up the
-	 *       `wp_meta_keys` global.
+	 *       `wp_meta_keys` and `wp_register_settings` globals.
 	 *
 	 * @global array $wp_filter
 	 * @global array $wp_actions
@@ -360,11 +360,14 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 			self::$hooks_saved[ $key ] = $GLOBALS[ $key ] ?? [];
 		}
 
-		if ( ( ! defined( 'WP_RUN_CORE_TESTS' ) || ! WP_RUN_CORE_TESTS ) && isset( $GLOBALS['wp_meta_keys'] ) ) {
-			self::$hooks_saved['wp_meta_keys'] = $GLOBALS['wp_meta_keys'];
+		if ( ( ! defined( 'WP_RUN_CORE_TESTS' ) || ! WP_RUN_CORE_TESTS ) ) {
+			if ( isset( $GLOBALS['wp_meta_keys'] ) ) {
+				self::$hooks_saved['wp_meta_keys'] = $GLOBALS['wp_meta_keys'];
+			}
+			if ( isset( $GLOBALS['wp_registered_settings'] ) ) {
+				self::$hooks_saved['wp_registered_settings'] = $GLOBALS['wp_registered_settings'];
+			}
 		}
-
-
 	}
 
 	/**
@@ -372,7 +375,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * so that future tests aren't affected by hooks set during this last test.
 	 *
 	 * @note This method differs from WP Core as it will also restore the
-	 *       `wp_meta_keys` global.
+	 *       `wp_meta_keys` and `wp_registered_settings` globals.
 	 *
 	 * @global array $wp_actions
 	 * @global array $wp_current_filter
@@ -396,8 +399,13 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 			}
 		}
 
-		if ( ( ! defined( 'WP_RUN_CORE_TESTS' ) || ! WP_RUN_CORE_TESTS ) && isset( self::$hooks_saved['wp_meta_keys'] ) ) {
-			$GLOBALS['wp_meta_keys'] = self::$hooks_saved['wp_meta_keys'];
+		if ( ( ! defined( 'WP_RUN_CORE_TESTS' ) || ! WP_RUN_CORE_TESTS ) ) {
+			if( isset( self::$hooks_saved['wp_meta_keys'] ) ) {
+				$GLOBALS['wp_meta_keys'] = self::$hooks_saved['wp_meta_keys'];
+			}
+			if ( isset( self::$hooks_saved['wp_registered_settings'] ) ) {
+				$GLOBALS['wp_registered_settings'] = self::$hooks_saved['wp_registered_settings'];
+			}
 		}
 	}
 
