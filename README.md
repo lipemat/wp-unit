@@ -107,9 +107,11 @@ phpunit
 If you are using an external PHP Unit executable or .phar and do not want `phpunit/phpunit` to be installed as part of your composer vendor, you may add the following configuration to your `composer.json` file.
 
 ```json
- "replace": {
+{
+  "replace": {
     "phpunit/phpunit": "*"
-  },
+  }
+}
 ```
 
 ## Enhancements
@@ -133,7 +135,7 @@ wp_cron_run_all()
 
 #### Local wp-tests-config.php
 
-You may setup your wp-tests.config.php in the directory of your bootstrap.php and phpunit.xml. Really this can be put anywhere as long as you point to it in your bootstrap.php file.
+You may set up your wp-tests.config.php in the directory of your bootstrap.php and phpunit.xml. Really this can be put anywhere as long as you point to it in your bootstrap.php file.
 ```php
 <?php
 require __DIR__ . '/wp-tests-config.php';
@@ -220,7 +222,7 @@ Automatically resets for a fresh object cache between tests.
 3. Use include helper assertions and utilities.
    1. `assertNotCacheExternal` - Assert a key is not available in the external cache.
    2. `assertCacheExternal` - Assert a key is available in the external cache.
-   3. `assertCachePropertyAndExternal` - Assert a value is same in runtime cache as external cache.
+   3. `assertCachePropertyAndExternal` - Assert a value is same in the runtime cache as external cache.
    4. `get_cache_key` - Get parsed key sent to external cache.
 
 #### Automatically generate files for Attachment factory.
@@ -235,7 +237,7 @@ This automatically adds files to the `create` call via `self::factory()->attachm
 $post = self::factory()->post->create_and_get();
 $attachment = self::factory()->attachment->create_and_get();
 set_post_thumbnail( $post->ID, $attachment->ID );
-// Will return something like `http:///wp-content/uploads//tmp/canola.jpg`
+// Will return something like `https:///wp-content/uploads//tmp/canola.jpg`
 get_the_post_thumbnail_url( $post->ID );
 
 ```
