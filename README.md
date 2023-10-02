@@ -286,4 +286,5 @@ Instead, merging in changes from WordPress core is done via patches.
     2. Use PHPStorm's interactive built in "Apply Patch" (preferred):
         1. Git menu in the toolbar.
         2. Patch -> Apply Patch
+        3. Uncheck the `tests` directory (not included in this repo).
 6. Make sure to note the commit merged in the git log and release notes if applicable.    
