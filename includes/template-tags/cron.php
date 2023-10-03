@@ -17,8 +17,11 @@ function wp_cron_run_all() {
 					call_user_func_array( 'wp_reschedule_event', $new_args );
 				}
 
-				wp_unschedule_event( $timestamp, $hook, $v['args'] );
 				do_action_ref_array( $hook, $v['args'] );
+				wp_unschedule_event( $timestamp, $hook, $v['args'] );
+				if ( isset( $v['schedule'] ) ) {
+					wp_reschedule_event( $timestamp, $v['schedule'], $hook, $v['args']);
+				}
 			}
 		}
 	}
@@ -40,6 +43,9 @@ function wp_cron_run_event( $hook ) {
 			foreach ( $keys as $v ) {
 				do_action_ref_array( $hook, $v['args'] );
 				wp_unschedule_event( $timestamp, $_hook, $v['args'] );
+				if ( isset( $v['schedule'] ) ) {
+					wp_reschedule_event( $timestamp, $v['schedule'], $_hook, $v['args'] );
+				}
 			}
 		}
 	}
