@@ -3,6 +3,7 @@
  * Run all crons in queue during Testing
  *
  * @see wp/wp-cron.php
+ * @see wp_cron_isolate_events()
  *
  * @return void
  */
@@ -49,4 +50,33 @@ function wp_cron_run_event( $hook ) {
 			}
 		}
 	}
+}
+
+/**
+ * Limit the cron events to actions which include a specific selector.
+ *
+ * Used to prevent a bunch of core and third party crons from running when
+ * using `wp_cron_run_all`.
+ *
+ * @since 3.5.0
+ *
+ * @notice Must be used after `setUp` is called to prevent affecting the database.
+ *
+ * @example wp_cron_isolate_events( 'lipe' );
+ *
+ *
+ * @param string $selector - Selector to limit cron events to.
+ *                           Will match any cron event which includes this string.
+ *
+ * @return void
+ */
+function wp_cron_isolate_events( $selector ) {
+	update_option( 'cron', \array_filter( \array_map( function( $timed_events ) use ( $selector ) {
+		if ( ! is_array( $timed_events ) ) {
+			return $timed_events;
+		}
+		return \array_filter( $timed_events, function( $action ) use ( $selector ) {
+			return false !== \strpos( $action, $selector );
+		}, ARRAY_FILTER_USE_KEY );
+	}, get_option( 'cron', [] ) ) ) );
 }
