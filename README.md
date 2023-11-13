@@ -265,6 +265,18 @@ $this->assertEqualSetsValues(
 
 Asserts that the keys of two arrays are equal, regardless of the contents, without accounting for the order of elements.
 
+
+#### Support mocking `final` classes.
+
+Includes a utilities library to enable mocking of any final classes.
+
+[db/bypass-finals](https://github.com/dg/bypass-finals#usage)
+
+Enable for tests via.
+```php
+DG\BypassFinals::enable();
+```
+
 ## Internal Merging Core Process
 
 The original repo this is forked from contains the entire WordPress code base along with the tests directory and is not feasible for a typical git merge.
