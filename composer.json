@@ -4,7 +4,7 @@
   "type": "library",
   "license": "MIT",
   "require": {
-    "php": ">=7.1.0",
+    "php": ">=7.2.0",
     "yoast/phpunit-polyfills": "^1.1.0",
     "dg/bypass-finals": "^1.5"
   },
