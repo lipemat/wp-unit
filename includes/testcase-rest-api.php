@@ -6,6 +6,22 @@
  */
 abstract class WP_Test_REST_TestCase extends WP_UnitTestCase {
 	/**
+	 * Clear any changes made to the global wp_rest_server when
+	 * a test is done.
+	 *
+	 * @see rest_get_server
+	 *
+	 * @since 3.5.1
+	 *
+	 * @return void
+	 */
+	public function tear_down() {
+		unset( $GLOBALS['wp_rest_server'] );
+		parent::tear_down();
+	}
+
+
+	/**
 	 * Checks if the response is a WP_Error or a WP_REST_Response
 	 * which includes an error within.
 	 *
