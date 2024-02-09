@@ -28,7 +28,7 @@ class Snapshots {
 
 	public function __construct( array $backtrace = [] ) {
 		$caller = \array_pop( $backtrace );
-		$test_name = \str_replace( '\\', '-', $caller['class'] ) . '__' . $caller['function'];
+		$test_name = \str_replace( '\\', '__', $caller['class'] ) . '--' . $caller['function'];
 
 		if ( isset( self::$snapshots[ $test_name ] ) ) {
 			++ self::$snapshots[ $test_name ];
@@ -51,8 +51,7 @@ class Snapshots {
 
 
 	public function get_snapshot() {
-		$snapshot_path = $this->get_snapshots_path();
-		$snapshot_file = $snapshot_path . DIRECTORY_SEPARATOR . $this->get_test_name() . '.snapshot';
+		$snapshot_file = $this->get_snapshot_file_name();
 		if ( file_exists( $snapshot_file ) ) {
 			return file_get_contents( $snapshot_file );
 		}
@@ -63,12 +62,11 @@ class Snapshots {
 
 	public function update_snapshot( $actual ): void {
 		$snapshots_path = $this->get_snapshots_path();
-		$snapshot_file = $snapshots_path . DIRECTORY_SEPARATOR . $this->get_test_name() . '.snapshot';
 		if ( ! is_dir( $snapshots_path ) ) {
 			mkdir( $snapshots_path );
 		}
 
-		file_put_contents( $snapshot_file, $this->format_data( $actual ) );
+		file_put_contents( $this->get_snapshot_file_name(), $this->format_data( $actual ) );
 	}
 
 
@@ -90,6 +88,10 @@ class Snapshots {
 		return str_replace( "\r\n", "\n", $string );
 	}
 
+
+	protected function get_snapshot_file_name(): string {
+		return $this->get_snapshots_path() . DIRECTORY_SEPARATOR . $this->get_test_name() . '.txt';
+	}
 
 	protected function get_snapshots_path(): string {
 		$dir = getcwd();
