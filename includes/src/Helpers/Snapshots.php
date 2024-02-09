@@ -21,22 +21,33 @@ class Snapshots {
 	protected static $snapshots = [];
 
 	/**
+	 * Name of the test class and method making the assertion.
+	 *
 	 * @var string
 	 */
 	protected $test_name;
+
+	/**
+	 * Path to the test file making the assertion.
+	 *
+	 * @var string
+	 */
+	protected $test_path;
 
 
 	/**
 	 * @throws \Exception -- If the `WP_TESTS_SNAPSHOTS_DIR` constant is not defined.
 	 */
 	public function __construct( array $backtrace = [] ) {
-		if ( ! defined( 'WP_TESTS_SNAPSHOTS_DIR' )) {
+		if ( ! defined( 'WP_TESTS_SNAPSHOTS_DIR' ) ) {
 			throw new \Exception( 'The `WP_TESTS_SNAPSHOTS_DIR` constant must be defined to use snapshot testing.' );
 		}
 
 		$caller = \array_pop( $backtrace );
-		$test_name = \str_replace( '\\', '__', $caller['class'] ) . '--' . $caller['function'];
-
+		$namespaces = explode( '\\', $caller['class'] );
+		\array_shift( $namespaces );
+		$test_name = \array_pop( $namespaces ) . '--' . $caller['function'];
+		$this->test_path = \implode( '/', $namespaces );
 		if ( isset( self::$snapshots[ $test_name ] ) ) {
 			++ self::$snapshots[ $test_name ];
 		} else {
@@ -53,12 +64,16 @@ class Snapshots {
 			$test->addWarning( 'Snapshot created for ' . $this->get_test_name() );
 			return;
 		}
+		if ( '' === $message ) {
+			$message = $this->test_path . '/' . $this->get_test_name() . '.txt snapshot does not match!';
+		}
+
 		$test->assertSame( $snapshot, $this->format_data( $actual ), $message );
 	}
 
 
 	public function get_snapshot() {
-		$snapshot_file = $this->get_snapshot_file_name();
+		$snapshot_file = $this->get_snapshot_file_path();
 		if ( file_exists( $snapshot_file ) ) {
 			return file_get_contents( $snapshot_file );
 		}
@@ -68,12 +83,12 @@ class Snapshots {
 
 
 	public function update_snapshot( $actual ): void {
-		$snapshots_path = $this->get_snapshots_path();
+		$snapshots_path = $this->get_snapshots_directory();
 		if ( ! is_dir( $snapshots_path ) ) {
-			mkdir( $snapshots_path );
+			mkdir( $snapshots_path, 0777, true );
 		}
 
-		file_put_contents( $this->get_snapshot_file_name(), $this->format_data( $actual ) );
+		file_put_contents( $this->get_snapshot_file_path(), $this->format_data( $actual ) );
 	}
 
 
@@ -96,12 +111,13 @@ class Snapshots {
 	}
 
 
-	protected function get_snapshot_file_name(): string {
-		return $this->get_snapshots_path() . DIRECTORY_SEPARATOR . $this->get_test_name() . '.txt';
+	protected function get_snapshot_file_path(): string {
+		return $this->get_snapshots_directory() . DIRECTORY_SEPARATOR . $this->get_test_name() . '.txt';
 	}
 
-	protected function get_snapshots_path(): string {
-		return WP_TESTS_SNAPSHOTS_DIR;
+
+	protected function get_snapshots_directory(): string {
+		return WP_TESTS_SNAPSHOTS_DIR . DIRECTORY_SEPARATOR . $this->test_path;
 	}
 
 
