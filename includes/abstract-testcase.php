@@ -1256,7 +1256,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		require_once __DIR__ . '/src/Helpers/Snapshots.php';
 		$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2 );
 
-		$snapshots = new Snapshots( $backtrace );
+		$snapshots = Snapshots::factory( $backtrace );
 		$snapshots->assert_matches_snapshot( $actual, $this, $message );
 	}
 

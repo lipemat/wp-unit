@@ -31,7 +31,7 @@ class Snapshots {
 		$test_name = \str_replace( '\\', '-', $caller['class'] ) . '__' . $caller['function'];
 
 		if ( isset( self::$snapshots[ $test_name ] ) ) {
-			++self::$snapshots[ $test_name ];
+			++ self::$snapshots[ $test_name ];
 		} else {
 			self::$snapshots[ $test_name ] = 1;
 		}
@@ -98,8 +98,7 @@ class Snapshots {
 	}
 
 
-	public function factory( array $backtrace ): WP_Unit_Snapshots {
+	public static function factory( array $backtrace ): self {
 		return new self( $backtrace );
 	}
-
 }
