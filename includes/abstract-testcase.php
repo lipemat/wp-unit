@@ -1,5 +1,7 @@
 <?php
 
+use Lipe\WP_Unit\Helpers\Snapshots;
+
 require_once __DIR__ . '/factory.php';
 require_once __DIR__ . '/trac.php';
 
@@ -1095,7 +1097,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @since 5.6.0
 	 * @since 5.9.0 Added the `$message` parameter.
 	 *
-	 * @param array  $expected Expected array.
+	 * @param array  $expected The expected array.
 	 * @param array  $actual   Array to check.
 	 * @param string $message  Optional. Message to display when the assertion fails.
 	 */
@@ -1236,6 +1238,28 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 			$this->fail( $message );
 		}
 	}
+
+
+	/**
+	 * Assert a value matches a snapshot.
+	 *
+	 * @see WP_Unit_Snapshots
+	 *
+	 * @since 3.6.0
+	 *
+	 * @param mixed $actual A value which may be stored in a file using print_r().
+	 * @param string $message Optional. Message to display when the assertion fails.
+	 *
+	 * @return void
+	 */
+	public function assertMatchesSnapshot( $actual, string $message = '' ): void  {
+		require_once __DIR__ . '/src/Helpers/Snapshots.php';
+		$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2 );
+
+		$snapshots = new Snapshots( $backtrace );
+		$snapshots->assert_matches_snapshot( $actual, $this, $message );
+	}
+
 
 	/**
 	 * Helper function to convert a single-level array containing text strings to a named data provider.
