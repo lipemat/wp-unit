@@ -26,7 +26,14 @@ class Snapshots {
 	protected $test_name;
 
 
+	/**
+	 * @throws \Exception -- If the `WP_TESTS_SNAPSHOTS_DIR` constant is not defined.
+	 */
 	public function __construct( array $backtrace = [] ) {
+		if ( ! defined( 'WP_TESTS_SNAPSHOTS_DIR' )) {
+			throw new \Exception( 'The `WP_TESTS_SNAPSHOTS_DIR` constant must be defined to use snapshot testing.' );
+		}
+
 		$caller = \array_pop( $backtrace );
 		$test_name = \str_replace( '\\', '__', $caller['class'] ) . '--' . $caller['function'];
 
@@ -94,9 +101,7 @@ class Snapshots {
 	}
 
 	protected function get_snapshots_path(): string {
-		$dir = getcwd();
-
-		return $dir . DIRECTORY_SEPARATOR . '__snapshots__';
+		return WP_TESTS_SNAPSHOTS_DIR;
 	}
 
 

@@ -66,17 +66,20 @@ define( 'DB_USER', 'user' );
 define( 'DB_PASSWORD', 'password' );
 define( 'DB_HOST', 'localhost' );
 
-define( 'WP_TESTS_DOMAIN', 'tests.loc' );
+define( 'ABSPATH', WP_TESTS_DIR . '/' );
+define( 'DOMAIN_CURRENT_SITE', 'wp-libs.loc' );
+define( 'WP_TESTS_CONFIG_FILE_PATH',  __FILE__ );
 define( 'WP_PHP_BINARY', 'php' );
 // Root of your site/
 define( 'WP_TESTS_DIR', dirname( __DIR__ ) );
-define( 'ABSPATH', WP_TESTS_DIR . '/' );
+define( 'WP_TESTS_DOMAIN', 'tests.loc' );
 define( 'WP_TESTS_DOMAIN', 'wp-libs.loc' );
 define( 'WP_TESTS_EMAIL', 'unit-tests@test.com' );
 define( 'WP_TESTS_TITLE', 'WordPress Unit Tests' );
 define( 'WP_UNIT_DIR', __DIR__ . '/vendor/lipemat/wp-unit' );
-define( 'WP_TESTS_CONFIG_FILE_PATH',  __FILE__ );
-define( 'DOMAIN_CURRENT_SITE', 'wp-libs.loc' );
+
+// If using snapshot testing.
+define( 'WP_TESTS_SNAPSHOTS_DIR', __DIR__ . '/__snapshots__' );
 
 // If your not bootstrapping an exiting database.
 define( 'WP_TESTS_TABLE_PREFIX', 'tests_' );
