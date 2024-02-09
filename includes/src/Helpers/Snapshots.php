@@ -42,10 +42,15 @@ class Snapshots {
 		if ( ! defined( 'WP_TESTS_SNAPSHOTS_DIR' ) ) {
 			throw new \Exception( 'The `WP_TESTS_SNAPSHOTS_DIR` constant must be defined to use snapshot testing.' );
 		}
+		if ( ! defined( 'WP_TESTS_SNAPSHOTS_BASE' ) ) {
+			define( 'WP_TESTS_SNAPSHOTS_BASE', '' );
+		}
 
 		$caller = \array_pop( $backtrace );
-		$namespaces = explode( '\\', $caller['class'] );
-		\array_shift( $namespaces );
+		$namespaces = \explode( '\\', \str_replace( WP_TESTS_SNAPSHOTS_BASE, '', $caller['class'] ) );
+		if ( '' === WP_TESTS_SNAPSHOTS_BASE && \count( $namespaces ) > 1 ) {
+			\array_shift( $namespaces );
+		}
 		$test_name = \array_pop( $namespaces ) . '--' . $caller['function'];
 		$this->test_path = \implode( '/', $namespaces );
 		if ( isset( self::$snapshots[ $test_name ] ) ) {

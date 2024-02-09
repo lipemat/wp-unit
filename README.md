@@ -79,6 +79,7 @@ define( 'WP_TESTS_TITLE', 'WordPress Unit Tests' );
 define( 'WP_UNIT_DIR', __DIR__ . '/vendor/lipemat/wp-unit' );
 
 // If using snapshot testing.
+define( 'WP_TESTS_SNAPSHOTS_BASE', 'Lipe\Project' );
 define( 'WP_TESTS_SNAPSHOTS_DIR', __DIR__ . '/__snapshots__' );
 
 // If your not bootstrapping an exiting database.
