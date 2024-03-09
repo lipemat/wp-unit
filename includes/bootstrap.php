@@ -380,6 +380,7 @@ require __DIR__ . '/testcase-rest-post-type-controller.php';
 require __DIR__ . '/testcase-xmlrpc.php';
 require __DIR__ . '/testcase-ajax.php';
 require __DIR__ . '/testcase-canonical.php';
+require __DIR__ . '/testcase-wp-cli.php';
 require __DIR__ . '/testcase-xml.php';
 require __DIR__ . '/exceptions.php';
 require __DIR__ . '/utils.php';
