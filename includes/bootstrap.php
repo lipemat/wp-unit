@@ -403,6 +403,9 @@ require __DIR__ . '/class-wp-sitemaps-test-provider.php';
 require __DIR__ . '/class-wp-sitemaps-empty-test-provider.php';
 require __DIR__ . '/class-wp-sitemaps-large-test-provider.php';
 
+// Prevent side effects from the test case classes.
+Global_Hooks::instance()->restore_globals();
+
 /**
  * A class to handle additional command line arguments passed to the script.
  *
