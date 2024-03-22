@@ -9,6 +9,7 @@
  */
 
 use DG\BypassFinals;
+use Lipe\WP_Unit\Helpers\Global_Hooks;
 
 if ( file_exists( dirname( __DIR__ ) . '/vendor/autoload.php' ) ) {
 	require dirname( __DIR__ ) . '/vendor/autoload.php';
@@ -366,7 +367,8 @@ if( $multisite ){
 // unset this later so we can use it after WP loads
 unset( $multisite );
 
-
+// Backup the global hooks so we can restore them after each test.
+Global_Hooks::init_once();
 
 // Delete any default posts & related data.
 if ( ! tests_skip_install() ) {

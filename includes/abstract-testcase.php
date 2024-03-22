@@ -1,5 +1,7 @@
 <?php
 
+use Lipe\WP_Unit\Helpers\Global_Hooks;
+use Lipe\WP_Unit\Helpers\Hook_State;
 use Lipe\WP_Unit\Helpers\Snapshots;
 
 require_once __DIR__ . '/factory.php';
@@ -22,6 +24,14 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	protected $expected_doing_it_wrong = array();
 	protected $caught_doing_it_wrong   = array();
 
+	/**
+	 * @var ?Hook_State
+	 */
+	protected $hook_state;
+
+	/**
+	 * @deprecated in favor of `WP_UnitTestCase_Base::hook_state`.
+	 */
 	protected static $hooks_saved = array();
 	protected static $ignore_files;
 
@@ -97,6 +107,9 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 		self::commit_transaction();
 
+		self::$hooks_saved = [];
+		Global_Hooks::instance()->restore_globals();
+
 		parent::tear_down_after_class();
 	}
 
@@ -112,7 +125,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 			self::$ignore_files = $this->scan_user_uploads();
 		}
 
-		if ( ! self::$hooks_saved ) {
+		if ( ! $this->hook_state instanceof Hook_State ) {
 			$this->_backup_hooks();
 		}
 
@@ -360,26 +373,8 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @global array $wp_meta_keys
 	 */
 	protected function _backup_hooks() {
-		self::$hooks_saved['wp_filter'] = [];
-
-		foreach ( $GLOBALS['wp_filter'] as $hook_name => $hook_object ) {
-			self::$hooks_saved['wp_filter'][ $hook_name ] = clone $hook_object;
-		}
-
-		$globals = [ 'wp_actions', 'wp_filters', 'wp_current_filter' ];
-
-		foreach ( $globals as $key ) {
-			self::$hooks_saved[ $key ] = $GLOBALS[ $key ] ?? [];
-		}
-
-		if ( ( ! defined( 'WP_RUN_CORE_TESTS' ) || ! WP_RUN_CORE_TESTS ) ) {
-			if ( isset( $GLOBALS['wp_meta_keys'] ) ) {
-				self::$hooks_saved['wp_meta_keys'] = $GLOBALS['wp_meta_keys'];
-			}
-			if ( isset( $GLOBALS['wp_registered_settings'] ) ) {
-				self::$hooks_saved['wp_registered_settings'] = $GLOBALS['wp_registered_settings'];
-			}
-		}
+		$this->hook_state = Hook_State::factory();
+		self::$hooks_saved = $this->hook_state->get_legacy_hooks();
 	}
 
 	/**
@@ -395,29 +390,8 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @global array $wp_meta_keys
 	 */
 	protected function _restore_hooks() {
-		if ( isset( self::$hooks_saved['wp_filter'] ) ) {
-			$GLOBALS['wp_filter'] = [];
-
-			foreach ( self::$hooks_saved['wp_filter'] as $hook_name => $hook_object ) {
-				$GLOBALS['wp_filter'][ $hook_name ] = clone $hook_object;
-			}
-		}
-
-		$globals = [ 'wp_actions', 'wp_filters', 'wp_current_filter' ];
-
-		foreach ( $globals as $key ) {
-			if ( isset( self::$hooks_saved[ $key ] ) ) {
-				$GLOBALS[ $key ] = self::$hooks_saved[ $key ];
-			}
-		}
-
-		if ( ( ! defined( 'WP_RUN_CORE_TESTS' ) || ! WP_RUN_CORE_TESTS ) ) {
-			if( isset( self::$hooks_saved['wp_meta_keys'] ) ) {
-				$GLOBALS['wp_meta_keys'] = self::$hooks_saved['wp_meta_keys'];
-			}
-			if ( isset( self::$hooks_saved['wp_registered_settings'] ) ) {
-				$GLOBALS['wp_registered_settings'] = self::$hooks_saved['wp_registered_settings'];
-			}
+		if ( $this->hook_state instanceof Hook_State ) {
+			Global_Hooks::instance()->restore_hooks( $this->hook_state );
 		}
 	}
 

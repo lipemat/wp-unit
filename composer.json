@@ -3,11 +3,6 @@
   "description": "Forked Wp-unit with support for testing against existing database and other environment enhancements.",
   "type": "library",
   "license": "MIT",
-  "require": {
-    "php": ">=7.2.0",
-    "yoast/phpunit-polyfills": "^1.1.0",
-    "dg/bypass-finals": "^1.5"
-  },
   "authors": [
     {
       "name": "lipemat",
@@ -15,6 +10,16 @@
     }
   ],
   "minimum-stability": "stable",
+  "require": {
+    "php": ">=7.2.0",
+    "yoast/phpunit-polyfills": "^1.1.0",
+    "dg/bypass-finals": "^1.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Lipe\\WP_Unit\\": "includes/src/"
+    }
+  },
   "scripts": {
     "post-install-cmd": "bin/cleanup-unused-dependencies.sh",
     "post-update-cmd": "bin/cleanup-unused-dependencies.sh"
