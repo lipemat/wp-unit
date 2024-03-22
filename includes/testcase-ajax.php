@@ -119,15 +119,21 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 	public static function set_up_before_class() {
 		parent::set_up_before_class();
 
+		remove_action( 'admin_init', '_maybe_update_core' );
+		remove_action( 'admin_init', '_maybe_update_plugins' );
+		remove_action( 'admin_init', '_maybe_update_themes' );
+		remove_action( 'admin_init', '_wp_check_for_scheduled_split_terms' );
+		remove_action( 'admin_init', '_wp_check_for_scheduled_update_comment_type' );
+		remove_action( 'admin_init', 'wp_schedule_update_user_counts' );
+
 		// Register the core actions.
-		if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS ) {
-			foreach ( array_merge( self::$_core_actions_get, self::$_core_actions_post ) as $action ) {
-				if ( function_exists( 'wp_ajax_' . str_replace( '-', '_', $action ) ) ) {
-					add_action( 'wp_ajax_' . $action, 'wp_ajax_' . str_replace( '-', '_', $action ), 1 );
-				}
+		foreach ( array_merge( self::$_core_actions_get, self::$_core_actions_post ) as $action ) {
+			if ( function_exists( 'wp_ajax_' . str_replace( '-', '_', $action ) ) ) {
+				add_action( 'wp_ajax_' . $action, 'wp_ajax_' . str_replace( '-', '_', $action ), 1 );
 			}
 		}
 	}
+
 
 	/**
 	 * Sets up the test fixture.
@@ -136,14 +142,6 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 	 */
 	public function set_up() {
 		parent::set_up();
-
-		// Remove heavy running functions from firing on every ajax request.
-		remove_action( 'admin_init', '_maybe_update_core' );
-		remove_action( 'admin_init', '_maybe_update_plugins' );
-		remove_action( 'admin_init', '_maybe_update_themes' );
-		remove_action( 'admin_init', '_wp_check_for_scheduled_split_terms' );
-		remove_action( 'admin_init', '_wp_check_for_scheduled_update_comment_type' );
-		remove_action( 'admin_init', 'wp_schedule_update_user_counts' );
 
 		add_filter( 'wp_doing_ajax', '__return_true' );
 		add_filter( 'wp_die_ajax_handler', array( $this, 'getDieHandler' ), 1, 1 );
