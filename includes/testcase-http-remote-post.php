@@ -53,7 +53,17 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 		$this->get_request_class()::$transport[ serialize( [] ) ] = __CLASS__;
 		$this->get_request_class()::$transport[ serialize( [ 'ssl' => false ] ) ] = __CLASS__;
 		$this->get_request_class()::$transport[ serialize( [ 'ssl' => true ] ) ] = __CLASS__;
-		add_filter( 'http_api_transports', [ $this, 'use_this_class_for_transport' ], 99 );
+
+		// Pre WP 6.4.
+		if ( ! defined( "{$this->get_request_class()}::DEFAULT_TRANSPORTS" ) ) {
+			add_filter( 'http_api_transports', [ $this, 'use_this_class_for_transport' ], 99 );
+		} else {
+			// Swap out the transports with only our mock.
+			$reflection = new \ReflectionClass( $this->get_request_class() );
+			$reflectionProperty = $reflection->getProperty( 'transports' );
+			$reflectionProperty->setAccessible( true );
+			$reflectionProperty->setValue( $this->get_request_class(), [ __CLASS__ => __CLASS__ ] );
+		}
 	}
 
 
@@ -62,7 +72,19 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 		self::$mock_response = [];
 		putenv( 'PHP_MOCKED_REMOTE_POST' );
 		$this->get_request_class()::$transport = [];
-		remove_filter( 'http_api_transports', [ $this, 'use_this_class_for_transport' ], 99 );
+
+		// Pre WP 6.4.
+		if ( ! defined( "{$this->get_request_class()}::DEFAULT_TRANSPORTS" ) ) {
+			remove_filter( 'http_api_transports', [ $this, 'use_this_class_for_transport' ], 99 );
+		} else {
+			// Restore the default transports.
+			$this->get_request_class()::$transport = [];
+			$reflection = new \ReflectionClass( $this->get_request_class() );
+			$reflectionProperty = $reflection->getProperty( 'transports' );
+			$reflectionProperty->setAccessible( true );
+			$reflectionProperty->setValue( $this->get_request_class(), $this->get_request_class()::DEFAULT_TRANSPORTS );
+		}
+
 		parent::tear_down();
 	}
 
