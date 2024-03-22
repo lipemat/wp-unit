@@ -173,7 +173,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$wp           = new WP();
 
 		// Reset globals related to the post loop and `setup_postdata()`.
-		$post_globals = array( 'post', 'id', 'authordata', 'currentday', 'currentmonth', 'page', 'pages', 'multipage', 'more', 'numpages' );
+		$post_globals = [ 'post', 'id', 'authordata', 'currentday', 'currentmonth', 'page', 'pages', 'multipage', 'more', 'numpages', 'comment' ];
 		foreach ( $post_globals as $global ) {
 			$GLOBALS[ $global ] = null;
 		}
