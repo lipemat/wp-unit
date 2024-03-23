@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/dev/wp-unit/tests" isTestSource="true" packagePrefix="Lipe\WP_Unit" />
+      <sourceFolder url="file://$MODULE_DIR$/includes/src" isTestSource="false" packagePrefix="Lipe\WP_Unit\" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/yoast/phpunit-polyfills" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dg/bypass-finals" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/copilot/chatSessions" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

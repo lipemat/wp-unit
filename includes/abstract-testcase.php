@@ -599,6 +599,9 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		if ( $this->deprecated_usage instanceof Deprecated_Usage ) {
 			$this->deprecated_usage->validate();
 		}
+		if ( $this->doing_it_wrong instanceof Doing_It_Wrong ) {
+			$this->doing_it_wrong->validate();
+		}
 	}
 
 

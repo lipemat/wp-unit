@@ -4,17 +4,58 @@
 /tests
 
 # system/hidden files
+*.bak
+*.sublime-project
+*.sublime-workspace
+*.swp
 *~
 .DS_Store
-.svn
+.DS_Store?
+.Trashes
 .cvs
-*.bak
-*.swp
+.eslintcache
+.phpcs.cache
+.phpunit.cache
+.phpunit.result.cache
+.project
+.ready
+.sass-cache
+.stylelintcache
+.svn
 Thumbs.db
-.idea
-*/node_modules
-*/npm-debug.log
+ehthumbs.db
+tsconfig.tsbuildinfo
+
 .revision
 /vendor/
 
 composer.lock
+
+# PHPStorm files
+# https://github.com/github/gitignore/blob/master/Global/JetBrains.gitignore
+# User-specific stuff
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+.idea/csv-editor.xml
+.idea/csv-plugin.xml
+.idea/php.xml
+.idea/sshConfigs.xml
+# Generated files
+.idea/**/contentModel.xml
+# Sensitive or high-churn files
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+.idea/**/dbnavigator.xml
+# JIRA plugin
+atlassian-ide-plugin.xml
+# Editor-based Rest Client
+.idea/httpRequests
+# Copilot
+.idea/copilot
