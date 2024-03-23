@@ -1,7 +1,8 @@
-*.log
-
+composer.lock
 # Core tests files
 /tests
+
+
 
 # system/hidden files
 *.bak
@@ -26,10 +27,27 @@ Thumbs.db
 ehthumbs.db
 tsconfig.tsbuildinfo
 
-.revision
+# log files
+*.log
+
+# local configs
+local-config.php
+local-config.json
+phpcs.xml
+phpstan.neon
+phpunit.xml
+
+# vendor files
 /vendor/
 
-composer.lock
+# theme - compiled files
+.revision
+deploy
+
+
+# keep files (must be last).
+!.gitkeep
+!.keep
 
 # PHPStorm files
 # https://github.com/github/gitignore/blob/master/Global/JetBrains.gitignore
