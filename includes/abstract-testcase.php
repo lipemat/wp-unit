@@ -1,10 +1,12 @@
 <?php
 
+use Lipe\WP_Unit\Framework\Deprecated_TestCase_Base;
+use Lipe\WP_Unit\Helpers\Deprecated_Usage;
+use Lipe\WP_Unit\Helpers\Doing_It_Wrong;
 use Lipe\WP_Unit\Helpers\Global_Hooks;
 use Lipe\WP_Unit\Helpers\Hook_State;
 use Lipe\WP_Unit\Helpers\Snapshots;
-use PHPUnit\Metadata\Annotation\Parser\Registry;
-use PHPUnit\Util\Test;
+use Lipe\WP_Unit\Traits\Helper_Access;
 
 require_once __DIR__ . '/factory.php';
 require_once __DIR__ . '/trac.php';
@@ -19,12 +21,7 @@ require_once __DIR__ . '/trac.php';
  * All WordPress unit tests should inherit from this class.
  */
 abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
-
-	protected static $forced_tickets   = array();
-	protected $expected_deprecated     = array();
-	protected $caught_deprecated       = array();
-	protected $expected_doing_it_wrong = array();
-	protected $caught_doing_it_wrong   = array();
+	use Deprecated_TestCase_Base;
 
 	/**
 	 * @var ?Hook_State
@@ -32,10 +29,17 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	protected $hook_state;
 
 	/**
-	 * @todo Remove in version 4.
-	 * @deprecated in favor of `WP_UnitTestCase_Base::hook_state`.
+	 * @var ?Deprecated_Usage
 	 */
-	protected static $hooks_saved = array();
+	protected $deprecated_usage;
+
+	/**
+	 * @var ?Doing_It_Wrong
+	 */
+	protected $doing_it_wrong;
+
+	protected static $forced_tickets   = array();
+
 	protected static $ignore_files;
 
 	/**
@@ -127,9 +131,11 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 			self::$ignore_files = $this->scan_user_uploads();
 		}
 
-		if ( ! $this->hook_state instanceof Hook_State ) {
-			$this->_backup_hooks();
-		}
+		$this->_backup_hooks();
+
+		// Load the helpers into the stack.
+		$this->deprecated_usage = Deprecated_Usage::factory( $this );
+		$this->doing_it_wrong = Doing_It_Wrong::factory( $this );
 
 		global $wp_rewrite;
 
@@ -153,7 +159,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		}
 
 		$this->start_transaction();
-		$this->expectDeprecated();
+		$this->_fill_expected_deprecated();
 		add_filter( 'wp_die_handler', array( $this, 'get_wp_die_handler' ) );
 	}
 
@@ -546,9 +552,10 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @param callable $handler The current die handler.
 	 * @return callable The test die handler.
 	 */
-	function get_wp_die_handler( $handler ) {
+	public function get_wp_die_handler( $handler ) {
 		return array( $this, 'wp_die_handler' );
 	}
+
 
 	/**
 	 * Throws an exception when called.
@@ -579,118 +586,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		throw new WPDieException( $message, $code );
 	}
 
-	/**
-	 * Sets up the expectations for testing a deprecated call.
-	 *
-	 * @since 3.7.0
-	 */
-	public function expectDeprecated() {
-		if ( method_exists( $this, 'getAnnotations' ) ) {
-			// PHPUnit < 9.5.0.
-			$annotations = $this->getAnnotations();
-		} elseif ( method_exists( Test::class, 'parseTestMethodAnnotations' ) ) {
-			// PHPUnit >= 9.5.0.
-			$annotations = Test::parseTestMethodAnnotations(
-				static::class,
-				$this->getName( false )
-			);
-		} else {
-			// PHPUnit >= 10.5.0
-			$annotations = [
-				'method' => Registry::getInstance()->forMethod( static::class, $this->name() )->symbolAnnotations(),
-				'class'  => Registry::getInstance()->forClassName( static::class )->symbolAnnotations(),
-			];
-		}
 
-		foreach ( array( 'class', 'method' ) as $depth ) {
-			if ( ! empty( $annotations[ $depth ]['expectedDeprecated'] ) ) {
-				$this->expected_deprecated = array_merge(
-					$this->expected_deprecated,
-					$annotations[ $depth ]['expectedDeprecated']
-				);
-			}
-
-			if ( ! empty( $annotations[ $depth ]['expectedIncorrectUsage'] ) ) {
-				$this->expected_doing_it_wrong = array_merge(
-					$this->expected_doing_it_wrong,
-					$annotations[ $depth ]['expectedIncorrectUsage']
-				);
-			}
-		}
-
-		add_action( 'deprecated_function_run', array( $this, 'deprecated_function_run' ), 10, 3 );
-		add_action( 'deprecated_argument_run', array( $this, 'deprecated_function_run' ), 10, 3 );
-		add_action( 'deprecated_class_run', array( $this, 'deprecated_function_run' ), 10, 3 );
-		add_action( 'deprecated_file_included', array( $this, 'deprecated_function_run' ), 10, 4 );
-		add_action( 'deprecated_hook_run', array( $this, 'deprecated_function_run' ), 10, 4 );
-		add_action( 'doing_it_wrong_run', array( $this, 'doing_it_wrong_run' ), 10, 3 );
-
-		add_action( 'deprecated_function_trigger_error', '__return_false' );
-		add_action( 'deprecated_argument_trigger_error', '__return_false' );
-		add_action( 'deprecated_class_trigger_error', '__return_false' );
-		add_action( 'deprecated_file_trigger_error', '__return_false' );
-		add_action( 'deprecated_hook_trigger_error', '__return_false' );
-		add_action( 'doing_it_wrong_trigger_error', '__return_false' );
-	}
-
-	/**
-	 * Handles a deprecated expectation.
-	 *
-	 * The DocBlock should contain `@expectedDeprecated` to trigger this.
-	 *
-	 * @since 3.7.0
-	 * @since 6.1.0 Includes the actual unexpected `_doing_it_wrong()` message
-	 *              or deprecation notice in the output if one is encountered.
-	 */
-	public function expectedDeprecated() {
-		$errors = array();
-
-		$not_caught_deprecated = array_diff(
-			$this->expected_deprecated,
-			array_keys( $this->caught_deprecated )
-		);
-
-		foreach ( $not_caught_deprecated as $not_caught ) {
-			$errors[] = "Failed to assert that $not_caught triggered a deprecation notice.";
-		}
-
-		$unexpected_deprecated = array_diff(
-			array_keys( $this->caught_deprecated ),
-			$this->expected_deprecated
-		);
-
-		foreach ( $unexpected_deprecated as $unexpected ) {
-			$errors[] = "Unexpected deprecation notice for $unexpected.";
-			$errors[] = $this->caught_deprecated[ $unexpected ];
-		}
-
-		$not_caught_doing_it_wrong = array_diff(
-			$this->expected_doing_it_wrong,
-			array_keys( $this->caught_doing_it_wrong )
-		);
-
-		foreach ( $not_caught_doing_it_wrong as $not_caught ) {
-			$errors[] = "Failed to assert that $not_caught triggered an incorrect usage notice.";
-		}
-
-		$unexpected_doing_it_wrong = array_diff(
-			array_keys( $this->caught_doing_it_wrong ),
-			$this->expected_doing_it_wrong
-		);
-
-		foreach ( $unexpected_doing_it_wrong as $unexpected ) {
-			$errors[] = "Unexpected incorrect usage notice for $unexpected.";
-			$errors[] = $this->caught_doing_it_wrong[ $unexpected ];
-		}
-
-		// Perform an assertion, but only if there are expected or unexpected deprecated calls or wrongdoings.
-		if ( ! empty( $this->expected_deprecated ) ||
-			! empty( $this->expected_doing_it_wrong ) ||
-			! empty( $this->caught_deprecated ) ||
-			! empty( $this->caught_doing_it_wrong ) ) {
-			$this->assertEmpty( $errors, implode( "\n", $errors ) );
-		}
-	}
 
 	/**
 	 * Detects post-test failure conditions.
@@ -700,181 +596,11 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @since 4.2.0
 	 */
 	protected function assert_post_conditions() {
-		$this->expectedDeprecated();
-	}
-
-	/**
-	 * Declares an expected `_deprecated_function()` or `_deprecated_argument()` call from within a test.
-	 *
-	 * @since 4.2.0
-	 *
-	 * @param string $deprecated Name of the function, method, class, or argument that is deprecated.
-	 *                           Must match the first parameter of the `_deprecated_function()`
-	 *                           or `_deprecated_argument()` call.
-	 */
-	public function setExpectedDeprecated( $deprecated ) {
-		$this->expected_deprecated[] = $deprecated;
-	}
-
-	/**
-	 * Declares an expected `_doing_it_wrong()` call from within a test.
-	 *
-	 * @since 4.2.0
-	 *
-	 * @param string $doing_it_wrong Name of the function, method, or class that appears in
-	 *                               the first argument of the source `_doing_it_wrong()` call.
-	 */
-	public function setExpectedIncorrectUsage( $doing_it_wrong ) {
-		$this->expected_doing_it_wrong[] = $doing_it_wrong;
-	}
-
-	/**
-	 * Redundant PHPUnit 6+ compatibility shim. DO NOT USE!
-	 *
-	 * This method is only left in place for backward compatibility reasons.
-	 *
-	 * @since 4.8.0
-	 * @deprecated 5.9.0 Use the PHPUnit native expectException*() methods directly.
-	 *
-	 * @param mixed      $exception
-	 * @param string     $message
-	 * @param int|string $code
-	 */
-	public function setExpectedException( $exception, $message = '', $code = null ) {
-		$this->expectException( $exception );
-
-		if ( '' !== $message ) {
-			$this->expectExceptionMessage( $message );
-		}
-
-		if ( null !== $code ) {
-			$this->expectExceptionCode( $code );
+		if ( $this->deprecated_usage instanceof Deprecated_Usage ) {
+			$this->deprecated_usage->validate();
 		}
 	}
 
-	/**
-	 * Adds a deprecated function to the list of caught deprecated calls.
-	 *
-	 * @since 3.7.0
-	 * @since 6.1.0 Added the `$replacement`, `$version`, and `$message` parameters.
-	 *
-	 * @param string $function_name The deprecated function.
-	 * @param string $replacement   The function that should have been called.
-	 * @param string $version       The version of WordPress that deprecated the function.
-	 * @param string $message       Optional. A message regarding the change.
-	 */
-	public function deprecated_function_run( $function_name, $replacement, $version, $message = '' ) {
-		if ( ! isset( $this->caught_deprecated[ $function_name ] ) ) {
-			switch ( current_action() ) {
-				case 'deprecated_function_run':
-					if ( $replacement ) {
-						$message = sprintf(
-							'Function %1$s is deprecated since version %2$s! Use %3$s instead.',
-							$function_name,
-							$version,
-							$replacement
-						);
-					} else {
-						$message = sprintf(
-							'Function %1$s is deprecated since version %2$s with no alternative available.',
-							$function_name,
-							$version
-						);
-					}
-					break;
-
-				case 'deprecated_argument_run':
-					if ( $replacement ) {
-						$message = sprintf(
-							'Function %1$s was called with an argument that is deprecated since version %2$s! %3$s',
-							$function_name,
-							$version,
-							$replacement
-						);
-					} else {
-						$message = sprintf(
-							'Function %1$s was called with an argument that is deprecated since version %2$s with no alternative available.',
-							$function_name,
-							$version
-						);
-					}
-					break;
-
-				case 'deprecated_class_run':
-					if ( $replacement ) {
-						$message = sprintf(
-							'Class %1$s is deprecated since version %2$s! Use %3$s instead.',
-							$function_name,
-							$version,
-							$replacement
-						);
-					} else {
-						$message = sprintf(
-							'Class %1$s is deprecated since version %2$s with no alternative available.',
-							$function_name,
-							$version
-						);
-					}
-					break;
-
-				case 'deprecated_file_included':
-					if ( $replacement ) {
-						$message = sprintf(
-							'File %1$s is deprecated since version %2$s! Use %3$s instead.',
-							$function_name,
-							$version,
-							$replacement
-						) . ' ' . $message;
-					} else {
-						$message = sprintf(
-							'File %1$s is deprecated since version %2$s with no alternative available.',
-							$function_name,
-							$version
-						) . ' ' . $message;
-					}
-					break;
-
-				case 'deprecated_hook_run':
-					if ( $replacement ) {
-						$message = sprintf(
-							'Hook %1$s is deprecated since version %2$s! Use %3$s instead.',
-							$function_name,
-							$version,
-							$replacement
-						) . ' ' . $message;
-					} else {
-						$message = sprintf(
-							'Hook %1$s is deprecated since version %2$s with no alternative available.',
-							$function_name,
-							$version
-						) . ' ' . $message;
-					}
-					break;
-			}
-
-			$this->caught_deprecated[ $function_name ] = $message;
-		}
-	}
-
-	/**
-	 * Adds a function called in a wrong way to the list of `_doing_it_wrong()` calls.
-	 *
-	 * @since 3.7.0
-	 * @since 6.1.0 Added the `$message` and `$version` parameters.
-	 *
-	 * @param string $function_name The function to add.
-	 * @param string $message       A message explaining what has been done incorrectly.
-	 * @param string $version       The version of WordPress where the message was added.
-	 */
-	public function doing_it_wrong_run( $function_name, $message, $version ) {
-		if ( ! isset( $this->caught_doing_it_wrong[ $function_name ] ) ) {
-			if ( $version ) {
-				$message .= ' ' . sprintf( '(This message was added in version %s.)', $version );
-			}
-
-			$this->caught_doing_it_wrong[ $function_name ] = $message;
-		}
-	}
 
 	/**
 	 * Asserts that the given value is an instance of WP_Error.
@@ -885,6 +611,55 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	public function assertWPError( $actual, $message = '' ) {
 		$this->assertInstanceOf( 'WP_Error', $actual, $message );
 	}
+
+
+	/**
+	 *  Declares an expected `_deprecated_function()` call from within a test.
+	 *
+	 * An alternative to using the `@expectedDeprecated` annotation.
+	 *
+	 * @since  3.7.0
+	 *
+	 * - _deprecated_file()
+	 * - _deprecated_argument()
+	 * - _deprecated_hook()
+	 * - _deprecated_constructor()
+	 * - _deprecated_function()
+	 * - _deprecated_file()
+	 *
+	 * @notice There used to be a different method called `expectDeprecated`.
+	 *         `null` as a parameter signifies old usage and will do nothing
+	 *         for the test case.
+	 *
+	 * @param ?string $deprecated Name of the function, method, class or
+	 *                            argument that is deprecated.
+	 *
+	 * @return void
+	 */
+	public function expectDeprecated( ?string $deprecated = null ): void {
+		if ( '' === $deprecated ) {
+			$this->_fill_expected_deprecated();
+			return; // Backward compatibility.
+		}
+		$this->deprecated_usage->add_expected( [ $deprecated ] );
+	}
+
+
+	/**
+	 * Declares an expected `_doing_it_wrong()` call from within a test.
+	 *
+	 * An alternative to using the `@expectedIncorrectUsage` annotation.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @param string $wrong
+	 *
+	 * @return void
+	 */
+	public function expectDoingItWrong( string $wrong ): void {
+		$this->doing_it_wrong->add_expected( [ $wrong ] );
+	}
+
 
 	/**
 	 * Asserts that the given value is not an instance of WP_Error.

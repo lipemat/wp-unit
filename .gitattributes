@@ -11,3 +11,4 @@
 /.gitignore export-ignore
 /bin export-ignore
 /patches export-ignore
+/dev export-ignore
