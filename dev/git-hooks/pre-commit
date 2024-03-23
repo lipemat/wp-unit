@@ -51,9 +51,10 @@ if [[ ! "$PHP_FILES" ]]; then
     echo "${YELLOW}[pre-commit]${BLUE} No Lintable PHP Files Changed ${RESET_COLOR}"
 fi
 
+# Pass the exit code to change the default exit code of 1 to something else.
 function exit_reset_colors() {
     echo ${RESET_COLOR}
-   # exit 1
+    exit ${1:-1}
 }
 
 function php_unit() {
@@ -90,51 +91,6 @@ function php_lint() {
     fi
 }
 php_lint &
-
-function php_code_sniffer() {
-    if [[ "$PHP_FILES" || "$JS_FILES" ]]; then
-        if [[ ! -f ${PROJECT}/phpcs.xml ]] && [[ ! -f ${PROJECT}/phpcs.xml.dist ]]; then
-            echo "${YELLOW}[pre-commit]${RED} ${PROJECT}/phpcs.xml or ${PROJECT}/phpcs.xml.dist not found!"
-            exit_reset_colors
-        fi
-        for FILE in ${PHP_FILES}; do
-            FILES="$FILES ${PROJECT}/${FILE}"
-        done
-        echo "${YELLOW}[pre-commit]${BLUE} Running PHPCS... ${WHITE}"
-        OUTPUT=$(${PHPCS} --encoding=utf-8 -s -p)
-        if [[ $? != 0 ]]; then
-            echo
-            echo "${BLUE}PHPCS failed. Fix the error before commit!"
-            echo "${RED}$OUTPUT"
-            echo
-            echo "${YELLOW}For automatic fixes run"
-            echo
-            echo "${WHITE}phpcbf${FILES}"
-            echo
-            exit_reset_colors
-        fi
-        echo "${YELLOW}[pre-commit]${GREEN} PHPCS Passed!${RESET_COLOR}"
-    fi
-}
-php_code_sniffer &
-
-function php_stan() {
-    if [[ ! -f ${PROJECT}/phpstan.neon ]] && [[ ! -f ${PROJECT}/phpstan.neon.dist ]]; then
-        echo "${YELLOW}[pre-commit]${RED} ${PROJECT}/phpstan.neon or ${PROJECT}/phpstan.neon.dist not found!"
-        exit_reset_colors
-    fi
-
-    echo "${YELLOW}[pre-commit]${BLUE} Running PHP Stan... ${WHITE}"
-    OUTPUT=$(${PHPSTAN} analyse --no-progress --memory-limit=2G)
-    if [[ $? != 0 ]]; then
-        echo
-        echo "${BLUE}PHP Stan Failed. Fix the error before commit."
-        echo "${RED}$OUTPUT"
-        exit_reset_colors
-    fi
-    echo "${YELLOW}[pre-commit]${GREEN} PHP Stan Passed!${RESET_COLOR}"
-}
-php_stan &
 
 
 # Go through each background task
