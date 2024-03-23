@@ -1,0 +1,49 @@
+<?php
+declare( strict_types=1 );
+
+namespace Lipe\WP_Unit\Helpers;
+
+/**
+ * @author Mat Lipe
+ * @since  March 2024
+ *
+ */
+class Global_HooksTest extends \WP_UnitTestCase {
+	public const NAME = 'lipe/wp-unit/helpers/global-hookstest';
+
+
+	public function test_make_changes(): void {
+		$this->assertFalse( has_action( self::NAME, '__return_true' ) );
+		add_action( self::NAME, '__return_true' );
+		$this->assertSame( 10, has_action( self::NAME, '__return_true' ) );
+
+		$this->assertFalse( has_filter( self::NAME . '-filter', '__return_true' ) );
+		add_filter( self::NAME . '-filter', '__return_true', 20 );
+		$this->assertSame( 20, has_filter( self::NAME . '-filter', '__return_true' ) );
+
+		$this->assertEmpty( $GLOBALS['current_filter'] ?? null );
+		$GLOBALS['wp_current_filter'] = [ 0, self::NAME ];
+		$this->assertSame( self::NAME, current_filter() );
+
+		$this->assertArrayNotHasKey( self::NAME, get_registered_meta_keys( 'post', 'page' ) );
+		register_meta( 'post', self::NAME, [ 'object_subtype' => 'page' ] );
+		$this->assertNotEmpty( get_registered_meta_keys( 'post', 'page' )[ self::NAME ] );
+
+		$this->assertArrayNotHasKey( self::NAME, get_registered_settings() );
+		register_setting( 'general', self::NAME, [ true ] );
+		$this->assertNotEmpty( get_registered_settings()[ self::NAME ] );
+	}
+
+
+	/**
+	 * @depends test_make_changes
+	 */
+	public function test_settings_reset(): void {
+		$this->assertFalse( has_action( self::NAME, '__return_true' ) );
+		$this->assertFalse( has_filter( self::NAME . '-filter', '__return_true' ) );
+		$this->assertEmpty( $GLOBALS['current_filter'] ?? null );
+		$this->assertArrayNotHasKey( self::NAME, get_registered_meta_keys( 'post', 'page' ) );
+		$this->assertArrayNotHasKey( self::NAME, get_registered_settings() );
+	}
+
+}

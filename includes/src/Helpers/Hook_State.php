@@ -39,7 +39,7 @@ final class Hook_State {
 	/**
 	 * @var array<string, array<string, string|false>>
 	 */
-	private $wp_registered_sidebars;
+	private $wp_registered_settings;
 
 
 	private function __construct() {
@@ -48,7 +48,7 @@ final class Hook_State {
 		$this->wp_filters = $GLOBALS['wp_filters'];
 		$this->wp_current_filter = $GLOBALS['wp_current_filter'];
 		$this->wp_meta_keys = $GLOBALS['wp_meta_keys'] ?? [];
-		$this->wp_registered_sidebars = $GLOBALS['wp_registered_sidebars'] ?? [];
+		$this->wp_registered_settings = $GLOBALS['wp_registered_settings'] ?? [];
 	}
 
 
@@ -87,8 +87,8 @@ final class Hook_State {
 	/**
 	 * @return array<string, array<string, string|false>>
 	 */
-	public function get_wp_registered_sidebars(): array {
-		return $this->wp_registered_sidebars;
+	public function get_wp_registered_settings(): array {
+		return $this->wp_registered_settings;
 	}
 
 
@@ -109,7 +109,7 @@ final class Hook_State {
 	 *      wp_filters?: array,
 	 *      wp_current_filter?: array,
 	 *      wp_meta_keys?: array,
-	 *      wp_registered_sidebars?: array
+	 *      wp_registered_settings?: array
 	 * }
 	 */
 	public function get_legacy_hooks(): array {
@@ -119,7 +119,7 @@ final class Hook_State {
 			'wp_filters'             => $this->wp_filters,
 			'wp_current_filter'      => $this->wp_current_filter,
 			'wp_meta_keys'           => $this->wp_meta_keys,
-			'wp_registered_sidebars' => $this->wp_registered_sidebars,
+			'wp_registered_settings' => $this->wp_registered_settings,
 		];
 	}
 

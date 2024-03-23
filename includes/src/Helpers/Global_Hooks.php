@@ -28,7 +28,7 @@ final class Global_Hooks {
 		'wp_filters',
 		'wp_current_filter',
 		'wp_meta_keys',
-		'wp_registered_sidebars',
+		'wp_registered_settings',
 	];
 
 
@@ -65,6 +65,6 @@ final class Global_Hooks {
 		$GLOBALS['wp_filters'] = $hooks->get_wp_filters();
 		$GLOBALS['wp_current_filter'] = $hooks->get_wp_current_filter();
 		$GLOBALS['wp_meta_keys'] = $hooks->get_wp_meta_keys();
-		$GLOBALS['wp_registered_sidebars'] = $hooks->get_wp_registered_sidebars();
+		$GLOBALS['wp_registered_settings'] = $hooks->get_wp_registered_settings();
 	}
 }
