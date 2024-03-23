@@ -3,6 +3,8 @@
 use Lipe\WP_Unit\Helpers\Global_Hooks;
 use Lipe\WP_Unit\Helpers\Hook_State;
 use Lipe\WP_Unit\Helpers\Snapshots;
+use PHPUnit\Metadata\Annotation\Parser\Registry;
+use PHPUnit\Util\Test;
 
 require_once __DIR__ . '/factory.php';
 require_once __DIR__ . '/trac.php';
@@ -586,12 +588,18 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		if ( method_exists( $this, 'getAnnotations' ) ) {
 			// PHPUnit < 9.5.0.
 			$annotations = $this->getAnnotations();
-		} else {
+		} elseif ( method_exists( Test::class, 'parseTestMethodAnnotations' ) ) {
 			// PHPUnit >= 9.5.0.
-			$annotations = \PHPUnit\Util\Test::parseTestMethodAnnotations(
+			$annotations = Test::parseTestMethodAnnotations(
 				static::class,
 				$this->getName( false )
 			);
+		} else {
+			// PHPUnit >= 10.5.0
+			$annotations = [
+				'method' => Registry::getInstance()->forMethod( static::class, $this->name() )->symbolAnnotations(),
+				'class'  => Registry::getInstance()->forClassName( static::class )->symbolAnnotations(),
+			];
 		}
 
 		foreach ( array( 'class', 'method' ) as $depth ) {
