@@ -30,6 +30,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	protected $hook_state;
 
 	/**
+	 * @todo Remove in version 4.
 	 * @deprecated in favor of `WP_UnitTestCase_Base::hook_state`.
 	 */
 	protected static $hooks_saved = array();
@@ -107,7 +108,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 		self::commit_transaction();
 
-		self::$hooks_saved = [];
 		Global_Hooks::instance()->restore_globals();
 
 		parent::tear_down_after_class();
@@ -378,7 +378,9 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 */
 	protected function _backup_hooks() {
 		$this->hook_state = Hook_State::factory();
-		self::$hooks_saved = $this->hook_state->get_legacy_hooks();
+		if ( ! self::$hooks_saved ) {
+			self::$hooks_saved = $this->hook_state->get_legacy_hooks();
+		}
 	}
 
 	/**
