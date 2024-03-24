@@ -5,7 +5,9 @@
  *
  * Allow basic commands to be run within tests and results to be asserted.
  */
+
 namespace {
+	use WP_CLI\ExitException;
 
 	class WP_CLI {
 
@@ -64,15 +66,21 @@ namespace {
 		 * Store messages in this class.
 		 *
 		 * @param string $message Message to output.
-		 * @param bool   $exit    Whether to exit the script.
+		 * @param boolean|integer   $exit    Whether to exit the script.
 		 *
-		 * @throws Exception
+		 * @throws ExitException
 		 * @return void
 		 */
-		public static function error( string $message = '', bool $exit = true ): void {
+		public static function error( string $message = '', $exit = true ): void {
 			self::$case->error[] = "Error: {$message}";
-			if ( $exit ) {
-				throw new \Exception( 'exit' );
+			$return_code = false;
+            if ( true === $exit ) {
+            	$return_code = 1;
+            } elseif ( is_int( $exit ) && $exit >= 1 ) {
+            	$return_code = $exit;
+            }
+			if ( false !== $return_code ) {
+				throw new ExitException( '', $return_code );
 			}
 		}
 
@@ -101,6 +109,14 @@ namespace {
 		}
 	}
 }
+
+
+namespace WP_CLI {
+
+	class ExitException extends \Exception {
+	}
+}
+
 
 namespace cli\progress {
 
@@ -158,9 +174,9 @@ namespace WP_CLI\Utils {
 			$fields = \array_map( 'trim', explode( ',', $fields ) );
 		}
 		\WP_CLI::line( "{$format}: " . \implode( ', ', $fields ) );
-		foreach( $items as $item ) {
+		foreach ( $items as $item ) {
 			$picked = \array_intersect_key( $item, \array_flip( $fields ) );
-            $sorted = \array_merge( \array_flip( $fields ), $picked );
+			$sorted = \array_merge( \array_flip( $fields ), $picked );
 
 			\WP_CLI::line( \implode( ', ', $sorted ) );
 		}
@@ -169,6 +185,4 @@ namespace WP_CLI\Utils {
 	function make_progress_bar( $message, $count, $interval = 100 ): Bar {
 		return new Bar( $message, $count, $interval );
 	}
-
-
 }
