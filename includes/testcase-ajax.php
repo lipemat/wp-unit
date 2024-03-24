@@ -343,7 +343,7 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 	 * @return mixed
 	 */
 	protected function _getResult( callable $callable ) {
-		unset( $this->_last_response );
+		$this->_last_response = '';
 		try {
 			$this->_handleAjaxCustom( $callable );
 		} catch ( \Exception $exception ) {
@@ -370,7 +370,7 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 	 * @return mixed
 	 */
 	protected function _getJsonResult( callable $callable ) {
-		unset( $this->_last_response );
+		$this->_last_response = '';
 		try {
 			$this->_handleAjaxCustom( $callable );
 		} catch ( \Exception $exception ) {
