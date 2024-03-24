@@ -8,12 +8,11 @@
 # @version 6.2.0
 #
 # Adjusted for use with this specific project.
-# - Removed the `THEME` variable and replaced it with `PLUGIN_PATH` and `THEME_PATH`
-# - Changed css_lint to use `stylelint` instead of `lipemat-css-boilerplate`
 #
 ####################################################################################
 
-PHP_VERSION="7.2"
+LEGACY_PHP_VERSION="7.2"
+PHP_VERSION="8.2"
 PHPUNIT_DIR="dev/wp-unit"
 WP_CONTENT="wp-content"
 
@@ -57,40 +56,47 @@ function exit_reset_colors() {
     exit ${1:-1}
 }
 
+# Must run them consecutively to prevent conflicts.
+function php_units() {
+    php_unit "phpunit ${LEGACY_PHP_VERSION}"
+    php_unit "phpunit ${PHP_VERSION}"
+}
+
 function php_unit() {
     if [[ ! -f ${PROJECT}/${PHPUNIT_DIR}/phpunit.xml ]] && [[ ! -f ${PROJECT}/${PHPUNIT_DIR}/phpunit.xml.dist ]]; then
         echo "${YELLOW}[pre-commit]${RED} ${PROJECT}/${PHPUNIT_DIR}/phpunit.xml or ${PROJECT}/${PHPUNIT_DIR}/phpunit.xml.dist not found!"
         exit_reset_colors
     fi
-    echo "${YELLOW}[pre-commit]${BLUE} Running PHP Unit... ${WHITE}"
+    echo "${YELLOW}[pre-commit]${BLUE} Running ${1^^}... ${WHITE}"
     cd "${PROJECT}/${PHPUNIT_DIR}" || exit
-    OUTPUT=$(${PHPUNIT})
+    OUTPUT=$(${1})
     if [[ $? != 0 ]]; then
         echo
-        echo "${BLUE}PHP Unit Failed! Fix the error before commit!"
+        echo "${BLUE}${1^^} Failed! Fix the error before commit!"
         echo "${RED}$OUTPUT"
         exit_reset_colors
     fi
-    echo "${YELLOW}[pre-commit]${GREEN} PHP Unit Tests Passed!${RESET_COLOR}"
+    echo "${YELLOW}[pre-commit]${GREEN} ${1^^} Tests Passed!${RESET_COLOR}"
 }
-php_unit &
+php_units &
 
 function php_lint() {
     if [[ "$PHP_FILES" ]]; then
-        echo "${YELLOW}[pre-commit]${BLUE} Checking PHP Lint... ${WHITE}"
+        echo "${YELLOW}[pre-commit]${BLUE} Checking ${1^^} Lint... ${WHITE}"
         for FILE in ${PHP_FILES}; do
-            OUTPUT=$(${PHP} -l -d display_errors=0 ${PROJECT}/${FILE})
+            OUTPUT=$(${1} -l -d display_errors=0 ${PROJECT}/${FILE})
             if [[ $? != 0 ]]; then
                 echo
-                echo "${BLUE}PHP Lint Failed. Fix the error before commit."
+                echo "${BLUE}${1^^} Failed. Fix the error before commit."
                 echo "${RED}$OUTPUT"
                 exit_reset_colors
             fi
         done
-        echo "${YELLOW}[pre-commit]${GREEN} PHP Lint Passed!${RESET_COLOR}"
+        echo "${YELLOW}[pre-commit]${GREEN} ${1^^} Lint Passed!${RESET_COLOR}"
     fi
 }
-php_lint &
+php_lint "php ${LEGACY_PHP_VERSION}" &
+php_lint "php ${PHP_VERSION}" &
 
 
 # Go through each background task
@@ -108,3 +114,5 @@ if [[ $FAIL -ne 0 ]]; then
 else
     exit 0
 fi
+
+}
