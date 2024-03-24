@@ -6,6 +6,7 @@
 
 $GLOBALS['wp_tests_options']['permalink_structure'] = '%postname%/';
 
+require __DIR__ . '/helpers.php';
 require __DIR__ . '/wp-tests-config.php';
 
 require BOOTSTRAP;
