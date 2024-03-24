@@ -16,8 +16,8 @@ class Deprecated_UsageTest extends \WP_UnitTestCase {
 		// These 2 from annotations.
 		user_can_create_post( 1 );
 
-		$this->expectDeprecated( 'start_wp' );
-		start_wp();
+		$this->expectDeprecated( 'get_user_by_email' );
+		get_user_by_email( 'test@support.com' );
 
 		$this->expectDeprecated( 'locale.php' );
 		require ABSPATH . WPINC . '/locale.php';
