@@ -11,6 +11,9 @@ use Lipe\WP_Unit\Utils\Requests;
  *
  */
 class WP_Http_Unit_Test_TransportTest extends \WP_Http_Remote_Post_TestCase {
+	private static $run_in_correct_order = false;
+
+
 	public static function tear_down_after_class() {
 		self::assertCount( 3, \WpOrg\Requests\Requests::$transport );
 		self::assertSame( '1', getenv( 'PHP_MOCKED_REMOTE_POST' ) );
@@ -43,6 +46,8 @@ class WP_Http_Unit_Test_TransportTest extends \WP_Http_Remote_Post_TestCase {
 		$this->assertSame( static::$mock_response, \WP_Http_Unit_Test_Transport::get_mocks()['mocked'] );
 
 		$this->assertMatchesSnapshot( \WP_Http_Unit_Test_Transport::get_mocks()['mocked'] );
+
+		self::$run_in_correct_order = true;
 	}
 
 
@@ -50,6 +55,7 @@ class WP_Http_Unit_Test_TransportTest extends \WP_Http_Remote_Post_TestCase {
 	 * @depends test_get_sent
 	 */
 	public function test_clear_mocks(): void {
+		$this->assertTrue( self::$run_in_correct_order );
 		$this->assertCount( 0, \WP_Http_Unit_Test_Transport::get_mocks()['mocked'] );
 		$this->assertCount( 0, \WP_Http_Unit_Test_Transport::get_mocks()['sent'] );
 	}

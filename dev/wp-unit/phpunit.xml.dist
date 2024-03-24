@@ -12,6 +12,7 @@
     </php>
     <testsuites>
         <testsuite name="WP Unit - Self Tests">
+            <file>./tests/BootstrapTest.php</file>
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
