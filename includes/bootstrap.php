@@ -362,6 +362,7 @@ require_once dirname( __FILE__ ) . '/template-tags/cron.php';
 if( $multisite ){
 	if( defined( 'BLOG_ID_CURRENT_SITE' ) ){
 		switch_to_blog( BLOG_ID_CURRENT_SITE );
+		$GLOBALS['_wp_switched_stack'] = [];
 	}
 }
 // unset this later so we can use it after WP loads
