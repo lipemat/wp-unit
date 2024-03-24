@@ -30,18 +30,22 @@ abstract class WP_CLI_UnitTestCase extends WP_UnitTestCase {
 	public $error = [];
 
 
+	public static function set_up_before_class() {
+		parent::set_up_before_class();
+		if ( ! class_exists( '\WP_CLI' ) ) {
+			require __DIR__ . '/mock-wp-cli.php';
+		}
+	}
+
+
 	/**
 	 * @throws Exception
 	 */
 	public function setUp(): void {
 		parent::setUp();
-		if ( ! class_exists( '\WP_CLI'  )) {
-			require __DIR__ . '/mock-wp-cli.php';
-		}
 		if( method_exists( '\WP_CLI', '__provide_test_case' ) ) {
 			\WP_CLI::__provide_test_case( $this );
 		}
-
 	}
 
 
