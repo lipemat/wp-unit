@@ -147,28 +147,11 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 	 *
 	 * @see WP_Http_Unit_Test_Transport
 	 *
-	 * @internal
+	 * @deprecated DO NOT USE
 	 *
 	 * @return string[]
 	 */
 	public static function use_this_class_for_transport(): array {
 		return [ 'Unit_Test_Transport' ];
 	}
-
-
-	/**
-	 * Use by \WP_Http::_get_first_available_transport to determine
-	 * this transport may be used.
-	 *
-	 * PHPUnit will think this is a test method, but we can't rename it.
-	 *
-	 * @internal
-	 *
-	 * @return bool
-	 */
-	public static function test() {
-		self::assertTrue( true ); // Do nothing silently.
-		return true;
-	}
-
 }

@@ -141,4 +141,17 @@ class WP_Http_Unit_Test_Transport implements Http_Transport {
 			'sent'   => self::$requests_sent,
 		];
 	}
+
+
+	/**
+	 * Use by \WP_Http::_get_first_available_transport to determine
+	 * this transport may be used.
+	 *
+	 * @internal
+	 *
+	 * @return bool
+	 */
+	public static function test(): bool {
+		return true;
+	}
 }

@@ -15,4 +15,7 @@ interface Http_Transport {
 
 
 	public function request_multiple( array $requests ): array;
+
+
+	public static function test(): bool;
 }
