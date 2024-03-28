@@ -102,6 +102,9 @@ final class Deprecated_Usage {
 				$version
 			);
 		}
+
+		// Backwards compatibility. @todo remove in version 4.
+		$this->case->caught_deprecated[ $class_name ] = $this->get_expected( $class_name );
 	}
 
 
@@ -127,6 +130,9 @@ final class Deprecated_Usage {
 				$version
 			);
 		}
+
+		// Backwards compatibility. @todo remove in version 4.
+		$this->case->caught_deprecated[ $function_name ] = $this->get_expected( $function_name );
 	}
 
 
@@ -152,6 +158,9 @@ final class Deprecated_Usage {
 				$version
 			);
 		}
+
+		// Backwards compatibility. @todo remove in version 4.
+		$this->case->caught_deprecated[ $function_name ] = $this->get_expected( $function_name );
 	}
 
 
@@ -179,6 +188,9 @@ final class Deprecated_Usage {
 				$message
 			);
 		}
+
+		// Backwards compatibility. @todo remove in version 4.
+		$this->case->caught_deprecated[ $file ] = $this->get_expected( $file );
 	}
 
 
@@ -206,6 +218,9 @@ final class Deprecated_Usage {
 				$message
 			);
 		}
+
+		// Backwards compatibility. @todo remove in version 4.
+		$this->case->caught_deprecated[ $hook ] = $this->get_expected( $hook );
 	}
 
 

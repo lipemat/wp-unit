@@ -74,6 +74,9 @@ final class Doing_It_Wrong {
 			$message .= ' ' . \sprintf( '(This message was added in version %s.)', $version );
 		}
 		$this->caught[ $function_name ] = $message;
+
+		// Backwards compatibility. @todo remove in version 4.
+		$this->case->caught_doing_it_wrong[ $function_name ] = $this->get_expected( $function_name );
 	}
 
 

@@ -17,13 +17,13 @@ use Lipe\WP_Unit\Utils\Annotations;
  * @property Doing_It_Wrong   $doing_it_wrong
  */
 trait Deprecated_TestCase_Base {
-	protected $caught_deprecated = [];
+	public $caught_deprecated = [];
 
-	protected $expected_deprecated = [];
+	public $expected_deprecated = [];
 
-	protected $expected_doing_it_wrong = [];
+	public $expected_doing_it_wrong = [];
 
-	protected $caught_doing_it_wrong = [];
+	public $caught_doing_it_wrong = [];
 
 	protected static $hooks_saved = [];
 
@@ -50,8 +50,6 @@ trait Deprecated_TestCase_Base {
 					$this->deprecated_usage->catch_hook( $function_name, $replacement, $version, $message );
 					break;
 			}
-
-			$this->caught_deprecated[ $function_name ] = $this->deprecated_usage->get_expected( $function_name );
 		}
 	}
 
