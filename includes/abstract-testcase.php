@@ -1010,20 +1010,21 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	/**
 	 * Assert a value matches a snapshot.
 	 *
-	 * @see WP_Unit_Snapshots
-	 *
 	 * @since 3.6.0
 	 *
-	 * @param mixed $actual A value which may be stored in a file using print_r().
+	 * @see   WP_Unit_Snapshots
+	 *
+	 * @param mixed  $actual  A value which may be stored in a file using print_r().
 	 * @param string $message Optional. Message to display when the assertion fails.
+	 * @param string $id      Optional. An identifier to be appended to the snapshot filename.
 	 *
 	 * @return void
 	 */
-	public function assertMatchesSnapshot( $actual, string $message = '' ): void  {
+	public function assertMatchesSnapshot( $actual, string $message = '', string $id = '' ): void  {
 		require_once __DIR__ . '/src/Helpers/Snapshots.php';
 		$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2 );
 
-		$snapshots = Snapshots::factory( $backtrace );
+		$snapshots = Snapshots::factory( $backtrace, $id );
 		$snapshots->assert_matches_snapshot( $actual, $this, $message );
 	}
 

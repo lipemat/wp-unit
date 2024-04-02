@@ -38,7 +38,7 @@ class Snapshots {
 	/**
 	 * @throws \Exception -- If the `WP_TESTS_SNAPSHOTS_DIR` constant is not defined.
 	 */
-	public function __construct( array $backtrace = [] ) {
+	public function __construct( array $backtrace = [], string $id = '' ) {
 		if ( ! defined( 'WP_TESTS_SNAPSHOTS_DIR' ) ) {
 			throw new \Exception( 'The `WP_TESTS_SNAPSHOTS_DIR` constant must be defined to use snapshot testing.' );
 		}
@@ -52,6 +52,9 @@ class Snapshots {
 			\array_shift( $namespaces );
 		}
 		$test_name = \array_pop( $namespaces ) . '--' . $caller['function'];
+		if ( '' !== $id ) {
+			$test_name .= '-' . $id;
+		}
 		$this->test_path = \implode( '/', $namespaces );
 		if ( isset( self::$snapshots[ $test_name ] ) ) {
 			++ self::$snapshots[ $test_name ];
@@ -126,7 +129,7 @@ class Snapshots {
 	}
 
 
-	public static function factory( array $backtrace ): self {
-		return new self( $backtrace );
+	public static function factory( array $backtrace, string $id = '' ): self {
+		return new self( $backtrace, $id );
 	}
 }
