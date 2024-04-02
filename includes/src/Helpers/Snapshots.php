@@ -69,7 +69,7 @@ class Snapshots {
 		$snapshot = $this->get_snapshot();
 		if ( null === $snapshot ) {
 			$this->update_snapshot( $actual );
-			$test->addWarning( 'Snapshot created for ' . $this->get_test_name() );
+			trigger_error( 'Snapshot created for ' . $this->get_test_name(), E_USER_WARNING );
 			return;
 		}
 		if ( '' === $message ) {
