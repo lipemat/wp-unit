@@ -11,6 +11,7 @@
  * @method (int|WP_Error)[] create_many( $count, $args = array(), $generation_definitions = null )
  */
 class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
+	protected $test_file;
 
 	/**
 	 * Create an attachment fixture.
