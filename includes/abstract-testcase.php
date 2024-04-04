@@ -42,14 +42,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 	protected static $ignore_files;
 
-	/**
-	 * Fixture factory.
-	 *
-	 * @deprecated 6.1.0 Use the WP_UnitTestCase_Base::factory() method instead.
-	 *
-	 * @var WP_UnitTest_Factory
-	 */
-	protected $factory;
 
 	/**
 	 * Fetches the factory object for generating WordPress fixtures.

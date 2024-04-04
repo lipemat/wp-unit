@@ -27,6 +27,14 @@ trait Deprecated_TestCase_Base {
 
 	protected static $hooks_saved = [];
 
+	/**
+	 * Fixture factory.
+	 *
+	 * @deprecated 6.1.0 Use the WP_UnitTestCase_Base::factory() method instead.
+	 *
+	 * @var \WP_UnitTest_Factory
+	 */
+	protected $factory;
 
 	/**
 	 * @deprecated
