@@ -57,17 +57,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	}
 
 	/**
-	 * Retrieves the name of the class the static method is called in.
-	 *
-	 * @deprecated 5.3.0 Use the PHP native get_called_class() function instead.
-	 *
-	 * @return string The class name.
-	 */
-	public static function get_called_class() {
-		return get_called_class();
-	}
-
-	/**
 	 * Runs the routine before setting up all tests.
 	 */
 	public static function set_up_before_class() {
@@ -1132,20 +1121,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$GLOBALS['wp']->main( $parts['query'] );
 	}
 
-	/**
-	 * Allows tests to be skipped on single or multisite installs by using @group annotations.
-	 *
-	 * This is a custom extension of the PHPUnit requirements handling.
-	 *
-	 * @since 3.5.0
-	 * @deprecated 5.9.0 This method has not been functional since PHPUnit 7.0.
-	 */
-	protected function checkRequirements() {
-		// For PHPUnit 5/6, as we're overloading a public PHPUnit native method in those versions.
-		if ( is_callable( 'PHPUnit\Framework\TestCase', 'checkRequirements' ) ) {
-			parent::checkRequirements();
-		}
-	}
 
 	/**
 	 * Skips the current test if there is an open Trac ticket associated with it.
@@ -1163,17 +1138,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		}
 	}
 
-	/**
-	 * Skips the current test if there is an open Unit Test Trac ticket associated with it.
-	 *
-	 * @since 3.5.0
-	 * @deprecated No longer used since the Unit Test Trac was merged into the Core Trac.
-	 *
-	 * @param int $ticket_id Ticket number.
-	 */
-	public function knownUTBug( $ticket_id ) {
-		return;
-	}
 
 	/**
 	 * Skips the current test if there is an open Plugin Trac ticket associated with it.
