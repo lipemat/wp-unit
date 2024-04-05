@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Version 1.2.0 -->
-<phpunit backupGlobals="false"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/7.5/phpunit.xsd"
-         colors="true"
-         stopOnFailure="true"
-         bootstrap="bootstrap.php"
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/7.5/phpunit.xsd"
+    colors="true"
+    bootstrap="bootstrap.php"
 >
     <php>
         <env name="HTTP_HOST" value="starting-point.loc" />

@@ -5,6 +5,7 @@ use Lipe\WP_Unit\Helpers\Deprecated_Usage;
 use Lipe\WP_Unit\Helpers\Doing_It_Wrong;
 use Lipe\WP_Unit\Helpers\Global_Hooks;
 use Lipe\WP_Unit\Helpers\Hook_State;
+use Lipe\WP_Unit\Helpers\Setup_Teardown_State;
 use Lipe\WP_Unit\Helpers\Snapshots;
 use Lipe\WP_Unit\Traits\Helper_Access;
 
@@ -76,6 +77,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		}
 
 		self::commit_transaction();
+		Setup_Teardown_State::set_up_before_class( $class );
 	}
 
 	/**
@@ -85,7 +87,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$class = get_called_class();
 
 		if ( method_exists( $class, 'wpTearDownAfterClass' ) ) {
-			call_user_func( array( $class, 'wpTearDownAfterClass' ) );
+			call_user_func( [ $class, 'wpTearDownAfterClass' ] );
 		}
 
 		if ( ! tests_skip_install() ) {
@@ -96,6 +98,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		self::commit_transaction();
 
 		Global_Hooks::instance()->restore_globals();
+		Setup_Teardown_State::tear_down_after_class( $class );
 
 		parent::tear_down_after_class();
 	}
@@ -142,13 +145,15 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$this->start_transaction();
 		$this->_fill_expected_deprecated();
 		add_filter( 'wp_die_handler', array( $this, 'get_wp_die_handler' ) );
+
+		Setup_Teardown_State::set_up();
 	}
 
 	/**
 	 * After a test method runs, resets any state in WordPress the test method might have changed.
 	 */
 	public function tear_down() {
-		global $wpdb, $wp_the_query, $wp_query, $wp;
+		global $wpdb, $wp_the_query, $wp_query, $wp, $wp_unit_torn_down;
 		$wpdb->query( 'ROLLBACK' );
 		if ( is_multisite() ) {
 			while ( ms_is_switched() ) {
@@ -217,6 +222,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 		$this->reset_lazyload_queue();
 
+		Setup_Teardown_State::tear_down();
 	}
 
 	/**
