@@ -68,7 +68,9 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 			$reflection = new \ReflectionClass( self::get_request_class() );
 			$reflectionProperty = $reflection->getProperty( 'transports' );
 			$reflectionProperty->setAccessible( true );
-			$reflectionProperty->setValue( self::get_request_class(), [ WP_Http_Unit_Test_Transport::class => WP_Http_Unit_Test_Transport::class ] );
+			$reflectionProperty->setValue( null, [
+				WP_Http_Unit_Test_Transport::class => WP_Http_Unit_Test_Transport::class
+			] );
 		}
 	}
 
@@ -86,7 +88,7 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 			$reflection = new \ReflectionClass( self::get_request_class());
 			$reflectionProperty = $reflection->getProperty( 'transports' );
 			$reflectionProperty->setAccessible( true );
-			$reflectionProperty->setValue( self::get_request_class(), self::get_request_class()::DEFAULT_TRANSPORTS );
+			$reflectionProperty->setValue( null, self::get_request_class()::DEFAULT_TRANSPORTS );
 		}
 
 		parent::tear_down_after_class();
