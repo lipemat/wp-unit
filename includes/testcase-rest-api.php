@@ -71,8 +71,15 @@ abstract class WP_Test_REST_TestCase extends WP_UnitTestCase {
 	 * @return WP_REST_Response
 	 */
 	protected function get_response( $route, array $args, $method = 'POST' ) {
+		// Ensure permission checks get a fresh user.
+		$GLOBALS['current_user'] = null;
+		// Isolate the callback, so we don't remove other `__return_true` filters.
+		$true = function() {return true;};
+		add_filter( 'application_password_is_api_request', $true, 0 );
+		add_filter( 'wp_is_rest_endpoint', $true, 0 );
+
 		$request = new \WP_REST_Request( $method, $route );
-		switch( strtoupper( $method ) ) {
+		switch ( strtoupper( $method ) ) {
 			case 'URL':
 				$request->set_url_params( $args );
 				break;
@@ -82,8 +89,12 @@ abstract class WP_Test_REST_TestCase extends WP_UnitTestCase {
 			default:
 				$request->set_body_params( $args );
 				break;
-
 		}
-		return rest_get_server()->dispatch( $request );
+		$result = rest_get_server()->dispatch( $request );
+
+		remove_filter( 'application_password_is_api_request', $true, 0 );
+		remove_filter( 'wp_is_rest_endpoint', $true, 0 );
+
+		return $result;
 	}
 }
