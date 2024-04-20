@@ -45,7 +45,7 @@ function tests_reset__SERVER() { // phpcs:ignore WordPress.NamingConventions.Val
 	$_SERVER['SERVER_NAME']     = WP_TESTS_DOMAIN;
 	$_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
 
-	unset( $_SERVER['HTTP_REFERER'] );
+	unset( $_SERVER['HTTP_REFERER'], $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'] );
 
 	if ( defined( 'WP_TESTS_SSL' ) ) {
 		$_SERVER['HTTPS'] = 'on';
@@ -247,7 +247,7 @@ function _wp_die_handler_filter_exit() {
  * @param array           $args    Arguments passed to wp_die().
  */
 function _wp_die_handler_txt( $message, $title, $args ) {
-	list( $message, $title, $args ) = _wp_die_process_input( $message, $title, $args );
+	[ $message, $title, $args ] = _wp_die_process_input( $message, $title, $args );
 
 	echo "\nwp_die() called\n";
 	echo "Message: $message\n";
@@ -279,7 +279,7 @@ function _wp_die_handler_txt( $message, $title, $args ) {
  * @param array           $args    Arguments passed to wp_die().
  */
 function _wp_die_handler_exit( $message, $title, $args ) {
-	list( $message, $title, $args ) = _wp_die_process_input( $message, $title, $args );
+	[ $message, $title, $args ] = _wp_die_process_input( $message, $title, $args );
 
 	echo "\nwp_die() called\n";
 	echo "Message: $message\n";

@@ -135,12 +135,12 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 			$this->reset_post_types();
 			$this->reset_taxonomies();
 			$this->reset_post_statuses();
-			$this->reset__SERVER();
 
 			if ( $wp_rewrite->permalink_structure ) {
 				$this->set_permalink_structure( '' );
 			}
 		}
+		$this->reset__SERVER();
 
 		$this->start_transaction();
 		$this->_fill_expected_deprecated();
