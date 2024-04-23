@@ -70,13 +70,8 @@ abstract class WP_Test_REST_TestCase extends WP_UnitTestCase {
 	 *
 	 * @return WP_REST_Response
 	 */
-	protected function get_response( $route, array $args, $method = 'POST' ) {
-		// Ensure permission checks get a fresh user.
-		$GLOBALS['current_user'] = null;
-		// Isolate the callback, so we don't remove other `__return_true` filters.
-		$true = function() {return true;};
-		add_filter( 'application_password_is_api_request', $true, 0 );
-		add_filter( 'wp_is_rest_endpoint', $true, 0 );
+	protected function get_response( string $route, array $args, string $method = 'POST' ) {
+		$this->start_request();
 
 		$request = new \WP_REST_Request( $method, $route );
 		switch ( strtoupper( $method ) ) {
@@ -92,9 +87,46 @@ abstract class WP_Test_REST_TestCase extends WP_UnitTestCase {
 		}
 		$result = rest_get_server()->dispatch( $request );
 
-		remove_filter( 'application_password_is_api_request', $true, 0 );
-		remove_filter( 'wp_is_rest_endpoint', $true, 0 );
-
+		$this->end_request();
 		return $result;
+	}
+
+
+	/**
+	 * Enable the context of a REST request before dispatching it.
+	 *
+	 * May be overridden by subclasses to enable additional contexts.
+	 *
+	 * @see WP_Test_REST_TestCase::end_request()
+	 *
+	 * @return void
+	 */
+	protected function start_request(): void {
+		// Ensure permission checks get a fresh user.
+		$GLOBALS['current_user'] = null;
+		add_filter( 'application_password_is_api_request', [$this, '_return_true' ], 0 );
+		add_filter( 'wp_is_rest_endpoint', [ $this, '_return_true' ], 0 );
+	}
+
+
+	/**
+	 * Cleanup anything added during `start_request`.
+	 *
+	 * @see WP_Test_REST_TestCase::start_request()
+	 *
+	 * @return void
+	 */
+	protected function end_request(): void {
+		remove_filter( 'application_password_is_api_request', [ $this, '_return_true' ], 0 );
+		remove_filter( 'wp_is_rest_endpoint', [ $this, '_return_true' ], 0 );
+	}
+
+
+	/**
+	 * Use our own return true function to avoid conflicts with other plugins.
+	 * @internal
+	 */
+	public function _return_true(): bool {
+		return true;
 	}
 }
