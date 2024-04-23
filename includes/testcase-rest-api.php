@@ -5,6 +5,13 @@
  *
  */
 abstract class WP_Test_REST_TestCase extends WP_UnitTestCase {
+	public function set_up() {
+		parent::set_up();
+		// Ensure permission checks get a fresh user.
+		$GLOBALS['current_user'] = null;
+	}
+
+
 	/**
 	 * Clear any changes made to the global wp_rest_server when
 	 * a test is done.
@@ -17,6 +24,7 @@ abstract class WP_Test_REST_TestCase extends WP_UnitTestCase {
 	 */
 	public function tear_down() {
 		unset( $GLOBALS['wp_rest_server'] );
+		$GLOBALS['current_user'] = null;
 		parent::tear_down();
 	}
 
@@ -102,8 +110,6 @@ abstract class WP_Test_REST_TestCase extends WP_UnitTestCase {
 	 * @return void
 	 */
 	protected function start_request(): void {
-		// Ensure permission checks get a fresh user.
-		$GLOBALS['current_user'] = null;
 		add_filter( 'application_password_is_api_request', [$this, '_return_true' ], 0 );
 		add_filter( 'wp_is_rest_endpoint', [ $this, '_return_true' ], 0 );
 	}
