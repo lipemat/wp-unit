@@ -7,6 +7,7 @@ use Lipe\WP_Unit\Helpers\Global_Hooks;
 use Lipe\WP_Unit\Helpers\Hook_State;
 use Lipe\WP_Unit\Helpers\Setup_Teardown_State;
 use Lipe\WP_Unit\Helpers\Snapshots;
+use Lipe\WP_Unit\Helpers\Wp_Die_Usage;
 use Lipe\WP_Unit\Traits\Helper_Access;
 
 require_once __DIR__ . '/factory.php';
@@ -38,6 +39,11 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @var ?Doing_It_Wrong
 	 */
 	protected $doing_it_wrong;
+
+	/**
+	 * @var ?Wp_Die_Usage
+	 */
+	protected $wp_die_usage;
 
 	protected static $forced_tickets   = array();
 
@@ -120,6 +126,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		// Load the helpers into the stack.
 		$this->deprecated_usage = Deprecated_Usage::factory( $this );
 		$this->doing_it_wrong = Doing_It_Wrong::factory( $this );
+		$this->wp_die_usage = Wp_Die_Usage::factory( $this );
 
 		global $wp_rewrite;
 
@@ -144,7 +151,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 		$this->start_transaction();
 		$this->_fill_expected_deprecated();
-		add_filter( 'wp_die_handler', array( $this, 'get_wp_die_handler' ) );
 
 		Setup_Teardown_State::set_up();
 	}
@@ -208,7 +214,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$this->unregister_all_meta_keys();
 		remove_filter( 'query', array( $this, '_create_temporary_tables' ) );
 		remove_filter( 'query', array( $this, '_drop_temporary_tables' ) );
-		remove_filter( 'wp_die_handler', array( $this, 'get_wp_die_handler' ) );
 
 		// Reset a project container if available.
 		if ( function_exists( 'tests_reset_container' ) ) {
@@ -532,49 +537,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	}
 
 
-
-	/**
-	 * Retrieves the `wp_die()` handler.
-	 *
-	 * @param callable $handler The current die handler.
-	 * @return callable The test die handler.
-	 */
-	public function get_wp_die_handler( $handler ) {
-		return array( $this, 'wp_die_handler' );
-	}
-
-
-	/**
-	 * Throws an exception when called.
-	 *
-	 * @since UT (3.7.0)
-	 * @since 5.9.0 Added the `$title` and `$args` parameters.
-	 *
-	 * @throws WPDieException Exception containing the message and the response code.
-	 *
-	 * @param string|WP_Error $message The `wp_die()` message or WP_Error object.
-	 * @param string          $title   The `wp_die()` title.
-	 * @param string|array    $args    The `wp_die()` arguments.
-	 */
-	public function wp_die_handler( $message, $title, $args ) {
-		if ( is_wp_error( $message ) ) {
-			$message = $message->get_error_message();
-		}
-
-		if ( ! is_scalar( $message ) ) {
-			$message = '0';
-		}
-
-		$code = 0;
-		if ( isset( $args['response'] ) ) {
-			$code = $args['response'];
-		}
-
-		throw new WPDieException( $message, $code );
-	}
-
-
-
 	/**
 	 * Detects post-test failure conditions.
 	 *
@@ -588,6 +550,9 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		}
 		if ( $this->doing_it_wrong instanceof Doing_It_Wrong ) {
 			$this->doing_it_wrong->validate();
+		}
+		if ( $this->wp_die_usage instanceof Wp_Die_Usage ) {
+			$this->wp_die_usage->validate();
 		}
 	}
 
@@ -648,6 +613,21 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 */
 	public function expectDoingItWrong( string $wrong ): void {
 		$this->doing_it_wrong->add_expected( [ $wrong ] );
+	}
+
+
+	/**
+	 * Declares an expected `wp_die()` call from within a test.
+	 *
+	 * @since 3.8.0
+	 *
+	 * @param string   $message
+	 * @param int|null $code
+	 *
+	 * @return void
+	 */
+	public function expectWpDie( string $message, ?int $code = null ): void {
+		$this->wp_die_usage->add_expected( $message, $code );
 	}
 
 

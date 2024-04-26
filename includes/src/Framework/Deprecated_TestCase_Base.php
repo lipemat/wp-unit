@@ -188,4 +188,20 @@ trait Deprecated_TestCase_Base {
 		$this->expectDoingItWrong( $doing_it_wrong );
 		$this->expected_doing_it_wrong[] = $doing_it_wrong;
 	}
+
+
+	/**
+	 * @deprecated
+	 */
+	public function get_wp_die_handler( $handler ) {
+		return [ $this->wp_die_usage, 'handler' ];
+	}
+
+
+	/**
+	 * @deprecated
+	 */
+	public function wp_die_handler( $message, $title, $args ) {
+		$this->wp_die_usage->handler( $message, $title, $args );
+	}
 }
