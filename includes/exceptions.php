@@ -6,7 +6,6 @@ class WP_Tests_Exception extends PHPUnit_Framework_Exception {
 
 /**
  * General exception for wp_die().
- *
  */
 class WPDieException extends Exception {}
 

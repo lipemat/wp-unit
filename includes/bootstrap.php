@@ -306,7 +306,7 @@ if ( $multisite ) {
 
 $GLOBALS['_wp_die_disabled'] = false;
 // Allow tests to override wp_die().
-tests_add_filter( 'wp_die_handler', '_wp_die_handler_filter', 0 );
+tests_add_filter( 'wp_die_handler', '_wp_die_handler_filter' );
 // Use the Spy REST Server instead of default.
 tests_add_filter( 'wp_rest_server_class', '_wp_rest_server_class_filter' );
 // Prevent updating translations asynchronously.
