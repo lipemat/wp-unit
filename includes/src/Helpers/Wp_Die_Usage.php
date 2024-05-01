@@ -4,6 +4,12 @@ declare( strict_types=1 );
 namespace Lipe\WP_Unit\Helpers;
 
 /**
+ * Support testing for expected `wp_die` calls or
+ * throwing `WPDieException` if no expected calls are set.
+ *
+ * Like the original throw implementation, but with the ability to
+ * test for specific messages and codes.
+ *
  * @author Mat Lipe
  * @since  3.8.0
  *
@@ -27,7 +33,7 @@ final class Wp_Die_Usage {
 
 	final private function __construct( \WP_UnitTestCase_Base $case ) {
 		$this->case = $case;
-		add_filter( 'wp_die_handler', [ $this, 'get_handler' ], 0 );
+		add_filter( 'wp_die_handler', [ $this, 'get_handler' ] );
 	}
 
 
@@ -46,7 +52,8 @@ final class Wp_Die_Usage {
 	/**
 	 * Track the wp_die call so can validate it at the end of the test case.
 	 *
-	 * @todo Version, 4 Remove the backwards compatibility throw at the bottom.
+	 * If not expected wp_die calls are set, the original implementation of throwing
+	 * `WPDieException` will be used.
 	 *
 	 * @param string|\WP_Error $message
 	 * @param string|int       $title
@@ -87,12 +94,15 @@ final class Wp_Die_Usage {
 
 
 	/**
-	 * @todo Version 4, Update the 0 === count() to return only when both caught and expected are empty.
+	 * Validate any expected `wp_die` calls at the end of the test case.
+	 *
+	 * If no expected calls are set, no validation will be done in favor
+	 * of throwing `WPDieException` as the original implementation did.
 	 *
 	 * @return void
 	 */
 	public function validate() {
-		// Backwards compatibility handled by `throw`.
+		// Original implementation before the handler was introduced.
 		if ( 0 === \count( $this->expected ) ) {
 			return;
 		}
