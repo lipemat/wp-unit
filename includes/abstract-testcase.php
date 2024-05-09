@@ -607,12 +607,13 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param string $wrong
+	 * @param string $function_name Name of the function passed to `_doing_it_wrong`.
+	 * @param ?string $message       Optional. Message to also validate.
 	 *
 	 * @return void
 	 */
-	public function expectDoingItWrong( string $wrong ): void {
-		$this->doing_it_wrong->add_expected( [ $wrong ] );
+	public function expectDoingItWrong( string $function_name, ?string $message = null ): void {
+		$this->doing_it_wrong->add_expected(  $function_name, $message );
 	}
 
 

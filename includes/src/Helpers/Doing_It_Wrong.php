@@ -27,7 +27,7 @@ final class Doing_It_Wrong {
 
 
 	private function hook(): void {
-		add_action( 'doing_it_wrong_trigger_error', '__return_false' );
+		add_filter( 'doing_it_wrong_trigger_error', '__return_false' );
 		add_action( 'doing_it_wrong_run', [ $this, 'catch' ], 10, 3 );
 	}
 
@@ -37,14 +37,20 @@ final class Doing_It_Wrong {
 			return;
 		}
 		$errors = [];
-		$not_caught_wrong = \array_diff( $this->expected, \array_keys( $this->caught ) );
+		$not_caught_wrong = \array_diff( \array_keys($this->expected ), \array_keys( $this->caught ) );
 		foreach ( $not_caught_wrong as $not_caught ) {
 			$errors[] = "Failed to assert that $not_caught triggered a doing it wrong notice.";
 		}
 
-		$unexpected_wrong = \array_diff( \array_keys( $this->caught ), $this->expected );
+		$unexpected_wrong = \array_diff( \array_keys( $this->caught ), \array_keys($this->expected ) );
 		foreach ( $unexpected_wrong as $unexpected ) {
 			$errors[] = "Unexpected doing it wrong notice triggered for $unexpected.";
+		}
+
+		foreach( $this->expected as $function_name => $message ) {
+			if ( null !== $message && $message !== $this->caught[ $function_name ] ) {
+				$errors[] = "The expected \"doing it wrong\" message for {$function_name} was \"{$message}\" but got \"{$this->caught[ $function_name ]}\".";
+			}
 		}
 
 		$this->case->assertEmpty( $errors, \implode( "\n", $errors ) );
@@ -52,12 +58,13 @@ final class Doing_It_Wrong {
 
 
 	/**
-	 * @param string[] $function_or_method
+	 * @param string $function_name - Function name passed to the `doing_it_wrong` function.
+	 * @param ?string $message - Optional message to also validate
 	 *
 	 * @return void
 	 */
-	public function add_expected( array $function_or_method ): void {
-		$this->expected = \array_merge( $this->expected, $function_or_method );
+	public function add_expected( string $function_name, ?string $message = null ): void {
+		$this->expected[ $function_name ] = $message;
 	}
 
 
@@ -84,13 +91,13 @@ final class Doing_It_Wrong {
 		$annotations = Annotations::instance()->get_annotations( $this->case );
 		if ( isset( $annotations['class']['expectedIncorrectUsage'] ) ) {
 			foreach ( $annotations['class']['expectedIncorrectUsage'] as $deprecated ) {
-				$this->add_expected( [ $deprecated ] );
+				$this->add_expected( $deprecated );
 			}
 		}
 
 		if ( isset( $annotations['method']['expectedIncorrectUsage'] ) ) {
 			foreach ( $annotations['method']['expectedIncorrectUsage'] as $deprecated ) {
-				$this->add_expected( [ $deprecated ] );
+				$this->add_expected( $deprecated );
 			}
 		}
 	}
