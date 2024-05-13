@@ -7,7 +7,7 @@
     bootstrap="bootstrap.php"
 >
     <php>
-        <env name="HTTP_HOST" value="starting-point.loc" />
+        <env name="HTTP_HOST" value="wp-unit.loc" />
     </php>
     <testsuites>
         <testsuite name="WP Unit - Self Tests">
