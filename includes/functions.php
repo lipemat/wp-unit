@@ -47,7 +47,7 @@ function tests_reset__SERVER() { // phpcs:ignore WordPress.NamingConventions.Val
 
 	unset( $_SERVER['HTTP_REFERER'], $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'] );
 
-	if ( defined( 'WP_TESTS_SSL' ) ) {
+	if ( defined( 'WP_TESTS_SSL' ) || getenv( 'HTTPS' ) === 'on' ) {
 		$_SERVER['HTTPS'] = 'on';
 		$_SERVER['SERVER_PORT'] = '443';
 	} else {
