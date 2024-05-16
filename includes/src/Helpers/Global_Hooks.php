@@ -22,15 +22,6 @@ final class Global_Hooks {
 	 */
 	private $global_hooks;
 
-	private const TYPES = [
-		'wp_actions',
-		'wp_filter',
-		'wp_filters',
-		'wp_current_filter',
-		'wp_meta_keys',
-		'wp_registered_settings',
-	];
-
 
 	/**
 	 * Hook up the class.
@@ -64,6 +55,7 @@ final class Global_Hooks {
 		$GLOBALS['wp_actions'] = $hooks->get_wp_actions();
 		$GLOBALS['wp_filters'] = $hooks->get_wp_filters();
 		$GLOBALS['wp_current_filter'] = $hooks->get_wp_current_filter();
+		$GLOBALS['wp_meta_boxes'] = $hooks->get_wp_meta_boxes();
 		$GLOBALS['wp_meta_keys'] = $hooks->get_wp_meta_keys();
 		$GLOBALS['wp_registered_settings'] = $hooks->get_wp_registered_settings();
 	}

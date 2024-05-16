@@ -32,6 +32,11 @@ final class Hook_State {
 	private $wp_current_filter;
 
 	/**
+	 * @return ?array<string, array<string, array<string, array<string, array{callback: callable, id: string, title: string, args: array<mixed>}|false>
+	 */
+	private $wp_meta_boxes;
+
+	/**
 	 * @return array<string, array<string, array<string, array<string, bool|null|string>>>
 	 */
 	private $wp_meta_keys;
@@ -47,6 +52,7 @@ final class Hook_State {
 		$this->wp_actions = $GLOBALS['wp_actions'];
 		$this->wp_filters = $GLOBALS['wp_filters'];
 		$this->wp_current_filter = $GLOBALS['wp_current_filter'];
+		$this->wp_meta_boxes = $GLOBALS['wp_meta_boxes'] ?? null;
 		$this->wp_meta_keys = $GLOBALS['wp_meta_keys'] ?? [];
 		$this->wp_registered_settings = $GLOBALS['wp_registered_settings'] ?? [];
 	}
@@ -75,6 +81,12 @@ final class Hook_State {
 		return $this->wp_current_filter;
 	}
 
+	/**
+	 * @return ?array<string, array<string, array<string, array<string, array{callback: callable, id: string, title: string, args: array<mixed>}|false>
+	 */
+	public function get_wp_meta_boxes(): ?array {
+		return $this->wp_meta_boxes;
+	}
 
 	/**
 	 * @return array<string, array<string, array<string, array<string, bool|null|string>>>

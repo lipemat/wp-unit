@@ -32,6 +32,9 @@ class Global_HooksTest extends \WP_UnitTestCase {
 		$this->assertArrayNotHasKey( self::NAME, get_registered_settings() );
 		register_setting( 'general', self::NAME, [ true ] );
 		$this->assertNotEmpty( get_registered_settings()[ self::NAME ] );
+
+		add_meta_box( 'test', 'test', '__return_true', 'post' );
+		$this->assertNotEmpty( $GLOBALS['wp_meta_boxes']['post']['advanced']['default']['test'] );
 	}
 
 
@@ -44,6 +47,7 @@ class Global_HooksTest extends \WP_UnitTestCase {
 		$this->assertEmpty( $GLOBALS['current_filter'] ?? null );
 		$this->assertArrayNotHasKey( self::NAME, get_registered_meta_keys( 'post', 'page' ) );
 		$this->assertArrayNotHasKey( self::NAME, get_registered_settings() );
+		$this->assertEmpty( $GLOBALS['wp_meta_boxes']['post']['advanced']['default']['test'] ?? null );
 	}
 
 }
