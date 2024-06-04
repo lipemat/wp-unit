@@ -201,6 +201,12 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 			$GLOBALS[ $global ] = null;
 		}
 
+		// Reset menu globals.
+		$menu_globals = array( 'menu', 'submenu', 'parent_file', 'submenu_file', 'plugin_page', '_wp_submenu_nopriv', '_wp_real_parent_file', '_registered_pages',  '_parent_pages', 'admin_page_hooks' );
+		foreach ( $menu_globals as $global ) {
+			$GLOBALS[ $global ] = null;
+		}
+
 		/*
 		 * Reset $wp_sitemap global so that sitemap-related dynamic $wp->public_query_vars
 		 * are added when the next test runs.
