@@ -50,6 +50,28 @@ function strip_ws( $txt ) {
 }
 
 /**
+ * Use to match HTML strings that have been formatted differently.
+ *
+ * - Strip tabs
+ * - Strip new lines
+ * - Strip multiple spaces
+ *
+ * @param string $html
+ *
+ * @return string
+ */
+function strip_ws_all( string $html ): string {
+	$html = preg_replace_callback( '/<[^>]+>/', function( $matches ) {
+		return str_replace( "\n", ' ', $matches[0] );
+	}, $html );
+	// Remove new lines and tabs
+	$html = preg_replace( '/[\n\t]/', '', $html );
+
+	// Remove multiple spaces
+	return \trim( preg_replace( '/\s\s+/', ' ', $html ) );
+}
+
+/**
  * Helper class for testing code that involves actions and filters.
  *
  * Typical use:
