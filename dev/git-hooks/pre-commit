@@ -12,7 +12,7 @@
 ####################################################################################
 
 LEGACY_PHP_VERSION="7.2"
-PHP_VERSION="8.2"
+PHP_VERSION="8.3"
 PHPUNIT_DIR="dev/wp-unit"
 WP_CONTENT="wp-content"
 
