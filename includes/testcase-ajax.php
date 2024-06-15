@@ -267,7 +267,7 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 	 * @throws WPAjaxDieContinueException
 	 */
 	protected function _handleAjax( $action ) {
-
+		$this->_last_response = '';
 		// Start output buffering.
 		ini_set( 'implicit_flush', false );
 		ob_start();
