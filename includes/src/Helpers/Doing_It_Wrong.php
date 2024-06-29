@@ -40,11 +40,15 @@ final class Doing_It_Wrong {
 		$not_caught_wrong = \array_diff( \array_keys($this->expected ), \array_keys( $this->caught ) );
 		foreach ( $not_caught_wrong as $not_caught ) {
 			$errors[] = "Failed to assert that $not_caught triggered a doing it wrong notice.";
+			if ( null !== $this->expected[ $not_caught ]) {
+				$errors[] = $this->expected[ $not_caught ];
+			}
 		}
 
 		$unexpected_wrong = \array_diff( \array_keys( $this->caught ), \array_keys($this->expected ) );
 		foreach ( $unexpected_wrong as $unexpected ) {
 			$errors[] = "Unexpected doing it wrong notice triggered for $unexpected.";
+			$errors[] = $this->caught[ $unexpected ];
 		}
 
 		foreach( $this->expected as $function_name => $message ) {
