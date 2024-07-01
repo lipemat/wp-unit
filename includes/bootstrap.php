@@ -61,11 +61,11 @@ if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS && ! is_dir( ABSPATH ) 
 	}
 }
 
-$phpunit_version = tests_get_phpunit_version();
+$phpunit_version = PHPUnit\Runner\Version::id();
 
-if ( version_compare( $phpunit_version, '5.7.21', '<' ) ) {
+if ( version_compare( PHPUnit\Runner\Version::id(), '7.0.0', '<' ) ) {
 	printf(
-		"Error: Looks like you're using PHPUnit %s. WordPress requires at least PHPUnit 5.7.21." . PHP_EOL,
+		"Error: Looks like you're using PHPUnit %s. WordPress requires at least PHPUnit 7.0.0." . PHP_EOL,
 		$phpunit_version
 	);
 	echo 'Please use the latest PHPUnit version supported for the PHP version you are running the tests on.' . PHP_EOL;
@@ -351,7 +351,7 @@ if ( isset( $GLOBALS['wp_tests_bypass_finals'] ) ) {
 
 // Load WordPress.
 require_once ABSPATH . 'wp-settings.php';
-require_once dirname( __FILE__ ) . '/template-tags/cron.php';
+require_once __DIR__ . '/template-tags/cron.php';
 
 
 // Switch to the blog we have defined in the wp-tests-config
@@ -361,7 +361,7 @@ if( $multisite ){
 		$GLOBALS['_wp_switched_stack'] = [];
 	}
 }
-// unset this later so we can use it after WP loads
+// unset this later, so we can use it after WP loads
 unset( $multisite );
 
 // Backup the global hooks so we can restore them after each test.
@@ -370,11 +370,6 @@ Global_Hooks::init_once();
 // Delete any default posts & related data.
 if ( ! tests_skip_install() ) {
 	_delete_all_posts();
-}
-
-// Load class aliases for compatibility with PHPUnit 6+.
-if ( version_compare( tests_get_phpunit_version(), '6.0', '>=' ) ) {
-	require __DIR__ . '/phpunit6/compat.php';
 }
 
 require __DIR__ . '/phpunit-adapter-testcase.php';

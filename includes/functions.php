@@ -18,23 +18,6 @@ function tests_skip_install() {
 }
 
 /**
- * Retrieves PHPUnit runner version.
- *
- * @return double The version number.
- */
-function tests_get_phpunit_version() {
-	if ( class_exists( 'PHPUnit\Runner\Version' ) ) {
-		$version = PHPUnit\Runner\Version::id();
-	} elseif ( class_exists( 'PHPUnit_Runner_Version' ) ) {
-		$version = PHPUnit_Runner_Version::id();
-	} else {
-		$version = 0;
-	}
-
-	return $version;
-}
-
-/**
  * Resets various `$_SERVER` variables that can get altered during tests.
  */
 function tests_reset__SERVER() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
