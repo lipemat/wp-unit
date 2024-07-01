@@ -1,0 +1,86 @@
+<?php
+declare( strict_types=1 );
+
+namespace Lipe\WP_Unit\Helpers;
+
+use Lipe\WP_Unit\Traits\Singleton;
+
+/**
+ * @author Mat Lipe
+ * @since  4.0.0
+ *
+ */
+class DatabaseTransactions {
+	use Singleton;
+
+	/**
+	 * Starts a database transaction.
+	 */
+	public function start_transaction(): void {
+		global $wpdb;
+		$wpdb->query( 'SET autocommit = 0;' );
+		$wpdb->query( 'START TRANSACTION;' );
+		add_filter( 'query', [ $this, '_create_temporary_tables' ] );
+		add_filter( 'query', [ $this, '_drop_temporary_tables' ] );
+		add_filter( 'query', [ $this, '_prevent_premature_commit' ] );
+		add_filter( 'query', [ $this, '_prevent_second_transaction' ] );
+	}
+
+
+	/**
+	 * Commits the queries in a transaction.
+	 *
+	 * @since 4.1.0
+	 */
+	public function commit_transaction(): void {
+		global $wpdb;
+		remove_filter( 'query', [ $this, '_prevent_premature_commit' ] );
+		$wpdb->query( 'COMMIT;' );
+		add_filter( 'query', [ $this, '_prevent_premature_commit' ] );
+	}
+
+	/**
+	 * Replaces the `CREATE TABLE` statement with a `CREATE TEMPORARY TABLE` statement.
+	 *
+	 * @param string $query The query to replace the statement for.
+	 *
+	 * @return string The altered query.
+	 */
+	public function _create_temporary_tables( string $query ): string {
+		if ( 0 === \strpos( \trim( $query ), 'CREATE TABLE' ) ) {
+			return \substr_replace( \trim( $query ), 'CREATE TEMPORARY TABLE', 0, 12 );
+		}
+		return $query;
+	}
+
+
+	/**
+	 * Replaces the `DROP TABLE` statement with a `DROP TEMPORARY TABLE` statement.
+	 *
+	 * @param string $query The query to replace the statement for.
+	 *
+	 * @return string The altered query.
+	 */
+	public function _drop_temporary_tables( string $query ): string {
+		if ( 0 === \strpos( \trim( $query ), 'DROP TABLE' ) ) {
+			return \substr_replace( \trim( $query ), 'DROP TEMPORARY TABLE', 0, 10 );
+		}
+		return $query;
+	}
+
+
+	public function _prevent_premature_commit( string $query ): string {
+		if ( 0 === \strpos( \trim( $query ), 'COMMIT' ) ) {
+			return 'SELECT "Bypassed COMMIT transaction _prevent_premature_commit"';
+		}
+		return $query;
+	}
+
+
+	public function _prevent_second_transaction( string $query ): string {
+		if ( 0 === \strpos( \trim( $query ), 'START TRANSACTION' ) ) {
+			return 'SELECT "Bypassed START TRANSACTIONT transaction _prevent_second_transaction"';
+		}
+		return $query;
+	}
+}
