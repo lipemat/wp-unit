@@ -51,7 +51,6 @@ class WP_Http_Unit_Test_Transport implements Http_Transport {
 			'url'  => $url,
 			'args' => $args,
 		];
-		WP_Http_Remote_Post_TestCase::$mock_sent[] = \end( self::$requests_sent );
 
 		$mock = null;
 		if ( isset( self::$mocked_responses[ $url ] ) ) {
@@ -99,9 +98,8 @@ class WP_Http_Unit_Test_Transport implements Http_Transport {
 	 * @param string         $url
 	 * @param mixed|callable $response
 	 */
-	public static function add_mock( $url, $response ) {
+	public static function add_mock( string $url, $response ) {
 		self::$mocked_responses[ $url ] = $response;
-		WP_Http_Remote_Post_TestCase::$mock_response[ $url ] = $response;
 	}
 
 
@@ -124,9 +122,7 @@ class WP_Http_Unit_Test_Transport implements Http_Transport {
 	/**
 	 * Clear all mocks between runs.
 	 */
-	public static function clear_mocks() {
-		WP_Http_Remote_Post_TestCase::$mock_response = [];
-		WP_Http_Remote_Post_TestCase::$mock_sent = [];
+	public static function clear_mocks(): void {
 		self::$mocked_responses = [];
 		self::$requests_sent = [];
 	}

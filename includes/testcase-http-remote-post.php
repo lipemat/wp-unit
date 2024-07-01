@@ -21,17 +21,6 @@
  */
 class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 	/**
-	 * @deprecated Use \WP_Http_Unit_Test_Transport::get_mocks() instead.
-	 */
-	public static $mock_sent = [];
-
-	/**
-	 * @deprecated Use \WP_Http_Unit_Test_Transport::get_mocks() instead.
-	 */
-	public static $mock_response = [];
-
-
-	/**
 	 * The `Requests` class was deprecated in WP 6.2 in favor
 	 * of a `\WpOrg\Requests\Requests` class.
 	 *
@@ -122,22 +111,6 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 	 */
 	public function mock_response( string $url, $callback_or_value ) {
 		\WP_Http_Unit_Test_Transport::add_mock( $url, $callback_or_value );
-	}
-
-
-	/**
-	 * @deprecated In favor of `\Lipe\WP_Unit\Utils\Requests::format_json_response`
-	 */
-	public function format_json_response( $data ): string {
-		return \Lipe\WP_Unit\Utils\Requests::instance()->json_response( $data );
-	}
-
-
-	/**
-	 * @deprecated In favor of `\Lipe\WP_Unit\Utils\Requests::format_html_response`
-	 */
-	public function format_html_response( string $html ): string {
-		return \Lipe\WP_Unit\Utils\Requests::instance()->html_response( $html );
 	}
 
 

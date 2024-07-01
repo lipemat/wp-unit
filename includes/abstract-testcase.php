@@ -295,10 +295,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * - _deprecated_function()
 	 * - _deprecated_file()
 	 *
-	 * @notice There used to be a different method called `expectDeprecated`.
-	 *         `null` as a parameter signifies old usage and will do nothing
-	 *         for the test case.
-	 *
 	 * @param string $deprecated      Name of the function, method, class or
 	 *                                argument that is deprecated.
 	 *

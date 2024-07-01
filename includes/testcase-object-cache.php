@@ -93,14 +93,4 @@ class Object_Cache_TestCase extends \WP_UnitTestCase {
 		unset( $this->object_cache->cache[ $built_key ] );
 		$this->assertFalse( $this->object_cache->get( $key, $group ) );
 	}
-
-
-	/**
-	 * @deprecated  In favor of assertCachePropertyAndExternal
-	 */
-	protected function assert_cache_local_and_external( $key, $value, $group = 'default' ) {
-		_deprecated_function( __METHOD__, '3.2.0', 'assertCachePropertyAndExternal' );
-		$this->assertCachePropertyAndExternal( $key, $value, $group );
-	}
-
 }
