@@ -1,6 +1,5 @@
 <?php
 
-use Lipe\WP_Unit\Framework\Deprecated_TestCase_Base;
 use Lipe\WP_Unit\Helpers\Cleanup;
 use Lipe\WP_Unit\Helpers\DatabaseTransactions;
 use Lipe\WP_Unit\Helpers\Deprecated_Usage;
@@ -23,8 +22,6 @@ require_once __DIR__ . '/factory.php';
  * All WordPress unit tests should inherit from this class.
  */
 abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
-	use Deprecated_TestCase_Base;
-
 	/**
 	 * @var ?Hook_State
 	 */
@@ -49,11 +46,11 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	/**
 	 * Fetches the factory object for generating WordPress fixtures.
 	 *
-	 * @return WP_UnitTest_Factory
+	 * @return \WP_UnitTest_Factory
 	 */
-	protected static function factory(): WP_UnitTest_Factory {
+	protected static function factory(): \WP_UnitTest_Factory {
 		static $factory = null;
-		if ( ! $factory ) {
+		if ( null === $factory ) {
 			$factory = new WP_UnitTest_Factory();
 		}
 		return $factory;
@@ -111,9 +108,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	public function set_up() {
 		set_time_limit( 0 );
 
-		$this->factory = static::factory();
-
-		$this->_backup_hooks();
+		$this->hook_state = Hook_State::factory();
 
 		// Load the helpers into the stack.
 		$this->deprecated_usage = Deprecated_Usage::factory( $this );
@@ -137,7 +132,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		Cleanup::instance()->reset__SERVER();
 
 		DatabaseTransactions::instance()->start_transaction();
-		$this->_fill_expected_deprecated();
 
 		Setup_Teardown_State::set_up();
 	}
@@ -215,7 +209,9 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		// Reset the PHP mailer.
 		reset_phpmailer_instance();
 
-		$this->_restore_hooks();
+		if ( $this->hook_state instanceof Hook_State ) {
+			Global_Hooks::instance()->restore_hooks( $this->hook_state );
+		}
 		wp_set_current_user( 0 );
 
 		Cleanup::instance()->reset_lazyload_queue();
@@ -227,9 +223,9 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	/**
 	 * Allows tests to be skipped when Multisite is not in use.
 	 *
-	 * Use in conjunction with the ms-required group.
+	 * Use with the ms-required group.
 	 */
-	public function skipWithoutMultisite() {
+	public function skipWithoutMultisite(): void {
 		if ( ! is_multisite() ) {
 			$this->markTestSkipped( 'Test only runs on Multisite' );
 		}
@@ -238,9 +234,9 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	/**
 	 * Allows tests to be skipped when Multisite is in use.
 	 *
-	 * Use in conjunction with the ms-excluded group.
+	 * Use with the ms-excluded group.
 	 */
-	public function skipWithMultisite() {
+	public function skipWithMultisite(): void {
 		if ( is_multisite() ) {
 			$this->markTestSkipped( 'Test does not run on Multisite' );
 		}
@@ -251,7 +247,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 *
 	 * @param array|WP_Error $response HTTP response.
 	 */
-	public function skipTestOnTimeout( $response ) {
+	public function skipTestOnTimeout( $response ): void {
 		if ( ! is_wp_error( $response ) ) {
 			return;
 		}
@@ -269,48 +265,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	}
 
 
-
-	/**
-	 * Saves the hook-related globals, so they can be restored later.
-	 *
-	 * Stores $wp_filter, $wp_actions, $wp_filters, $wp_meta_keys, $wp_registered_settings and $wp_current_filter
-	 * on a class variable, so they can be restored on tear_down() using _restore_hooks().
-	 *
-	 * @note This method differs from WP Core as it will also back up the
-	 *       `wp_meta_keys` and `wp_register_settings` globals.
-	 *
-	 * @global array $wp_filter
-	 * @global array $wp_actions
-	 * @global array $wp_filters
-	 * @global array $wp_current_filter
-	 * @global array $wp_meta_keys
-	 */
-	protected function _backup_hooks() {
-		$this->hook_state = Hook_State::factory();
-		if ( ! self::$hooks_saved ) {
-			self::$hooks_saved = $this->hook_state->get_legacy_hooks();
-		}
-	}
-
-	/**
-	 * Restores the hook-related globals to their state at set_up()
-	 * so that future tests aren't affected by hooks set during this last test.
-	 *
-	 * @note This method differs from WP Core as it will also restore the
-	 *       `wp_meta_keys` and `wp_registered_settings` globals.
-	 *
-	 * @global array $wp_actions
-	 * @global array $wp_current_filter
-	 * @global array $wp_filter
-	 * @global array $wp_meta_keys
-	 */
-	protected function _restore_hooks() {
-		if ( $this->hook_state instanceof Hook_State ) {
-			Global_Hooks::instance()->restore_hooks( $this->hook_state );
-		}
-	}
-
-
 	/**
 	 * Detects post-test failure conditions.
 	 *
@@ -318,7 +272,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 *
 	 * @since 4.2.0
 	 */
-	protected function assert_post_conditions() {
+	protected function assert_post_conditions(): void {
 		if ( $this->deprecated_usage instanceof Deprecated_Usage ) {
 			$this->deprecated_usage->validate();
 		}
@@ -337,7 +291,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @param mixed  $actual  The value to check.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
-	public function assertWPError( $actual, $message = '' ) {
+	public function assertWPError( $actual, string $message = '' ): void {
 		$this->assertInstanceOf( 'WP_Error', $actual, $message );
 	}
 
@@ -360,16 +314,12 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 *         `null` as a parameter signifies old usage and will do nothing
 	 *         for the test case.
 	 *
-	 * @param ?string $deprecated Name of the function, method, class or
-	 *                            argument that is deprecated.
+	 * @param string $deprecated Name of the function, method, class or
+	 *                                argument that is deprecated.
 	 *
 	 * @return void
 	 */
-	public function expectDeprecated( ?string $deprecated = null ): void {
-		if ( '' === $deprecated ) {
-			$this->_fill_expected_deprecated();
-			return; // Backward compatibility.
-		}
+	public function expectDeprecated( string $deprecated ): void {
 		$this->deprecated_usage->add_expected( [ $deprecated ] );
 	}
 
@@ -412,7 +362,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @param mixed  $actual  The value to check.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
-	public function assertNotWPError( $actual, $message = '' ) {
+	public function assertNotWPError( $actual, string $message = '' ) {
 		if ( is_wp_error( $actual ) ) {
 			$message .= ' ' . $actual->get_error_message();
 		}
@@ -426,7 +376,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @param mixed  $actual  The value to check.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
-	public function assertIXRError( $actual, $message = '' ) {
+	public function assertIXRError( $actual, string $message = '' ) {
 		$this->assertInstanceOf( 'IXR_Error', $actual, $message );
 	}
 
@@ -436,7 +386,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @param mixed  $actual  The value to check.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
-	public function assertNotIXRError( $actual, $message = '' ) {
+	public function assertNotIXRError( $actual, string $message = '' ) {
 		if ( $actual instanceof IXR_Error ) {
 			$message .= ' ' . $actual->message;
 		}
@@ -460,7 +410,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$this->assertNotEmpty( $fields, $message . ' Fields array is empty.' );
 
 		foreach ( $fields as $field_name => $field_value ) {
-			$this->assertObjectHasProperty( $field_name, $actual, $message . " Property $field_name does not exist on the object." );
+			self::assertObjectHasProperty( $field_name, $actual, $message . " Property $field_name does not exist on the object." );
 			$this->assertSame( $field_value, $actual->$field_name, $message . " Value of property $field_name is not $field_value." );
 		}
 	}
