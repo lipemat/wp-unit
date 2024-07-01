@@ -11,8 +11,14 @@ use Lipe\WP_Unit\Utils\Annotations;
  *
  */
 final class Doing_It_Wrong {
+	/**
+	 * @var array<string, array<string|null>>
+	 */
 	private $expected = [];
 
+	/**
+	 * @var array<string, array<string|null>>
+	 */
 	private $caught = [];
 
 	/**
@@ -37,27 +43,53 @@ final class Doing_It_Wrong {
 			return;
 		}
 		$errors = [];
-		$not_caught_wrong = \array_diff( \array_keys( $this->expected ), \array_keys( $this->caught ) );
-		foreach ( $not_caught_wrong as $not_caught ) {
-			$errors[] = "Failed to assert that $not_caught triggered a doing it wrong notice.";
-			if ( null !== $this->expected[ $not_caught ] ) {
-				$errors[] = $this->expected[ $not_caught ];
+		foreach ( $this->expected as $function_name => $messages ) {
+			if ( isset( $this->caught[ $function_name ] ) ) {
+				if ( \count( $this->expected[ $function_name ] ) > \count( $this->caught[ $function_name ] ) ) {
+					$errors[] = "Failed to assert that {$function_name} triggered " . \count( $this->expected[ $function_name ] ) . ' doing it wrong notices. Got ' . \count( $this->caught[ $function_name ] ) . ' instead.';
+					\array_walk( $messages, function( $message ) use ( &$errors ) {
+						if ( null !== $message ) {
+							$errors[] = $message;
+						}
+					} );
+				}
+			} else {
+				$errors[] = "Failed to assert that {$function_name} triggered " . \count( $this->expected[ $function_name ] ) . ' doing it wrong notices.';
+				\array_walk( $messages, function( $message ) use ( &$errors ) {
+					if ( null !== $message ) {
+						$errors[] = $message;
+					}
+				} );
 			}
 		}
 
-		$unexpected_wrong = \array_diff( \array_keys( $this->caught ), \array_keys( $this->expected ) );
-		foreach ( $unexpected_wrong as $unexpected ) {
-			$errors[] = "Unexpected doing it wrong notice triggered for $unexpected.";
-			$errors[] = $this->caught[ $unexpected ];
-		}
-
-		foreach ( $this->expected as $function_name => $message ) {
-			if ( null !== $message && $message !== $this->caught[ $function_name ] ) {
-				$errors[] = "The expected \"doing it wrong\" message for {$function_name} was \"{$message}\" but got \"{$this->caught[ $function_name ]}\".";
+		foreach ( $this->caught as $function_name => $messages ) {
+			if ( isset( $this->expected[ $function_name ] ) ) {
+				if ( \count( $this->caught[ $function_name ] ) > \count( $this->expected[ $function_name ] ) ) {
+					$errors[] = "Unexpected doing it wrong notices triggered for {$function_name}. Expected " . \count( $this->expected[ $function_name ] ) . ' but got ' . \count( $this->caught[ $function_name ] ) . ' instead.';
+					$errors[] = \implode( "\n", $this->caught[ $function_name ] );
+				}
+			} else {
+				$errors[] = \count( $this->caught[ $function_name ] ) . " unexpected doing it wrong notices triggered for {$function_name}.";
+				\array_walk( $messages, function( ?string $message ) use ( &$errors ) {
+					if ( null !== $message ) {
+						$errors[] = $message;
+					}
+				} );
 			}
 		}
 
-		$this->case::assertEmpty( $errors, \implode( "\n", $errors ) );
+		foreach ( $this->expected as $function_name => $messages ) {
+			$unmatched = \array_diff( $this->expected[ $function_name ], $this->caught[ $function_name ] ?? [] );
+			foreach ( $unmatched as $key => $message ) {
+				if ( null !== $message ) {
+					$received = $this->caught[ $function_name ][ $key ] ?? 'unknown';
+					$errors[] = "The expected \"doing it wrong\" message for `{$function_name} was`: \n \"{$message}\" \n \nReceived: \n \"{$received}\". \n";
+				}
+			}
+		}
+
+		$this->case::assertCount( 0, $errors, \implode( "\n", $errors ) );
 	}
 
 
@@ -68,23 +100,29 @@ final class Doing_It_Wrong {
 	 * @return void
 	 */
 	public function add_expected( string $function_name, ?string $message = null ): void {
-		$this->expected[ $function_name ] = $message;
+		if ( ! isset( $this->expected[ $function_name ] ) ) {
+			$this->expected[ $function_name ] = [];
+		}
+		$this->expected[ $function_name ][] = $message;
 	}
 
 
-	public function get_expected( string $function_name ): ?string {
+	/**
+	 * @return null|string[]
+	 */
+	public function get_expected( string $function_name ): ?array {
 		return $this->expected[ $function_name ] ?? null;
 	}
 
 
 	public function catch( string $function_name, string $message, string $version ): void {
-		if ( isset( $this->caught[ $function_name ] ) ) {
-			return;
-		}
 		if ( '' !== $version ) {
 			$message .= ' ' . \sprintf( '(This message was added in version %s.)', $version );
 		}
-		$this->caught[ $function_name ] = $message;
+		if ( ! isset( $this->caught[ $function_name ] ) ) {
+			$this->caught[ $function_name ] = [];
+		}
+		$this->caught[ $function_name ][] = $message;
 	}
 
 
