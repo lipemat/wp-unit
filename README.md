@@ -11,6 +11,8 @@
 
 Fork of wp-unit to support bootstrapping an existing database and many other enhancements.
 
+> Note: Version 4 has diverged from the original WordPress core tests. [More information here.](https://github.com/lipemat/wp-unit/wiki/Version-4-Migration)
+
 Original may be cloned from here: **git://develop.git.wordpress.org/tests/phpunit**
 
 ## Usage
