@@ -1,6 +1,8 @@
 <?php
 
 use Lipe\WP_Unit\Framework\Deprecated_TestCase_Base;
+use Lipe\WP_Unit\Helpers\Cleanup;
+use Lipe\WP_Unit\Helpers\DatabaseTransactions;
 use Lipe\WP_Unit\Helpers\Deprecated_Usage;
 use Lipe\WP_Unit\Helpers\Doing_It_Wrong;
 use Lipe\WP_Unit\Helpers\Global_Hooks;
@@ -43,15 +45,13 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 */
 	protected $wp_die_usage;
 
-	protected static $ignore_files;
-
 
 	/**
 	 * Fetches the factory object for generating WordPress fixtures.
 	 *
-	 * @return WP_UnitTest_Factory The fixture factory.
+	 * @return WP_UnitTest_Factory
 	 */
-	protected static function factory() {
+	protected static function factory(): WP_UnitTest_Factory {
 		static $factory = null;
 		if ( ! $factory ) {
 			$factory = new WP_UnitTest_Factory();
@@ -72,13 +72,13 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$wpdb->db_connect();
 		ini_set( 'display_errors', '1' );
 
-		$class = get_called_class();
+		$class = static::class;
 
 		if ( method_exists( $class, 'wpSetUpBeforeClass' ) ) {
-			call_user_func( array( $class, 'wpSetUpBeforeClass' ), static::factory() );
+			$class->wpSetUpBeforeClass( static::factory() );
 		}
 
-		self::commit_transaction();
+		DatabaseTransactions::instance()->commit_transaction();
 		Setup_Teardown_State::set_up_before_class( $class );
 	}
 
@@ -86,18 +86,18 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * Runs the routine after all tests have been run.
 	 */
 	public static function tear_down_after_class() {
-		$class = get_called_class();
+		$class = static::class;
 
 		if ( method_exists( $class, 'wpTearDownAfterClass' ) ) {
-			call_user_func( [ $class, 'wpTearDownAfterClass' ] );
+			$class->wpTearDownAfterClass();
 		}
 
 		if ( ! tests_skip_install() ) {
 			_delete_all_data();
 		}
-		self::flush_cache();
+		Cleanup::instance()->flush_cache();
 
-		self::commit_transaction();
+		DatabaseTransactions::instance()->commit_transaction();
 
 		Global_Hooks::instance()->restore_globals();
 		Setup_Teardown_State::tear_down_after_class( $class );
@@ -113,10 +113,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 		$this->factory = static::factory();
 
-		if ( ! self::$ignore_files ) {
-			self::$ignore_files = $this->scan_user_uploads();
-		}
-
 		$this->_backup_hooks();
 
 		// Load the helpers into the stack.
@@ -126,7 +122,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 		global $wp_rewrite;
 
-		$this->clean_up_global_scope();
+		Cleanup::instance()->clean_up_global_scope();
 
 		/*
 		 * When running core tests, ensure that post types and taxonomies
@@ -135,15 +131,15 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		 * taxonomies at 'init'.
 		 */
 		if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS ) {
-			$this->reset_post_types();
-			$this->reset_taxonomies();
-			$this->reset_post_statuses();
+			Cleanup::instance()->reset_post_types();
+			Cleanup::instance()->reset_taxonomies();
+			Cleanup::instance()->reset_post_statuses();
 
 			if ( $wp_rewrite->permalink_structure ) {
 				$this->set_permalink_structure( '' );
 			}
 		}
-		$this->reset__SERVER();
+		Cleanup::instance()->reset__SERVER();
 
 		DatabaseTransactions::instance()->start_transaction();
 		$this->_fill_expected_deprecated();
@@ -213,7 +209,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$GLOBALS['wp_stylesheet_path'] = null;
 		$GLOBALS['wp_template_path']   = null;
 
-		$this->unregister_all_meta_keys();
+		Cleanup::instance()->unregister_all_meta_keys();
 		remove_filter( 'query', array( $this, '_create_temporary_tables' ) );
 		remove_filter( 'query', array( $this, '_drop_temporary_tables' ) );
 
@@ -227,41 +223,11 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$this->_restore_hooks();
 		wp_set_current_user( 0 );
 
-		$this->reset_lazyload_queue();
+		Cleanup::instance()->reset_lazyload_queue();
 
 		Setup_Teardown_State::tear_down();
 	}
 
-	/**
-	 * Cleans the global scope (e.g `$_GET` and `$_POST`).
-	 */
-	public function clean_up_global_scope() {
-		$_GET     = array();
-		$_POST    = array();
-		$_REQUEST = array();
-		self::flush_cache();
-	}
-
-	/**
-	 * Allows tests to be skipped on some automated runs.
-	 *
-	 * For test runs on GitHub Actions for something other than trunk,
-	 * we want to skip tests that only need to run for trunk.
-	 */
-	public function skipOnAutomatedBranches() {
-		// https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
-		$github_event_name = getenv( 'GITHUB_EVENT_NAME' );
-		$github_ref        = getenv( 'GITHUB_REF' );
-
-		if ( $github_event_name ) {
-			// We're on GitHub Actions.
-			$skipped = array( 'pull_request', 'pull_request_target' );
-
-			if ( in_array( $github_event_name, $skipped, true ) || 'refs/heads/trunk' !== $github_ref ) {
-				$this->markTestSkipped( 'For automated test runs, this test is only run on trunk' );
-			}
-		}
-	}
 
 	/**
 	 * Allows tests to be skipped when Multisite is not in use.
@@ -307,61 +273,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		}
 	}
 
-	/**
-	 * Reset the lazy load meta queue.
-	 */
-	protected function reset_lazyload_queue() {
-		$lazyloader = wp_metadata_lazyloader();
-		$lazyloader->reset_queue( 'term' );
-		$lazyloader->reset_queue( 'comment' );
-		$lazyloader->reset_queue( 'blog' );
-	}
 
-	/**
-	 * Unregisters existing post types and register defaults.
-	 *
-	 * Run before each test in order to clean up the global scope, in case
-	 * a test forgets to unregister a post type on its own, or fails before
-	 * it has a chance to do so.
-	 */
-	protected function reset_post_types() {
-		foreach ( get_post_types( array(), 'objects' ) as $pt ) {
-			if ( empty( $pt->tests_no_auto_unregister ) ) {
-				_unregister_post_type( $pt->name );
-			}
-		}
-		create_initial_post_types();
-	}
-
-	/**
-	 * Unregisters existing taxonomies and register defaults.
-	 *
-	 * Run before each test in order to clean up the global scope, in case
-	 * a test forgets to unregister a taxonomy on its own, or fails before
-	 * it has a chance to do so.
-	 */
-	protected function reset_taxonomies() {
-		foreach ( get_taxonomies() as $tax ) {
-			_unregister_taxonomy( $tax );
-		}
-		create_initial_taxonomies();
-	}
-
-	/**
-	 * Unregisters non-built-in post statuses.
-	 */
-	protected function reset_post_statuses() {
-		foreach ( get_post_stati( array( '_builtin' => false ) ) as $post_status ) {
-			_unregister_post_status( $post_status );
-		}
-	}
-
-	/**
-	 * Resets `$_SERVER` variables
-	 */
-	protected function reset__SERVER() {
-		tests_reset__SERVER();
-	}
 
 	/**
 	 * Saves the hook-related globals, so they can be restored later.
@@ -865,56 +777,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 
 	/**
-	 * Helper function to convert a single-level array containing text strings to a named data provider.
-	 *
-	 * The value of the data set will also be used as the name of the data set.
-	 *
-	 * Typical usage of this method:
-	 *
-	 *     public function data_provider_for_test_name() {
-	 *         $array = array(
-	 *             'value1',
-	 *             'value2',
-	 *         );
-	 *
-	 *         return $this->text_array_to_dataprovider( $array );
-	 *     }
-	 *
-	 * The returned result will look like:
-	 *
-	 *     array(
-	 *         'value1' => array( 'value1' ),
-	 *         'value2' => array( 'value2' ),
-	 *     )
-	 *
-	 * @since 6.1.0
-	 *
-	 * @param array $input Input array.
-	 * @return array Array which is usable as a test data provider with named data sets.
-	 */
-	public static function text_array_to_dataprovider( $input ) {
-		$data = array();
-
-		foreach ( $input as $value ) {
-			if ( ! is_string( $value ) ) {
-				throw new Exception(
-					'All values in the input array should be text strings. Fix the input data.'
-				);
-			}
-
-			if ( isset( $data[ $value ] ) ) {
-				throw new Exception(
-					"Attempting to add a duplicate data set for value $value to the data provider. Fix the input data."
-				);
-			}
-
-			$data[ $value ] = array( $value );
-		}
-
-		return $data;
-	}
-
-	/**
 	 * Sets the global state to as if a given URL has been requested.
 	 *
 	 * This sets:
@@ -977,225 +839,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 
 	/**
-	 * Custom preparations for the PHPUnit process isolation template.
-	 *
-	 * When restoring global state between tests, PHPUnit defines all the constants that were already defined, and then
-	 * includes included files. This does not work with WordPress, as the included files define the constants.
-	 *
-	 * This method defines the constants after including files.
-	 *
-	 * @param Text_Template $template The template to prepare.
-	 */
-	public function prepareTemplate( Text_Template $template ) {
-		$template->setVar( array( 'constants' => '' ) );
-		$template->setVar( array( 'wp_constants' => PHPUnit_Util_GlobalState::getConstantsAsString() ) );
-		parent::prepareTemplate( $template );
-	}
-
-	/**
-	 * Creates a unique temporary file name.
-	 *
-	 * The directory in which the file is created depends on the environment configuration.
-	 *
-	 * @since 3.5.0
-	 *
-	 * @return string|bool Path on success, else false.
-	 */
-	public function temp_filename() {
-		$tmp_dir = '';
-		$dirs    = array( 'TMP', 'TMPDIR', 'TEMP' );
-
-		foreach ( $dirs as $dir ) {
-			if ( isset( $_ENV[ $dir ] ) && ! empty( $_ENV[ $dir ] ) ) {
-				$tmp_dir = $dir;
-				break;
-			}
-		}
-
-		if ( empty( $tmp_dir ) ) {
-			$tmp_dir = get_temp_dir();
-		}
-
-		$tmp_dir = realpath( $tmp_dir );
-
-		return tempnam( $tmp_dir, 'wpunit' );
-	}
-
-	/**
-	 * Selectively deletes a file.
-	 *
-	 * Does not delete a file if its path is set in the `$ignore_files` property.
-	 *
-	 * @param string $file File path.
-	 */
-	public function unlink( $file ) {
-		$exists = is_file( $file );
-		if ( $exists && ! in_array( $file, self::$ignore_files, true ) ) {
-			//error_log( $file );
-			unlink( $file );
-		} elseif ( ! $exists ) {
-			$this->fail( "Trying to delete a file that doesn't exist: $file" );
-		}
-	}
-
-	/**
-	 * Selectively deletes files from a directory.
-	 *
-	 * Does not delete files if their paths are set in the `$ignore_files` property.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $path Directory path.
-	 */
-	public function rmdir( $path ) {
-		$files = $this->files_in_dir( $path );
-		foreach ( $files as $file ) {
-			if ( ! in_array( $file, self::$ignore_files, true ) ) {
-				$this->unlink( $file );
-			}
-		}
-	}
-
-	/**
-	 * Deletes files added to the `uploads` directory during tests.
-	 *
-	 * This method works in tandem with the `set_up()` and `rmdir()` methods:
-	 * - `set_up()` scans the `uploads` directory before every test, and stores
-	 *   its contents inside of the `$ignore_files` property.
-	 * - `rmdir()` and its helper methods only delete files that are not listed
-	 *   in the `$ignore_files` property. If called during `tear_down()` in tests,
-	 *   this will only delete files added during the previously run test.
-	 */
-	public function remove_added_uploads() {
-		$uploads = wp_upload_dir();
-		$this->rmdir( $uploads['basedir'] );
-	}
-
-	/**
-	 * Returns a list of all files contained inside a directory.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $dir Path to the directory to scan.
-	 * @return array List of file paths.
-	 */
-	public function files_in_dir( $dir ) {
-		$files = array();
-
-		$iterator = new RecursiveDirectoryIterator( $dir );
-		$objects  = new RecursiveIteratorIterator( $iterator );
-		foreach ( $objects as $name => $object ) {
-			if ( is_file( $name ) ) {
-				$files[] = $name;
-			}
-		}
-
-		return $files;
-	}
-
-	/**
-	 * Returns a list of all files contained inside the `uploads` directory.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return array List of file paths.
-	 */
-	public function scan_user_uploads() {
-		static $files = array();
-		if ( ! empty( $files ) ) {
-			return $files;
-		}
-
-		$uploads = wp_upload_dir();
-		$files   = $this->files_in_dir( $uploads['basedir'] );
-		return $files;
-	}
-
-	/**
-	 * Deletes all directories contained inside a directory.
-	 *
-	 * @since 4.1.0
-	 *
-	 * @param string $path Path to the directory to scan.
-	 */
-	public function delete_folders( $path ) {
-		if ( ! is_dir( $path ) ) {
-			return;
-		}
-
-		$matched_dirs = $this->scandir( $path );
-
-		foreach ( array_reverse( $matched_dirs ) as $dir ) {
-			rmdir( $dir );
-		}
-
-		rmdir( $path );
-	}
-
-	/**
-	 * Retrieves all directories contained inside a directory.
-	 * Hidden directories are ignored.
-	 *
-	 * This is a helper for the `delete_folders()` method.
-	 *
-	 * @since 4.1.0
-	 * @since 6.1.0 No longer sets a (dynamic) property to keep track of the directories,
-	 *              but returns an array of the directories instead.
-	 *
-	 * @param string $dir Path to the directory to scan.
-	 * @return string[] List of directories.
-	 */
-	public function scandir( $dir ) {
-		$matched_dirs = array();
-
-		foreach ( scandir( $dir ) as $path ) {
-			if ( 0 !== strpos( $path, '.' ) && is_dir( $dir . '/' . $path ) ) {
-				$matched_dirs[] = array( $dir . '/' . $path );
-				$matched_dirs[] = $this->scandir( $dir . '/' . $path );
-			}
-		}
-
-		/*
-		 * Compatibility check for PHP < 7.4, where array_merge() expects at least one array.
-		 * See: https://3v4l.org/BIQMA
-		 */
-		if ( array() === $matched_dirs ) {
-			return array();
-		}
-
-		return array_merge( ...$matched_dirs );
-	}
-
-	/**
-	 * Converts a microtime string into a float.
-	 *
-	 * @since 4.1.0
-	 *
-	 * @param string $microtime Time string generated by `microtime()`.
-	 * @return float `microtime()` output as a float.
-	 */
-	protected function _microtime_to_float( $microtime ) {
-		$time_array = explode( ' ', $microtime );
-		return array_sum( $time_array );
-	}
-
-	/**
-	 * Deletes a user from the database in a Multisite-agnostic way.
-	 *
-	 * @since 4.3.0
-	 *
-	 * @param int $user_id User ID.
-	 * @return bool True if the user was deleted.
-	 */
-	public static function delete_user( $user_id ) {
-		if ( is_multisite() ) {
-			return wpmu_delete_user( $user_id );
-		}
-
-		return wp_delete_user( $user_id );
-	}
-
-	/**
 	 * Resets permalinks and flushes rewrites.
 	 *
 	 * @since 4.4.0
@@ -1210,103 +853,5 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$wp_rewrite->init();
 		$wp_rewrite->set_permalink_structure( $structure );
 		$wp_rewrite->flush_rules();
-	}
-
-	/**
-	 * Creates an attachment post from an uploaded file.
-	 *
-	 * @since 4.4.0
-	 * @since 6.2.0 Returns a WP_Error object on failure.
-	 *
-	 * @param array $upload         Array of information about the uploaded file, provided by wp_upload_bits().
-	 * @param int   $parent_post_id Optional. Parent post ID.
-	 * @return int|WP_Error The attachment ID on success, WP_Error object on failure.
-	 */
-	public function _make_attachment( $upload, $parent_post_id = 0 ) {
-		$type = '';
-		if ( ! empty( $upload['type'] ) ) {
-			$type = $upload['type'];
-		} else {
-			$mime = wp_check_filetype( $upload['file'] );
-			if ( $mime ) {
-				$type = $mime['type'];
-			}
-		}
-
-		$attachment = array(
-			'post_title'     => wp_basename( $upload['file'] ),
-			'post_content'   => '',
-			'post_type'      => 'attachment',
-			'post_parent'    => $parent_post_id,
-			'post_mime_type' => $type,
-			'guid'           => $upload['url'],
-		);
-
-		$attachment_id = wp_insert_attachment( $attachment, $upload['file'], $parent_post_id, true );
-
-		if ( is_wp_error( $attachment_id ) ) {
-			return $attachment_id;
-		}
-
-		wp_update_attachment_metadata(
-			$attachment_id,
-			wp_generate_attachment_metadata( $attachment_id, $upload['file'] )
-		);
-
-		return $attachment_id;
-	}
-
-	/**
-	 * Updates the modified and modified GMT date of a post in the database.
-	 *
-	 * @since 4.8.0
-	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
-	 *
-	 * @param int    $post_id Post ID.
-	 * @param string $date    Post date, in the format YYYY-MM-DD HH:MM:SS.
-	 * @return int|false 1 on success, or false on error.
-	 */
-	protected function update_post_modified( $post_id, $date ) {
-		global $wpdb;
-		return $wpdb->update(
-			$wpdb->posts,
-			array(
-				'post_modified'     => $date,
-				'post_modified_gmt' => $date,
-			),
-			array(
-				'ID' => $post_id,
-			),
-			array(
-				'%s',
-				'%s',
-			),
-			array(
-				'%d',
-			)
-		);
-	}
-
-	/**
-	 * Touches the given file and its directory if it doesn't already exist.
-	 *
-	 * This can be used to ensure a file that is implictly relied on in a test exists
-	 * without it having to be built.
-	 *
-	 * @param string $file The file name.
-	 */
-	public static function touch( $file ) {
-		if ( file_exists( $file ) ) {
-			return;
-		}
-
-		$dir = dirname( $file );
-
-		if ( ! file_exists( $dir ) ) {
-			mkdir( $dir, 0777, true );
-		}
-
-		touch( $file );
 	}
 }
