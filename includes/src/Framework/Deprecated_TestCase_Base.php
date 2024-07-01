@@ -75,19 +75,6 @@ trait Deprecated_TestCase_Base {
 
 
 	/**
-	 * Skips the current test if there is an open Unit Test Trac ticket associated with it.
-	 *
-	 * @since      3.5.0
-	 * @deprecated No longer used since the Unit Test Trac was merged into the Core Trac.
-	 *
-	 * @param int $ticket_id Ticket number.
-	 */
-	public function knownUTBug( $ticket_id ) {
-		return;
-	}
-
-
-	/**
 	 * Allows tests to be skipped on single or multisite installs by using @group annotations.
 	 *
 	 * This is a custom extension of the PHPUnit requirements handling.

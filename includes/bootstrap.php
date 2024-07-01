@@ -243,10 +243,6 @@ if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS ) {
 	define( 'WP_PLUGIN_DIR', realpath( DIR_TESTDATA . '/plugins' ) );
 }
 
-if ( ! defined( 'WP_TESTS_FORCE_KNOWN_BUGS' ) ) {
-	define( 'WP_TESTS_FORCE_KNOWN_BUGS', false );
-}
-
 /*
  * Cron tries to make an HTTP request to the site, which always fails,
  * because tests are run in CLI mode only.
@@ -391,7 +387,6 @@ require __DIR__ . '/testcase-object-cache.php';
 require __DIR__ . '/testcase-rest-post-type-controller.php';
 require __DIR__ . '/testcase-xmlrpc.php';
 require __DIR__ . '/testcase-ajax.php';
-require __DIR__ . '/testcase-canonical.php';
 require __DIR__ . '/testcase-wp-cli.php';
 require __DIR__ . '/testcase-xml.php';
 require __DIR__ . '/exceptions.php';
@@ -407,66 +402,3 @@ require __DIR__ . '/class-wp-sitemaps-large-test-provider.php';
 
 // Prevent side effects from the test case classes.
 Global_Hooks::instance()->restore_globals();
-
-/**
- * A class to handle additional command line arguments passed to the script.
- *
- * If it is determined that phpunit was called with a --group that corresponds
- * to an @ticket annotation (such as `phpunit --group 12345` for bugs marked
- * as #WP12345), then it is assumed that known bugs should not be skipped.
- *
- * If WP_TESTS_FORCE_KNOWN_BUGS is already set in wp-tests-config.php, then
- * how you call phpunit has no effect.
- */
-class WP_PHPUnit_Util_Getopt {
-
-	public function __construct( $argv ) {
-		$skipped_groups = array(
-			'ajax'          => true,
-			'ms-files'      => true,
-			'external-http' => true,
-		);
-
-		while ( current( $argv ) ) {
-			$option = current( $argv );
-			$value  = next( $argv );
-
-			switch ( $option ) {
-				case '--exclude-group':
-					foreach ( $skipped_groups as $group_name => $skipped ) {
-						$skipped_groups[ $group_name ] = false;
-					}
-					continue 2;
-				case '--group':
-					$groups = explode( ',', $value );
-					foreach ( $groups as $group ) {
-						if ( is_numeric( $group ) || preg_match( '/^(UT|Plugin)\d+$/', $group ) ) {
-							WP_UnitTestCase::forceTicket( $group );
-						}
-					}
-
-					foreach ( $skipped_groups as $group_name => $skipped ) {
-						if ( in_array( $group_name, $groups, true ) ) {
-							$skipped_groups[ $group_name ] = false;
-						}
-					}
-					continue 2;
-			}
-		}
-
-		$skipped_groups = array_filter( $skipped_groups );
-		foreach ( $skipped_groups as $group_name => $skipped ) {
-			if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS ) {
-				echo sprintf( 'Not running %1$s tests. To execute these, use --group %1$s.', $group_name ) . PHP_EOL;
-			}
-		}
-
-		if ( ! isset( $skipped_groups['external-http'] ) ) {
-			echo PHP_EOL;
-			echo 'External HTTP skipped tests can be caused by timeouts.' . PHP_EOL;
-			echo 'If this changeset includes changes to HTTP, make sure there are no timeouts.' . PHP_EOL;
-			echo PHP_EOL;
-		}
-	}
-}
-new WP_PHPUnit_Util_Getopt( $_SERVER['argv'] );
