@@ -37,7 +37,7 @@ abstract class WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @return int|WP_Error The object ID on success, WP_Error object on failure.
 	 */
-	abstract public function create_object( $args );
+	abstract public function create_object( array $args );
 
 	/**
 	 * Updates an existing object.

@@ -34,7 +34,7 @@ class WP_UnitTest_Factory_For_Comment extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @return int|WP_Error The comment ID on success, WP_Error object on failure.
 	 */
-	public function create_object( $args ) {
+	public function create_object( array $args ) {
 		global $wpdb;
 
 		$comment_id = wp_insert_comment( $this->addslashes_deep( $args ) );

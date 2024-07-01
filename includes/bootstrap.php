@@ -46,21 +46,6 @@ if ( is_readable( $config_file_path ) ) {
 }
 require_once __DIR__ . '/functions.php';
 
-if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS && ! is_dir( ABSPATH ) ) {
-	if ( substr( ABSPATH, - 7 ) !== '/build/' ) {
-		printf(
-			'Error: The ABSPATH constant in the `wp-tests-config.php` file is set to a non-existent path "%s". Please verify.' . PHP_EOL,
-			ABSPATH
-		);
-		exit( 1 );
-	} else {
-		echo 'Error: The PHPUnit tests should be run on the /src/ directory, not the /build/ directory.'
-		     . ' Please update the ABSPATH constant in your `wp-tests-config.php` file to `dirname( __FILE__ ) . \'/src/\'`'
-		     . ' or run `npm run build` prior to running PHPUnit.' . PHP_EOL;
-		exit( 1 );
-	}
-}
-
 $phpunit_version = PHPUnit\Runner\Version::id();
 
 if ( version_compare( PHPUnit\Runner\Version::id(), '7.0.0', '<' ) ) {
@@ -72,29 +57,6 @@ if ( version_compare( PHPUnit\Runner\Version::id(), '7.0.0', '<' ) ) {
 	exit( 1 );
 }
 unset( $phpunit_polyfills_minimum_version );
-
-// If running core tests, check if all the required PHP extensions are loaded before running the test suite.
-if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS ) {
-	$required_extensions = [
-		'gd',
-	];
-	$missing_extensions = [];
-
-	foreach ( $required_extensions as $extension ) {
-		if ( ! extension_loaded( $extension ) ) {
-			$missing_extensions[] = $extension;
-		}
-	}
-
-	if ( $missing_extensions ) {
-		printf(
-			'Error: The following required PHP extensions are missing from the testing environment: %s.' . PHP_EOL,
-			implode( ', ', $missing_extensions )
-		);
-		echo 'Please make sure they are installed and enabled.' . PHP_EOL,
-		exit( 1 );
-	}
-}
 
 /*
  * Load the PHPUnit Polyfills autoloader.
@@ -151,11 +113,6 @@ if ( ! class_exists( 'Yoast\PHPUnitPolyfills\Autoload' ) ) {
 			echo 'Please verify that the file path provided in the WP_TESTS_PHPUNIT_POLYFILLS_PATH constant is correct.' . PHP_EOL;
 			echo 'The WP_TESTS_PHPUNIT_POLYFILLS_PATH constant should contain an absolute path to the root directory'
 			     . ' of the PHPUnit Polyfills library.' . PHP_EOL;
-		} elseif ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS ) {
-			echo 'You need to run `composer update -W` before running the tests.' . PHP_EOL;
-			echo 'Once the dependencies are installed, you can run the tests using the Composer-installed version'
-			     . ' of PHPUnit or using a PHPUnit phar file, but the dependencies do need to be installed'
-			     . ' whichever way the tests are run.' . PHP_EOL;
 		} else {
 			echo 'If you are trying to run plugin/theme integration tests, make sure the PHPUnit Polyfills library'
 			     . ' (https://github.com/Yoast/PHPUnit-Polyfills) is available and either load the autoload file'
@@ -196,8 +153,6 @@ if ( class_exists( '\Yoast\PHPUnitPolyfills\Autoload' )
 			WP_TESTS_PHPUNIT_POLYFILLS_PATH,
 			$phpunit_polyfills_minimum_version
 		);
-	} elseif ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS ) {
-		echo 'Please run `composer update -W` to install the latest version.' . PHP_EOL;
 	}
 	exit( 1 );
 }
@@ -235,14 +190,6 @@ if ( ! defined( 'WP_TESTS_TABLE_PREFIX' ) && isset( $table_prefix ) ) {
 define( 'DIR_TEST_IMAGES', realpath( dirname( __DIR__ ) . '/data/images' ) );
 define( 'DIR_TESTROOT', realpath( dirname( __DIR__ ) ) );
 
-if ( ! defined( 'WP_LANG_DIR' ) ) {
-	define( 'WP_LANG_DIR', realpath( DIR_TESTDATA . '/languages' ) );
-}
-
-if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS ) {
-	define( 'WP_PLUGIN_DIR', realpath( DIR_TESTDATA . '/plugins' ) );
-}
-
 /*
  * Cron tries to make an HTTP request to the site, which always fails,
  * because tests are run in CLI mode only.
@@ -276,15 +223,10 @@ if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
 }
 $wp_theme_directories = [];
 
-if ( file_exists( DIR_TESTDATA . '/themedir1' ) ) {
-	$wp_theme_directories[] = DIR_TESTDATA . '/themedir1';
-}
-
 if ( ! tests_skip_install() ) {
-	$core_tests = ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS ) ? 'run_core_tests' : 'no_core_tests';
 	$ms_tests = $multisite ? 'run_ms_tests' : 'no_ms_tests';
 
-	system( WP_PHP_BINARY . ' ' . escapeshellarg( __DIR__ . '/install.php' ) . ' ' . escapeshellarg( $config_file_path ) . ' ' . $ms_tests . ' ' . $core_tests, $retval );
+	system( WP_PHP_BINARY . ' ' . escapeshellarg( __DIR__ . '/install.php' ) . ' ' . escapeshellarg( $config_file_path ) . ' ' . $ms_tests, $retval );
 	if ( 0 !== $retval ) {
 		exit( $retval );
 	}

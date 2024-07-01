@@ -34,7 +34,7 @@ class WP_UnitTest_Factory_For_Term extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @return int|WP_Error The term ID on success, WP_Error object on failure.
 	 */
-	public function create_object( $args ) {
+	public function create_object( array $args ) {
 		$args         = array_merge( array( 'taxonomy' => $this->taxonomy ), $args );
 		$term_id_pair = wp_insert_term( $args['name'], $args['taxonomy'], $args );
 

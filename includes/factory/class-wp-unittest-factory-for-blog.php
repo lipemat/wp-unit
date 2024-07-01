@@ -30,7 +30,7 @@ class WP_UnitTest_Factory_For_Blog extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @return int|WP_Error The site ID on success, WP_Error object on failure.
 	 */
-	public function create_object( $args ) {
+	public function create_object( array $args ) {
 		global $wpdb;
 
 		// Map some arguments for backward compatibility with `wpmu_create_blog()` previously used here.

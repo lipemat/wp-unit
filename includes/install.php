@@ -1,17 +1,11 @@
 <?php
 /**
- * Installs WordPress for the purpose of the unit-tests
- *
- * @todo Reuse the init/load code in init.php
+ * Installs WordPress for the unit-tests.
  */
 error_reporting( E_ALL & ~E_DEPRECATED & ~E_STRICT );
 
 $config_file_path = $argv[1];
-$multisite        = in_array( 'run_ms_tests', $argv, true );
-
-if ( ! defined( 'WP_RUN_CORE_TESTS' ) && in_array( 'run_core_tests', $argv, true ) ) {
-	define( 'WP_RUN_CORE_TESTS', true );
-}
+$multisite = in_array( 'run_ms_tests', $argv, true );
 
 define( 'WP_INSTALLING', true );
 
@@ -37,7 +31,7 @@ if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
 
 tests_reset__SERVER();
 
-$PHP_SELF            = '/index.php';
+$PHP_SELF = '/index.php';
 $GLOBALS['PHP_SELF'] = '/index.php';
 $_SERVER['PHP_SELF'] = '/index.php';
 
@@ -46,7 +40,7 @@ tests_add_filter( 'wp_die_handler', '_wp_die_handler_filter_exit' );
 require_once ABSPATH . 'wp-settings.php';
 
 require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-if ( file_exists( ABSPATH . 'wp-includes/class-wpdb.php' )) {
+if ( file_exists( ABSPATH . 'wp-includes/class-wpdb.php' ) ) {
 	require_once ABSPATH . 'wp-includes/class-wpdb.php';
 } else {
 	require_once ABSPATH . 'wp-includes/wp-db.php';
@@ -105,7 +99,7 @@ if ( $multisite ) {
 
 	define( 'WP_INSTALLING_NETWORK', true );
 
-	$title             = WP_TESTS_TITLE . ' Network';
+	$title = WP_TESTS_TITLE . ' Network';
 	$subdomain_install = false;
 
 	install_network();

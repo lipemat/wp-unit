@@ -111,19 +111,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$this->wp_die_usage = Wp_Die_Usage::factory( $this );
 
 		Cleanup::instance()->clean_up_global_scope();
-
-		/*
-		 * When running core tests, ensure that post types and taxonomies
-		 * are reset for each test. We skip this step for non-core tests,
-		 * given the large number of plugins that register post types and
-		 * taxonomies at 'init'.
-		 */
-		if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS ) {
-			Cleanup::instance()->reset_post_types();
-			Cleanup::instance()->reset_taxonomies();
-			Cleanup::instance()->reset_post_statuses();
-			Cleanup::instance()->set_permalink_structure();
-		}
 		Cleanup::instance()->reset__SERVER();
 
 		DatabaseTransactions::instance()->start_transaction();

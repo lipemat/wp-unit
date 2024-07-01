@@ -30,7 +30,7 @@ class WP_UnitTest_Factory_For_User extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @return int|WP_Error The user ID on success, WP_Error object on failure.
 	 */
-	public function create_object( $args ) {
+	public function create_object( array $args ) {
 		return wp_insert_user( $args );
 	}
 
