@@ -280,27 +280,3 @@ Enable for tests via.
 ```php
 DG\BypassFinals::enable();
 ```
-
-## Internal Merging Core Process
-
-The original repo this is forked from contains the entire WordPress code base along with the tests directory and is not feasible for a typical git merge.
-
-Instead, merging in changes from WordPress core is done via patches.
-
-1. Checkout the latest master from `git clone git://develop.git.wordpress.org/tests`
-2. `cd tests/tests/phpunit`
-3. `git diff <last commit merged in> trunk --relative > <lastest master commit>.<date>.patch`
-    1. Change `<last commit merged in>` to name of the latest patch in the `/patches` directory which matches the latest commit merged it.
-    2. Change `<lastest trunk commit>` latest commit of master.
-    3. Change `<date>` to today's date.
-4. Move new patch file to `/patches` directory:
-5. Apply the patch to this repository using either:
-    1. Terminal:
-        1. `git apply --reject --whitespace=fix patches/<lastest trunk commit>.<date>.patch`
-        2. Delete the `tests` directory (not included in this repo).
-        3. Use log or search for `.rej` and solve the rejections manually.
-    2. Use PHPStorm's interactive built in "Apply Patch" (preferred):
-        1. Git menu in the toolbar.
-        2. Patch -> Apply Patch
-        3. Uncheck the `tests` directory (not included in this repo).
-6. Make sure to note the commit merged in the git log and release notes if applicable.    
