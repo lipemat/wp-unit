@@ -49,29 +49,29 @@ abstract class WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @return int|WP_Error The object ID on success, WP_Error object on failure.
 	 */
-	abstract public function update_object( $object_id, $fields );
+	abstract public function update_object( int $object_id, array $fields );
 
 	/**
 	 * Creates an object and returns its ID.
 	 *
 	 * @since UT (3.7.0)
 	 *
-	 * @param array $args                   Optional. The arguments for the object to create.
+	 * @param array      $args                   Optional. The arguments for the object to create.
 	 *                                      Default empty array.
-	 * @param null  $generation_definitions Optional. The default values for the object.
+	 * @param array|null $generation_definitions Optional. The default values for the object.
 	 *                                      Default null.
 	 *
 	 * @return int|WP_Error The object ID on success, WP_Error object on failure.
 	 */
-	public function create( $args = array(), $generation_definitions = null ) {
-		if ( is_null( $generation_definitions ) ) {
+	public function create( array $args = [], ?array $generation_definitions = null ) {
+		if ( null === $generation_definitions ) {
 			$generation_definitions = $this->default_generation_definitions;
 		}
 
 		$generated_args = $this->generate_args( $args, $generation_definitions, $callbacks );
 		$object_id      = $this->create_object( $generated_args );
 
-		if ( ! $object_id || is_wp_error( $object_id ) ) {
+		if ( 0 === $object_id || is_wp_error( $object_id ) ) {
 			return $object_id;
 		}
 
@@ -79,7 +79,7 @@ abstract class WP_UnitTest_Factory_For_Thing {
 			$updated_fields = $this->apply_callbacks( $callbacks, $object_id );
 			$save_result    = $this->update_object( $object_id, $updated_fields );
 
-			if ( ! $save_result || is_wp_error( $save_result ) ) {
+			if ( 0 === $save_result || is_wp_error( $save_result ) ) {
 				return $save_result;
 			}
 		}
@@ -92,14 +92,14 @@ abstract class WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @since UT (3.7.0)
 	 *
-	 * @param array $args                   Optional. The arguments for the object to create.
+	 * @param array  $args                   Optional. The arguments for the object to create.
 	 *                                      Default empty array.
-	 * @param null  $generation_definitions Optional. The default values for the object.
+	 * @param ?array $generation_definitions Optional. The default values for the object.
 	 *                                      Default null.
 	 *
 	 * @return mixed The created object. Can be anything. WP_Error object on failure.
 	 */
-	public function create_and_get( $args = array(), $generation_definitions = null ) {
+	public function create_and_get( array $args = [], ?array $generation_definitions = null ) {
 		$object_id = $this->create( $args, $generation_definitions );
 
 		if ( is_wp_error( $object_id ) ) {
@@ -157,9 +157,9 @@ abstract class WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @return array|WP_Error Combined array on success. WP_Error when default value is incorrent.
 	 */
-	public function generate_args( $args = array(), $generation_definitions = null, &$callbacks = null ) {
+	public function generate_args( array $args = [], ?array $generation_definitions = null, &$callbacks = null ) {
 		$callbacks = array();
-		if ( is_null( $generation_definitions ) ) {
+		if ( null === $generation_definitions ) {
 			$generation_definitions = $this->default_generation_definitions;
 		}
 
@@ -238,6 +238,7 @@ abstract class WP_UnitTest_Factory_For_Thing {
 		} elseif ( is_object( $value ) ) {
 			$vars = get_object_vars( $value );
 			foreach ( $vars as $key => $data ) {
+				// @phpstan-ignore-next-line -- Variable access on an object.
 				$value->{$key} = $this->addslashes_deep( $data );
 			}
 		} elseif ( is_string( $value ) ) {

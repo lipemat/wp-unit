@@ -5,6 +5,7 @@ parameters:
   paths:
     - includes/abstract-testcase.php
     - includes/src
+    - includes/factory
   bootstrapFiles:
     - phar://E:/scripts\phpunit\phpunit-7\phpunit-7.phar\phpunit\Framework\SelfDescribing.php
     - phar://E:/scripts\phpunit\phpunit-7\phpunit-7.phar\phpunit\Framework\Test.php

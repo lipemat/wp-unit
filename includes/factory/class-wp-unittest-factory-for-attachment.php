@@ -6,8 +6,8 @@
  * Note: The below @method notations are defined solely for the benefit of IDEs,
  * as a way to indicate expected return values from the given factory methods.
  *
- * @method int|WP_Error     create( $args = [], $generation_definitions = null )
- * @method WP_Post|WP_Error create_and_get( $args = [], $generation_definitions = null )
+ * @method int|WP_Error     create( $args = [], array $generation_definitions = null )
+ * @method WP_Post|WP_Error create_and_get( array $args = [], array $generation_definitions = null )
  * @method ( int|WP_Error )[] create_many( $count, $args = array(), $generation_definitions = null )
  */
 class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
@@ -42,9 +42,9 @@ class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
 		);
 
 		// @since 1.8.0
-		if ( empty( $args['file'] ) ) {
+		if ( ! isset( $args['file'] ) ) {
 			$this->test_file = trailingslashit( wp_get_upload_dir()['basedir'] ) . 'test-image.jpg';
-			copy( DIR_TESTROOT . '/data/images/test-image.jpg', $this->test_file );
+			\copy( DIR_TEST_IMAGES . '/test-image.jpg', $this->test_file );
 			$r['file'] = $this->test_file;
 			$r['post_mime_type'] = 'image/jpg';
 		}
@@ -69,11 +69,11 @@ class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
 		$upload = wp_upload_bits( wp_basename( $file ), null, $contents );
 
 		$type = '';
-		if ( ! empty( $upload['type'] ) ) {
+		if ( '' !== $upload['type'] ) {
 			$type = $upload['type'];
 		} else {
 			$mime = wp_check_filetype( $upload['file'] );
-			if ( $mime ) {
+			if ( false !== $mime['type'] ) {
 				$type = $mime['type'];
 			}
 		}

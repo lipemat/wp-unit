@@ -6,8 +6,8 @@
  * Note: The below @method notations are defined solely for the benefit of IDEs,
  * as a way to indicate expected return values from the given factory methods.
  *
- * @method int|WP_Error     create( $args = array(), $generation_definitions = null )
- * @method WP_Site|WP_Error create_and_get( $args = array(), $generation_definitions = null )
+ * @method int|WP_Error     create( $args = [], array $generation_definitions = null )
+ * @method WP_Site|WP_Error create_and_get( array $args = [], array $generation_definitions = null )
  * @method (int|WP_Error)[] create_many( $count, $args = array(), $generation_definitions = null )
  */
 class WP_UnitTest_Factory_For_Blog extends WP_UnitTest_Factory_For_Thing {
@@ -71,10 +71,12 @@ class WP_UnitTest_Factory_For_Blog extends WP_UnitTest_Factory_For_Thing {
 	/**
 	 * Updates a site object. Not implemented.
 	 *
-	 * @param int   $blog_id ID of the site to update.
-	 * @param array $fields  The fields to update.
+	 * @param int   $object_id ID of the site to update.
+	 * @param array $fields    The fields to update.
 	 */
-	public function update_object( $blog_id, $fields ) {}
+	public function update_object( int $object_id, array $fields ) {
+		return new WP_Error( 'not_implemented', 'Blog updates are not implemented.' );
+	}
 
 	/**
 	 * Retrieves a site by a given ID.

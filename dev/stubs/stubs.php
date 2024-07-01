@@ -14,4 +14,7 @@
 namespace {
 
 	const WP_TESTS_SNAPSHOTS_DIR = __DIR__ . '/snapshots';
+	const WP_TESTS_DOMAIN = 'example.org';
+	const WP_TESTS_EMAIL = 'you@me.com';
+	const DIR_TEST_IMAGES = __DIR__ . '/data/images';
 }

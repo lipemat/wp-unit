@@ -6,7 +6,7 @@
  * Note: The below @method notations are defined solely for the benefit of IDEs,
  * as a way to indicate expected return values from the given factory methods.
  *
- * @method int|WP_Error          create( $args = array(), $generation_definitions = null )
+ * @method int|WP_Error          create( $args = [], array $generation_definitions = null )
  * @method WP_Term|WP_Error|null create_and_get( $args = array(), $generation_definitions = null )
  * @method (int|WP_Error)[]      create_many( $count, $args = array(), $generation_definitions = null )
  */
@@ -51,19 +51,14 @@ class WP_UnitTest_Factory_For_Term extends WP_UnitTest_Factory_For_Thing {
 	 * @since UT (3.7.0)
 	 * @since 6.2.0 Returns a WP_Error object on failure.
 	 *
-	 * @param int|object $term   The term to update.
-	 * @param array      $fields Array of arguments for updating a term.
+	 * @param int   $object_id The term to update.
+	 * @param array $fields    Array of arguments for updating a term.
 	 *
 	 * @return int|WP_Error The term ID on success, WP_Error object on failure.
 	 */
-	public function update_object( $term, $fields ) {
+	public function update_object( int $object_id, array $fields ) {
 		$fields = array_merge( array( 'taxonomy' => $this->taxonomy ), $fields );
-
-		if ( is_object( $term ) ) {
-			$taxonomy = $term->taxonomy;
-		}
-
-		$term_id_pair = wp_update_term( $term, $taxonomy, $fields );
+		$term_id_pair = wp_update_term( $object_id, $this->taxonomy, $fields );
 
 		if ( is_wp_error( $term_id_pair ) ) {
 			return $term_id_pair;
@@ -97,19 +92,19 @@ class WP_UnitTest_Factory_For_Term extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param array $args                   Array or string of arguments for inserting a term.
-	 * @param null  $generation_definitions The default values.
+	 * @param array      $args                   Array or string of arguments for inserting a term.
+	 * @param array|null $generation_definitions The default values.
 	 *
 	 * @return WP_Term|WP_Error|null WP_Term on success. WP_Error if taxonomy does not exist. Null for miscellaneous failure.
 	 */
-	public function create_and_get( $args = array(), $generation_definitions = null ) {
+	public function create_and_get( array $args = [], ?array $generation_definitions = null ) {
 		$term_id = $this->create( $args, $generation_definitions );
 
 		if ( is_wp_error( $term_id ) ) {
 			return $term_id;
 		}
 
-		$taxonomy = isset( $args['taxonomy'] ) ? $args['taxonomy'] : $this->taxonomy;
+		$taxonomy = $args['taxonomy'] ?? $this->taxonomy;
 
 		return get_term( $term_id, $taxonomy );
 	}
@@ -119,11 +114,11 @@ class WP_UnitTest_Factory_For_Term extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @since UT (3.7.0)
 	 *
-	 * @param int $term_id ID of the term to retrieve.
+	 * @param int $object_id ID of the term to retrieve.
 	 *
 	 * @return WP_Term|WP_Error|null WP_Term on success. WP_Error if taxonomy does not exist. Null for miscellaneous failure.
 	 */
-	public function get_object_by_id( $term_id ) {
-		return get_term( $term_id, $this->taxonomy );
+	public function get_object_by_id( $object_id ) {
+		return get_term( $object_id, $this->taxonomy );
 	}
 }

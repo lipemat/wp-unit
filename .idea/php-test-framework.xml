@@ -6,7 +6,6 @@
         <cache>
           <versions>
             <info id="LocalE:\scripts\phpunit\phpunit-7\phpunit-7.phar" version="7.5.20" />
-            <info id="LocalE:\scripts\phpunit\phpunit-9\phpunit-9.phar" version="9.6.18" />
           </versions>
         </cache>
       </tool>

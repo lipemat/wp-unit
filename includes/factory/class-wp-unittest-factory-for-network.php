@@ -6,8 +6,8 @@
  * Note: The below @method notations are defined solely for the benefit of IDEs,
  * as a way to indicate expected return values from the given factory methods.
  *
- * @method int|WP_Error        create( $args = array(), $generation_definitions = null )
- * @method WP_Network|WP_Error create_and_get( $args = array(), $generation_definitions = null )
+ * @method int|WP_Error        create( $args = [], array $generation_definitions = null )
+ * @method WP_Network|WP_Error create_and_get( array $args = [], array $generation_definitions = null )
  * @method (int|WP_Error)[]    create_many( $count, $args = array(), $generation_definitions = null )
  */
 class WP_UnitTest_Factory_For_Network extends WP_UnitTest_Factory_For_Thing {
@@ -63,10 +63,12 @@ class WP_UnitTest_Factory_For_Network extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param int   $network_id ID of the network to update.
-	 * @param array $fields  The fields to update.
+	 * @param int   $object_id ID of the network to update.
+	 * @param array $fields    The fields to update.
 	 */
-	public function update_object( $network_id, $fields ) {}
+	public function update_object( int $object_id, array $fields ) {
+		return new WP_Error( 'not_implemented', 'Network updates are not implemented.' );
+	}
 
 	/**
 	 * Retrieves a network by a given ID.
