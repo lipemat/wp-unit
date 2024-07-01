@@ -21,7 +21,7 @@ require_once __DIR__ . '/factory.php';
  *
  * All WordPress unit tests should inherit from this class.
  */
-abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
+abstract class WP_UnitTestCase extends PHPUnit_Adapter_TestCase {
 	/**
 	 * @var ?Hook_State
 	 */

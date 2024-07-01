@@ -17,12 +17,12 @@ final class Deprecated_Usage {
 	private $caught = [];
 
 	/**
-	 * @var \WP_UnitTestCase_Base
+	 * @var \WP_UnitTestCase
 	 */
 	private $case;
 
 
-	private function __construct( \WP_UnitTestCase_Base $case ) {
+	private function __construct( \WP_UnitTestCase $case ) {
 		$this->case = $case;
 	}
 
@@ -225,7 +225,7 @@ final class Deprecated_Usage {
 	}
 
 
-	public static function factory( \WP_UnitTestCase_Base $case ): self {
+	public static function factory( \WP_UnitTestCase $case ): self {
 		$class = new self( $case );
 		$class->hook();
 		$class->add_from_annotations();

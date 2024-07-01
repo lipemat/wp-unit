@@ -18,11 +18,13 @@ use Lipe\WP_Unit\Utils\Requests;
  * @author Mat Lipe
  * @since  3.7.0
  *
+ * @phpstan-type SENT array{url: string, args: array}
+ *
  */
 class WP_Http_Unit_Test_Transport implements Http_Transport {
 
 	/**
-	 * @var array<array{url: string, args: array}>
+	 * @var array<SENT>
 	 */
 	protected static $requests_sent = [];
 
@@ -42,7 +44,7 @@ class WP_Http_Unit_Test_Transport implements Http_Transport {
 	 * @internal
 	 *
 	 * @param string $url  - URL being requested.
-	 * @param array  $args - Information about the request like headers and data.
+	 * @param mixed $args - Information about the request like headers and data.
 	 *
 	 * @return string
 	 */
@@ -61,7 +63,7 @@ class WP_Http_Unit_Test_Transport implements Http_Transport {
 		}
 		if ( null !== $mock ) {
 			if ( \is_callable( $mock ) ) {
-				return \call_user_func( $mock, $args );
+				return $mock( $args );
 			}
 			return $mock;
 		}
@@ -108,7 +110,7 @@ class WP_Http_Unit_Test_Transport implements Http_Transport {
 	 *
 	 * @param int $index Optional. Array index of mock_sent value.
 	 *
-	 * @return object{url: string, args: array}|false
+	 * @return SENT|false
 	 */
 	public static function get_sent( $index = 0 ) {
 		$retrieval = false;
@@ -129,7 +131,7 @@ class WP_Http_Unit_Test_Transport implements Http_Transport {
 
 
 	/**
-	 * @return array{mocked: array<string, mixed|callable>, sent: array<array{url: string, args: array}>
+	 * @return array{mocked: array<string, mixed|callable>, sent: array<SENT>}
 	 */
 	public static function get_mocks(): array {
 		return [

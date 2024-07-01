@@ -18,6 +18,7 @@
  * @author Mat Lipe
  * @since  1.10.0
  *
+ * @phpstan-import-type SENT from WP_Http_Unit_Test_Transport
  */
 class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 	/**
@@ -102,6 +103,13 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 		return \WP_Http_Unit_Test_Transport::get_sent( $index );
 	}
 
+
+	/**
+	 * @return SENT[]
+	 */
+	public function get_all_sent() {
+		return \WP_Http_Unit_Test_Transport::get_mocks()['sent'];
+	}
 
 	/**
 	 * Mock the returned raw response based on a URL.
