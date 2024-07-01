@@ -120,8 +120,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$this->doing_it_wrong = Doing_It_Wrong::factory( $this );
 		$this->wp_die_usage = Wp_Die_Usage::factory( $this );
 
-		global $wp_rewrite;
-
 		Cleanup::instance()->clean_up_global_scope();
 
 		/*
@@ -134,10 +132,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 			Cleanup::instance()->reset_post_types();
 			Cleanup::instance()->reset_taxonomies();
 			Cleanup::instance()->reset_post_statuses();
-
-			if ( $wp_rewrite->permalink_structure ) {
-				$this->set_permalink_structure( '' );
-			}
+			Cleanup::instance()->set_permalink_structure();
 		}
 		Cleanup::instance()->reset__SERVER();
 
@@ -151,7 +146,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * After a test method runs, resets any state in WordPress the test method might have changed.
 	 */
 	public function tear_down() {
-		global $wpdb, $wp_the_query, $wp_query, $wp, $wp_unit_torn_down;
+		global $wpdb, $wp_the_query, $wp_query, $wp;
 		$wpdb->query( 'ROLLBACK' );
 		if ( is_multisite() ) {
 			while ( ms_is_switched() ) {
@@ -820,7 +815,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$_SERVER['REQUEST_URI'] = $req;
 		unset( $_SERVER['PATH_INFO'] );
 
-		self::flush_cache();
+		Cleanup::instance()->flush_cache();
 		unset( $GLOBALS['wp_query'], $GLOBALS['wp_the_query'] );
 		$GLOBALS['wp_the_query'] = new WP_Query();
 		$GLOBALS['wp_query']     = $GLOBALS['wp_the_query'];
@@ -835,23 +830,5 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		_cleanup_query_vars();
 
 		$GLOBALS['wp']->main( $parts['query'] );
-	}
-
-
-	/**
-	 * Resets permalinks and flushes rewrites.
-	 *
-	 * @since 4.4.0
-	 *
-	 * @global WP_Rewrite $wp_rewrite
-	 *
-	 * @param string $structure Optional. Permalink structure to set. Default empty.
-	 */
-	public function set_permalink_structure( $structure = '' ) {
-		global $wp_rewrite;
-
-		$wp_rewrite->init();
-		$wp_rewrite->set_permalink_structure( $structure );
-		$wp_rewrite->flush_rules();
 	}
 }

@@ -45,11 +45,11 @@ class Cleanup {
 	/**
 	 * Unregisters existing taxonomies and register defaults.
 	 *
-	 * Run before each test in order to clean up the global scope, in case
+	 * Run before each test to clean up the global scope, in case
 	 * a test forgets to unregister a taxonomy on its own, or fails before
 	 * it has a chance to do so.
 	 */
-	public function reset_taxonomies() {
+	public function reset_taxonomies(): void {
 		foreach ( get_taxonomies() as $tax ) {
 			_unregister_taxonomy( $tax );
 		}
@@ -64,7 +64,7 @@ class Cleanup {
 	 * a test forgets to unregister a post type on its own, or fails before
 	 * it has a chance to do so.
 	 */
-	public function reset_post_types() {
+	public function reset_post_types(): void {
 		foreach ( get_post_types( [], 'objects' ) as $pt ) {
 			_unregister_post_type( $pt->name );
 		}
@@ -75,7 +75,7 @@ class Cleanup {
 	/**
 	 * Reset the lazy load meta queue.
 	 */
-	public function reset_lazyload_queue() {
+	public function reset_lazyload_queue(): void {
 		$lazyloader = wp_metadata_lazyloader();
 		$lazyloader->reset_queue( 'term' );
 		$lazyloader->reset_queue( 'comment' );
@@ -86,7 +86,7 @@ class Cleanup {
 	/**
 	 * Flushes the WordPress object cache.
 	 */
-	public function flush_cache() {
+	public function flush_cache(): void {
 		global $wp_object_cache;
 
 		if ( \function_exists( 'wp_cache_supports' ) && wp_cache_supports( 'flush_runtime' ) ) {
@@ -129,6 +129,26 @@ class Cleanup {
 
 
 	/**
+	 * Resets permalinks and flushes rewrites.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @global \WP_Rewrite $wp_rewrite
+	 *
+	 * @param string      $structure Optional. Permalink structure to set. Default empty.
+	 */
+	public function set_permalink_structure( string $structure = '' ): void {
+		global $wp_rewrite;
+		if ( ! $wp_rewrite->permalink_structure ) {
+			return;
+		}
+
+		$wp_rewrite->init();
+		$wp_rewrite->set_permalink_structure( $structure );
+		$wp_rewrite->flush_rules();
+	}
+
+	/**
 	 * Cleans up any registered meta keys.
 	 *
 	 * @notice When not running core tests, the meta keys are restored via
@@ -136,13 +156,11 @@ class Cleanup {
 	 *
 	 * @since  5.1.0
 	 *
-	 * @see    WP_UnitTestCase_Base::_restore_hooks()
-	 *
 	 * @global array $wp_meta_keys
 	 */
-	public function unregister_all_meta_keys() {
+	public function unregister_all_meta_keys(): void {
 		global $wp_meta_keys;
-		if ( ! is_array( $wp_meta_keys ) ) {
+		if ( ! \is_array( $wp_meta_keys ) ) {
 			return;
 		}
 		foreach ( $wp_meta_keys as $object_type => $type_keys ) {
