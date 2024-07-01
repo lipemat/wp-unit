@@ -9,10 +9,17 @@ namespace Lipe\WP_Unit\Helpers;
  * @author Mat Lipe
  * @since  3.6.0
  *
+ * @phpstan-type META_BOXES array<string, array<string, array<string, array<string, array{
+ *     callback: callable,
+ *     id: string,
+ *     title: string,
+ *     args: array<mixed>
+ * }|false>>>>
+ * @phpstan-type META_KEYS array<string, array<string, array<string, array<string, bool|null|string>>>>
  */
 final class Hook_State {
 	/**
-	 * @return array<string, int>
+	 * @var array<string, int>
 	 */
 	private $wp_actions;
 
@@ -22,7 +29,7 @@ final class Hook_State {
 	private $wp_filter = [];
 
 	/**
-	 * @return array<string, int>
+	 * @var array<string, \WP_Hook>
 	 */
 	private $wp_filters;
 
@@ -32,12 +39,12 @@ final class Hook_State {
 	private $wp_current_filter;
 
 	/**
-	 * @return ?array<string, array<string, array<string, array<string, array{callback: callable, id: string, title: string, args: array<mixed>}|false>
+	 * @phpstan-var META_BOXES
 	 */
 	private $wp_meta_boxes;
 
 	/**
-	 * @return array<string, array<string, array<string, array<string, bool|null|string>>>
+	 * @phpstan-var META_KEYS
 	 */
 	private $wp_meta_keys;
 
@@ -81,15 +88,17 @@ final class Hook_State {
 		return $this->wp_current_filter;
 	}
 
+
 	/**
-	 * @return ?array<string, array<string, array<string, array<string, array{callback: callable, id: string, title: string, args: array<mixed>}|false>
+	 * @phpstan-return META_BOXES
 	 */
 	public function get_wp_meta_boxes(): ?array {
 		return $this->wp_meta_boxes;
 	}
 
+
 	/**
-	 * @return array<string, array<string, array<string, array<string, bool|null|string>>>
+	 * @phpstan-return META_KEYS
 	 */
 	public function get_wp_meta_keys(): array {
 		return $this->wp_meta_keys;

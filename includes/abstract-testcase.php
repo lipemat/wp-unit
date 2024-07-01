@@ -56,6 +56,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		return $factory;
 	}
 
+
 	/**
 	 * Runs the routine before setting up all tests.
 	 */
@@ -65,29 +66,22 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		parent::set_up_before_class();
 
 		$wpdb->suppress_errors = false;
-		$wpdb->show_errors     = true;
+		$wpdb->show_errors = true;
 		$wpdb->db_connect();
 		ini_set( 'display_errors', '1' );
 
 		$class = static::class;
 
-		if ( method_exists( $class, 'wpSetUpBeforeClass' ) ) {
-			$class->wpSetUpBeforeClass( static::factory() );
-		}
-
 		DatabaseTransactions::instance()->commit_transaction();
 		Setup_Teardown_State::set_up_before_class( $class );
 	}
+
 
 	/**
 	 * Runs the routine after all tests have been run.
 	 */
 	public static function tear_down_after_class() {
 		$class = static::class;
-
-		if ( method_exists( $class, 'wpTearDownAfterClass' ) ) {
-			$class->wpTearDownAfterClass();
-		}
 
 		if ( ! tests_skip_install() ) {
 			_delete_all_data();
@@ -101,6 +95,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 		parent::tear_down_after_class();
 	}
+
 
 	/**
 	 * Runs the routine before each test is executed.
@@ -136,6 +131,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		Setup_Teardown_State::set_up();
 	}
 
+
 	/**
 	 * After a test method runs, resets any state in WordPress the test method might have changed.
 	 */
@@ -150,8 +146,8 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 		// Reset query, main query, and WP globals similar to wp-settings.php.
 		$wp_the_query = new WP_Query();
-		$wp_query     = $wp_the_query;
-		$wp           = new WP();
+		$wp_query = $wp_the_query;
+		$wp = new WP();
 
 		// Reset globals related to the post loop and `setup_postdata()`.
 		$post_globals = [ 'post', 'id', 'authordata', 'currentday', 'currentmonth', 'page', 'pages', 'multipage', 'more', 'numpages', 'comment' ];
@@ -171,19 +167,19 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		 * it saves creating an instance of WP_Screen, making two method calls,
 		 * and firing of the `current_screen` action.
 		 */
-		$current_screen_globals = array( 'current_screen', 'taxnow', 'typenow' );
+		$current_screen_globals = [ 'current_screen', 'taxnow', 'typenow' ];
 		foreach ( $current_screen_globals as $global ) {
 			$GLOBALS[ $global ] = null;
 		}
 
 		// Reset comment globals.
-		$comment_globals = array( 'comment_alt', 'comment_depth', 'comment_thread_alt' );
+		$comment_globals = [ 'comment_alt', 'comment_depth', 'comment_thread_alt' ];
 		foreach ( $comment_globals as $global ) {
 			$GLOBALS[ $global ] = null;
 		}
 
 		// Reset menu globals.
-		$menu_globals = array( 'menu', 'submenu', 'parent_file', 'submenu_file', 'plugin_page', '_wp_submenu_nopriv', '_wp_real_parent_file', '_registered_pages',  '_parent_pages', 'admin_page_hooks' );
+		$menu_globals = [ 'menu', 'submenu', 'parent_file', 'submenu_file', 'plugin_page', '_wp_submenu_nopriv', '_wp_real_parent_file', '_registered_pages', '_parent_pages', 'admin_page_hooks' ];
 		foreach ( $menu_globals as $global ) {
 			$GLOBALS[ $global ] = null;
 		}
@@ -196,11 +192,11 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 		// Reset template globals.
 		$GLOBALS['wp_stylesheet_path'] = null;
-		$GLOBALS['wp_template_path']   = null;
+		$GLOBALS['wp_template_path'] = null;
 
 		Cleanup::instance()->unregister_all_meta_keys();
-		remove_filter( 'query', array( $this, '_create_temporary_tables' ) );
-		remove_filter( 'query', array( $this, '_drop_temporary_tables' ) );
+		remove_filter( 'query', [ $this, '_create_temporary_tables' ] );
+		remove_filter( 'query', [ $this, '_drop_temporary_tables' ] );
 
 		// Reset a project container if available.
 		if ( function_exists( 'tests_reset_container' ) ) {
@@ -227,9 +223,10 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 */
 	public function skipWithoutMultisite(): void {
 		if ( ! is_multisite() ) {
-			$this->markTestSkipped( 'Test only runs on Multisite' );
+			self::markTestSkipped( 'Test only runs on Multisite' );
 		}
 	}
+
 
 	/**
 	 * Allows tests to be skipped when Multisite is in use.
@@ -238,9 +235,10 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 */
 	public function skipWithMultisite(): void {
 		if ( is_multisite() ) {
-			$this->markTestSkipped( 'Test does not run on Multisite' );
+			self::markTestSkipped( 'Test does not run on Multisite' );
 		}
 	}
+
 
 	/**
 	 * Allows tests to be skipped if the HTTP request times out.
@@ -252,15 +250,15 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 			return;
 		}
 		if ( 'connect() timed out!' === $response->get_error_message() ) {
-			$this->markTestSkipped( 'HTTP timeout' );
+			self::markTestSkipped( 'HTTP timeout' );
 		}
 
 		if ( false !== strpos( $response->get_error_message(), 'timed out after' ) ) {
-			$this->markTestSkipped( 'HTTP timeout' );
+			self::markTestSkipped( 'HTTP timeout' );
 		}
 
 		if ( 0 === strpos( $response->get_error_message(), 'stream_socket_client(): unable to connect to tcp://s.w.org:80' ) ) {
-			$this->markTestSkipped( 'HTTP timeout' );
+			self::markTestSkipped( 'HTTP timeout' );
 		}
 	}
 
@@ -292,7 +290,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
 	public function assertWPError( $actual, string $message = '' ): void {
-		$this->assertInstanceOf( 'WP_Error', $actual, $message );
+		self::assertInstanceOf( 'WP_Error', $actual, $message );
 	}
 
 
@@ -314,7 +312,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 *         `null` as a parameter signifies old usage and will do nothing
 	 *         for the test case.
 	 *
-	 * @param string $deprecated Name of the function, method, class or
+	 * @param string $deprecated      Name of the function, method, class or
 	 *                                argument that is deprecated.
 	 *
 	 * @return void
@@ -331,13 +329,13 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param string $function_name Name of the function passed to `_doing_it_wrong`.
+	 * @param string  $function_name Name of the function passed to `_doing_it_wrong`.
 	 * @param ?string $message       Optional. Message to also validate.
 	 *
 	 * @return void
 	 */
 	public function expectDoingItWrong( string $function_name, ?string $message = null ): void {
-		$this->doing_it_wrong->add_expected(  $function_name, $message );
+		$this->doing_it_wrong->add_expected( $function_name, $message );
 	}
 
 
@@ -367,8 +365,9 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 			$message .= ' ' . $actual->get_error_message();
 		}
 
-		$this->assertNotInstanceOf( 'WP_Error', $actual, $message );
+		self::assertNotInstanceOf( 'WP_Error', $actual, $message );
 	}
+
 
 	/**
 	 * Asserts that the given value is an instance of IXR_Error.
@@ -377,8 +376,9 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
 	public function assertIXRError( $actual, string $message = '' ) {
-		$this->assertInstanceOf( 'IXR_Error', $actual, $message );
+		self::assertInstanceOf( 'IXR_Error', $actual, $message );
 	}
+
 
 	/**
 	 * Asserts that the given value is not an instance of IXR_Error.
@@ -391,8 +391,9 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 			$message .= ' ' . $actual->message;
 		}
 
-		$this->assertNotInstanceOf( 'IXR_Error', $actual, $message );
+		self::assertNotInstanceOf( 'IXR_Error', $actual, $message );
 	}
+
 
 	/**
 	 * Asserts that the given fields are present in the given object.
@@ -404,16 +405,18 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @param array  $fields  The fields to check.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
-	public function assertEqualFields( $actual, $fields, $message = '' ) {
-		$this->assertIsObject( $actual, $message . ' Passed $actual is not an object.' );
-		$this->assertIsArray( $fields, $message . ' Passed $fields is not an array.' );
-		$this->assertNotEmpty( $fields, $message . ' Fields array is empty.' );
+	public function assertEqualFields( object $actual, array $fields, string $message = '' ) {
+		self::assertIsObject( $actual, $message . ' Passed $actual is not an object.' );
+		self::assertIsArray( $fields, $message . ' Passed $fields is not an array.' );
+		self::assertNotEmpty( $fields, $message . ' Fields array is empty.' );
 
 		foreach ( $fields as $field_name => $field_value ) {
 			self::assertObjectHasProperty( $field_name, $actual, $message . " Property $field_name does not exist on the object." );
-			$this->assertSame( $field_value, $actual->$field_name, $message . " Value of property $field_name is not $field_value." );
+			// @phpstan-ignore-next-line -- Using variable property access.
+			self::assertSame( $field_value, $actual->{$field_name}, $message . " Value of property {$field_name} is not $field_value." );
 		}
 	}
+
 
 	/**
 	 * Asserts that two values are equal, with whitespace differences discarded.
@@ -434,8 +437,9 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 			$actual = preg_replace( '/\s*/', '', $actual );
 		}
 
-		$this->assertEquals( $expected, $actual, $message );
+		self::assertEquals( $expected, $actual, $message );
 	}
+
 
 	/**
 	 * Asserts that two values have the same type and value, with EOL differences discarded.
@@ -452,7 +456,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		if ( null !== $expected ) {
 			$expected = map_deep(
 				$expected,
-				static function ( $value ) {
+				static function( $value ) {
 					if ( is_string( $value ) ) {
 						return str_replace( "\r\n", "\n", $value );
 					}
@@ -465,7 +469,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		if ( null !== $actual ) {
 			$actual = map_deep(
 				$actual,
-				static function ( $value ) {
+				static function( $value ) {
 					if ( is_string( $value ) ) {
 						return str_replace( "\r\n", "\n", $value );
 					}
@@ -475,8 +479,9 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 			);
 		}
 
-		$this->assertSame( $expected, $actual, $message );
+		self::assertSame( $expected, $actual, $message );
 	}
+
 
 	/**
 	 * Asserts that two values are equal, with EOL differences discarded.
@@ -493,6 +498,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$this->assertSameIgnoreEOL( $expected, $actual, $message );
 	}
 
+
 	/**
 	 * Asserts that the contents of two un-keyed, single arrays are the same, without accounting for the order of elements.
 	 *
@@ -504,13 +510,14 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @param string $message  Optional. Message to display when the assertion fails.
 	 */
 	public function assertSameSets( $expected, $actual, $message = '' ) {
-		$this->assertIsArray( $expected, $message . ' Expected value must be an array.' );
-		$this->assertIsArray( $actual, $message . ' Value under test is not an array.' );
+		self::assertIsArray( $expected, $message . ' Expected value must be an array.' );
+		self::assertIsArray( $actual, $message . ' Value under test is not an array.' );
 
-		sort( $expected );
-		sort( $actual );
-		$this->assertSame( $expected, $actual, $message );
+		\sort( $expected );
+		\sort( $actual );
+		self::assertSame( $expected, $actual, $message );
 	}
+
 
 	/**
 	 * Asserts that the contents of two un-keyed, single arrays are equal, without accounting for the order of elements.
@@ -523,12 +530,12 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @param string $message  Optional. Message to display when the assertion fails.
 	 */
 	public function assertEqualSets( $expected, $actual, $message = '' ) {
-		$this->assertIsArray( $expected, $message . ' Expected value must be an array.' );
-		$this->assertIsArray( $actual, $message . ' Value under test is not an array.' );
+		self::assertIsArray( $expected, $message . ' Expected value must be an array.' );
+		self::assertIsArray( $actual, $message . ' Value under test is not an array.' );
 
-		sort( $expected );
-		sort( $actual );
-		$this->assertEquals( $expected, $actual, $message );
+		\sort( $expected );
+		\sort( $actual );
+		self::assertEquals( $expected, $actual, $message );
 	}
 
 
@@ -536,17 +543,17 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * Asserts that the keys of two arrays are equal, regardless of the contents,
 	 * without accounting for the order of elements.
 	 *
-	 * @param array $expected Expected array.
-	 * @param array $actual   Array to check.
-	 * @param string $message Optional. Message to display when the assertion fails.
-	 *
 	 * @since 1.10.0
 	 *
+	 * @param array  $actual   Array to check.
+	 * @param string $message  Optional. Message to display when the assertion fails.
+	 *
+	 * @param array  $expected Expected array.
 	 */
 	public function assertEqualSetsIndex( $expected, $actual, $message = '' ) {
 		\ksort( $expected );
 		\ksort( $actual );
-		$this->assertEquals( \array_keys( $expected ), \array_keys( $actual ), $message );
+		self::assertEquals( \array_keys( $expected ), \array_keys( $actual ), $message );
 	}
 
 
@@ -561,13 +568,14 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @param string $message  Optional. Message to display when the assertion fails.
 	 */
 	public function assertSameSetsWithIndex( $expected, $actual, $message = '' ) {
-		$this->assertIsArray( $expected, $message . ' Expected value must be an array.' );
-		$this->assertIsArray( $actual, $message . ' Value under test is not an array.' );
+		self::assertIsArray( $expected, $message . ' Expected value must be an array.' );
+		self::assertIsArray( $actual, $message . ' Value under test is not an array.' );
 
-		ksort( $expected );
-		ksort( $actual );
-		$this->assertSame( $expected, $actual, $message );
+		\ksort( $expected );
+		\ksort( $actual );
+		self::assertSame( $expected, $actual, $message );
 	}
+
 
 	/**
 	 * Asserts that the contents of two keyed, single arrays are equal, without accounting for the order of elements.
@@ -579,13 +587,13 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @param array  $actual   Array to check.
 	 * @param string $message  Optional. Message to display when the assertion fails.
 	 */
-	public function assertEqualSetsWithIndex( $expected, $actual, $message = '' ) {
-		$this->assertIsArray( $expected, $message . ' Expected value must be an array.' );
-		$this->assertIsArray( $actual, $message . ' Value under test is not an array.' );
+	public function assertEqualSetsWithIndex( array $expected, array $actual, string $message = '' ) {
+		self::assertIsArray( $expected, $message . ' Expected value must be an array.' );
+		self::assertIsArray( $actual, $message . ' Value under test is not an array.' );
 
-		ksort( $expected );
-		ksort( $actual );
-		$this->assertEquals( $expected, $actual, $message );
+		\ksort( $expected );
+		\ksort( $actual );
+		self::assertEquals( $expected, $actual, $message );
 	}
 
 
@@ -593,15 +601,17 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * Asserts the content of two arrays are equal regardless of the keys, while accounting
 	 * for the order of elements
 	 *
-	 * @param array  $expected Expected array.
+	 * @since 1.9.0
+	 *
 	 * @param array  $actual   Array to check.
 	 * @param string $message  Message to return on failure.
 	 *
-	 * @since 1.9.0
+	 * @param array  $expected Expected array.
 	 */
-	public function assertEqualSetsValues( $expected, $actual, $message = '' ) {
-		$this->assertEquals( array_values( $expected ), array_values( $actual ), $message );
+	public function assertEqualSetsValues( array $expected, array $actual, string $message = '' ) {
+		self::assertEquals( \array_values( $expected ), \array_values( $actual ), $message );
 	}
+
 
 	/**
 	 * Asserts that the given variable is a multidimensional array, and that all arrays are non-empty.
@@ -612,15 +622,16 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @param array  $actual  Array to check.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 */
-	public function assertNonEmptyMultidimensionalArray( $actual, $message = '' ) {
-		$this->assertIsArray( $actual, $message . ' Value under test is not an array.' );
-		$this->assertNotEmpty( $actual, $message . ' Array is empty.' );
+	public function assertNonEmptyMultidimensionalArray( array $actual, string $message = '' ) {
+		self::assertIsArray( $actual, $message . ' Value under test is not an array.' );
+		self::assertNotEmpty( $actual, $message . ' Array is empty.' );
 
 		foreach ( $actual as $sub_array ) {
-			$this->assertIsArray( $sub_array, $message . ' Subitem of the array is not an array.' );
-			$this->assertNotEmpty( $sub_array, $message . ' Subitem of the array is empty.' );
+			self::assertIsArray( $sub_array, $message . ' Subitem of the array is not an array.' );
+			self::assertNotEmpty( $sub_array, $message . ' Subitem of the array is empty.' );
 		}
 	}
+
 
 	/**
 	 * Checks each of the WP_Query is_* functions/properties against expected boolean value.
@@ -639,7 +650,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	public function assertQueryTrue( ...$prop ) {
 		global $wp_query;
 
-		$all = array(
+		$all = [
 			'is_404',
 			'is_admin',
 			'is_archive',
@@ -670,31 +681,32 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 			'is_time',
 			'is_trackback',
 			'is_year',
-		);
+		];
 
 		foreach ( $prop as $true_thing ) {
-			$this->assertContains( $true_thing, $all, "Unknown conditional: {$true_thing}." );
+			self::assertContains( $true_thing, $all, "Unknown conditional: {$true_thing}." );
 		}
 
-		$passed  = true;
+		$passed = true;
 		$message = '';
 
 		foreach ( $all as $query_thing ) {
-			$result = is_callable( $query_thing ) ? call_user_func( $query_thing ) : $wp_query->$query_thing;
+			// @phpstan-ignore-next-line -- Using variable property access.
+			$result = is_callable( $query_thing ) ? $query_thing() : $wp_query->{$query_thing};
 
 			if ( in_array( $query_thing, $prop, true ) ) {
 				if ( ! $result ) {
 					$message .= $query_thing . ' is false but is expected to be true. ' . PHP_EOL;
-					$passed   = false;
+					$passed = false;
 				}
 			} elseif ( $result ) {
 				$message .= $query_thing . ' is true but is expected to be false. ' . PHP_EOL;
-				$passed   = false;
+				$passed = false;
 			}
 		}
 
 		if ( ! $passed ) {
-			$this->fail( $message );
+			self::fail( $message );
 		}
 	}
 
@@ -712,7 +724,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 *
 	 * @return void
 	 */
-	public function assertMatchesSnapshot( $actual, string $message = '', string $id = '' ): void  {
+	public function assertMatchesSnapshot( $actual, string $message = '', string $id = '' ): void {
 		require_once __DIR__ . '/src/Helpers/Snapshots.php';
 		$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2 );
 
@@ -734,15 +746,15 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 *
 	 * @param string $url The URL for the request.
 	 */
-	public function go_to( $url ) {
+	public function go_to( string $url ): void {
 		/*
 		 * Note: the WP and WP_Query classes like to silently fetch parameters
 		 * from all over the place (globals, GET, etc), which makes it tricky
 		 * to run them more than once without very carefully clearing everything.
 		 */
-		$_GET  = array();
-		$_POST = array();
-		foreach ( array( 'query_string', 'id', 'postdata', 'authordata', 'day', 'currentmonth', 'page', 'pages', 'multipage', 'more', 'numpages', 'pagenow', 'current_screen' ) as $v ) {
+		$_GET = [];
+		$_POST = [];
+		foreach ( [ 'query_string', 'id', 'postdata', 'authordata', 'day', 'currentmonth', 'page', 'pages', 'multipage', 'more', 'numpages', 'pagenow', 'current_screen' ] as $v ) {
 			if ( isset( $GLOBALS[ $v ] ) ) {
 				unset( $GLOBALS[ $v ] );
 			}
@@ -768,15 +780,16 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		Cleanup::instance()->flush_cache();
 		unset( $GLOBALS['wp_query'], $GLOBALS['wp_the_query'] );
 		$GLOBALS['wp_the_query'] = new WP_Query();
-		$GLOBALS['wp_query']     = $GLOBALS['wp_the_query'];
+		$GLOBALS['wp_query'] = $GLOBALS['wp_the_query'];
 
-		$public_query_vars  = $GLOBALS['wp']->public_query_vars;
+		$public_query_vars = $GLOBALS['wp']->public_query_vars;
 		$private_query_vars = $GLOBALS['wp']->private_query_vars;
 
-		$GLOBALS['wp']                     = new WP();
-		$GLOBALS['wp']->public_query_vars  = $public_query_vars;
+		$GLOBALS['wp'] = new WP();
+		$GLOBALS['wp']->public_query_vars = $public_query_vars;
 		$GLOBALS['wp']->private_query_vars = $private_query_vars;
 
+		// @phpstan-ignore-next-line -- Private WP core function.
 		_cleanup_query_vars();
 
 		$GLOBALS['wp']->main( $parts['query'] );

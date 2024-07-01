@@ -98,6 +98,24 @@ function php_lint() {
 php_lint "php ${LEGACY_PHP_VERSION}" &
 php_lint "php ${PHP_VERSION}" &
 
+function php_stan() {
+    if [[ ! -f ${PROJECT}/phpstan.neon ]] && [[ ! -f ${PROJECT}/phpstan.neon.dist ]]; then
+        echo "${YELLOW}[pre-commit]${RED} ${PROJECT}/phpstan.neon or ${PROJECT}/phpstan.neon.dist not found!"
+        exit_reset_colors
+    fi
+
+    echo "${YELLOW}[pre-commit]${BLUE} Running PHP Stan... ${WHITE}"
+    OUTPUT=$(${PHPSTAN} analyse --no-progress --memory-limit=2G)
+    if [[ $? != 0 ]]; then
+        echo
+        echo "${BLUE}PHP Stan Failed. Fix the error before commit."
+        echo "${RED}$OUTPUT"
+        exit_reset_colors
+    fi
+    echo "${YELLOW}[pre-commit]${GREEN} PHP Stan Passed!${RESET_COLOR}"
+}
+php_stan &
+
 
 # Go through each background task
 # If it sent exit code 1, it failed and the result from `wait` will be false.

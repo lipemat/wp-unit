@@ -47,7 +47,7 @@ if ( is_readable( $config_file_path ) ) {
 require_once __DIR__ . '/functions.php';
 
 if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS && ! is_dir( ABSPATH ) ) {
-	if ( substr( ABSPATH, -7 ) !== '/build/' ) {
+	if ( substr( ABSPATH, - 7 ) !== '/build/' ) {
 		printf(
 			'Error: The ABSPATH constant in the `wp-tests-config.php` file is set to a non-existent path "%s". Please verify.' . PHP_EOL,
 			ABSPATH
@@ -55,8 +55,8 @@ if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS && ! is_dir( ABSPATH ) 
 		exit( 1 );
 	} else {
 		echo 'Error: The PHPUnit tests should be run on the /src/ directory, not the /build/ directory.'
-			. ' Please update the ABSPATH constant in your `wp-tests-config.php` file to `dirname( __FILE__ ) . \'/src/\'`'
-			. ' or run `npm run build` prior to running PHPUnit.' . PHP_EOL;
+		     . ' Please update the ABSPATH constant in your `wp-tests-config.php` file to `dirname( __FILE__ ) . \'/src/\'`'
+		     . ' or run `npm run build` prior to running PHPUnit.' . PHP_EOL;
 		exit( 1 );
 	}
 }
@@ -75,10 +75,10 @@ unset( $phpunit_polyfills_minimum_version );
 
 // If running core tests, check if all the required PHP extensions are loaded before running the test suite.
 if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS ) {
-	$required_extensions = array(
+	$required_extensions = [
 		'gd',
-	);
-	$missing_extensions  = array();
+	];
+	$missing_extensions = [];
 
 	foreach ( $required_extensions as $extension ) {
 		if ( ! extension_loaded( $extension ) ) {
@@ -120,17 +120,17 @@ if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS ) {
 if ( ! class_exists( 'Yoast\PHPUnitPolyfills\Autoload' ) ) {
 	// Default location of the autoloader for WP core test runs.
 	$phpunit_polyfills_autoloader = dirname( __DIR__, 3 ) . '/vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php';
-	$phpunit_polyfills_error      = false;
+	$phpunit_polyfills_error = false;
 
 	// Allow for a custom installation location to be provided for plugin/theme integration tests.
 	if ( defined( 'WP_TESTS_PHPUNIT_POLYFILLS_PATH' ) ) {
 		$phpunit_polyfills_path = WP_TESTS_PHPUNIT_POLYFILLS_PATH;
 
 		if ( is_string( WP_TESTS_PHPUNIT_POLYFILLS_PATH )
-			&& '' !== WP_TESTS_PHPUNIT_POLYFILLS_PATH
+		     && '' !== WP_TESTS_PHPUNIT_POLYFILLS_PATH
 		) {
 			// Be tolerant to the path being provided including the filename.
-			if ( substr( $phpunit_polyfills_path, -29 ) !== 'phpunitpolyfills-autoload.php' ) {
+			if ( substr( $phpunit_polyfills_path, - 29 ) !== 'phpunitpolyfills-autoload.php' ) {
 				$phpunit_polyfills_path = rtrim( $phpunit_polyfills_path, '/\\' );
 				$phpunit_polyfills_path = $phpunit_polyfills_path . '/phpunitpolyfills-autoload.php';
 			}
@@ -150,23 +150,23 @@ if ( ! class_exists( 'Yoast\PHPUnitPolyfills\Autoload' ) ) {
 			);
 			echo 'Please verify that the file path provided in the WP_TESTS_PHPUNIT_POLYFILLS_PATH constant is correct.' . PHP_EOL;
 			echo 'The WP_TESTS_PHPUNIT_POLYFILLS_PATH constant should contain an absolute path to the root directory'
-				. ' of the PHPUnit Polyfills library.' . PHP_EOL;
+			     . ' of the PHPUnit Polyfills library.' . PHP_EOL;
 		} elseif ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS ) {
 			echo 'You need to run `composer update -W` before running the tests.' . PHP_EOL;
 			echo 'Once the dependencies are installed, you can run the tests using the Composer-installed version'
-				. ' of PHPUnit or using a PHPUnit phar file, but the dependencies do need to be installed'
-				. ' whichever way the tests are run.' . PHP_EOL;
+			     . ' of PHPUnit or using a PHPUnit phar file, but the dependencies do need to be installed'
+			     . ' whichever way the tests are run.' . PHP_EOL;
 		} else {
 			echo 'If you are trying to run plugin/theme integration tests, make sure the PHPUnit Polyfills library'
-				. ' (https://github.com/Yoast/PHPUnit-Polyfills) is available and either load the autoload file'
-				. ' of this library in your own test bootstrap before calling the WP Core test bootstrap file;'
-				. ' or set the absolute path to the PHPUnit Polyfills library in a "WP_TESTS_PHPUNIT_POLYFILLS_PATH"'
-				. ' constant to allow the WP Core bootstrap to load the Polyfills.' . PHP_EOL . PHP_EOL;
+			     . ' (https://github.com/Yoast/PHPUnit-Polyfills) is available and either load the autoload file'
+			     . ' of this library in your own test bootstrap before calling the WP Core test bootstrap file;'
+			     . ' or set the absolute path to the PHPUnit Polyfills library in a "WP_TESTS_PHPUNIT_POLYFILLS_PATH"'
+			     . ' constant to allow the WP Core bootstrap to load the Polyfills.' . PHP_EOL . PHP_EOL;
 			echo 'If you are trying to run the WP Core tests, make sure to set the "WP_RUN_CORE_TESTS" constant'
-				. ' to 1 and run `composer update -W` before running the tests.' . PHP_EOL;
+			     . ' to 1 and run `composer update -W` before running the tests.' . PHP_EOL;
 			echo 'Once the dependencies are installed, you can run the tests using the Composer-installed'
-				. ' version of PHPUnit or using a PHPUnit phar file, but the dependencies do need to be'
-				. ' installed whichever way the tests are run.' . PHP_EOL;
+			     . ' version of PHPUnit or using a PHPUnit phar file, but the dependencies do need to be'
+			     . ' installed whichever way the tests are run.' . PHP_EOL;
 		}
 		exit( 1 );
 	}
@@ -181,8 +181,8 @@ unset( $phpunit_polyfills_autoloader, $phpunit_polyfills_error, $phpunit_polyfil
  */
 $phpunit_polyfills_minimum_version = '1.1.0';
 if ( class_exists( '\Yoast\PHPUnitPolyfills\Autoload' )
-	&& ( defined( '\Yoast\PHPUnitPolyfills\Autoload::VERSION' ) === false
-	|| version_compare( Yoast\PHPUnitPolyfills\Autoload::VERSION, $phpunit_polyfills_minimum_version, '<' ) )
+     && ( defined( '\Yoast\PHPUnitPolyfills\Autoload::VERSION' ) === false
+          || version_compare( Yoast\PHPUnitPolyfills\Autoload::VERSION, $phpunit_polyfills_minimum_version, '<' ) )
 ) {
 	printf(
 		'Error: Version mismatch detected for the PHPUnit Polyfills.'
@@ -232,7 +232,7 @@ if ( ! defined( 'WP_TESTS_TABLE_PREFIX' ) && isset( $table_prefix ) ) {
 } else {
 	$table_prefix = WP_TESTS_TABLE_PREFIX;
 }
-define( 'DIR_TESTDATA', realpath(dirname( __DIR__ ) . '/data' ) );
+define( 'DIR_TESTDATA', realpath( dirname( __DIR__ ) . '/data' ) );
 define( 'DIR_TESTROOT', realpath( dirname( __DIR__ ) ) );
 
 if ( ! defined( 'WP_LANG_DIR' ) ) {
@@ -249,14 +249,14 @@ if ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS ) {
  */
 define( 'DISABLE_WP_CRON', true );
 
-if( !defined( 'WP_MEMORY_LIMIT' ) ) {
-	define( 'WP_MEMORY_LIMIT', -1 );
+if ( ! defined( 'WP_MEMORY_LIMIT' ) ) {
+	define( 'WP_MEMORY_LIMIT', - 1 );
 }
 define( 'WP_MAX_MEMORY_LIMIT', WP_MEMORY_LIMIT );
 
 define( 'REST_TESTS_IMPOSSIBLY_HIGH_NUMBER', 99999999 );
 
-$PHP_SELF            = '/index.php';
+$PHP_SELF = '/index.php';
 $GLOBALS['PHP_SELF'] = '/index.php';
 $_SERVER['PHP_SELF'] = '/index.php';
 
@@ -266,7 +266,7 @@ $multisite = $multisite || ( defined( 'WP_TESTS_MULTISITE' ) && WP_TESTS_MULTISI
 $multisite = $multisite || ( defined( 'MULTISITE' ) && MULTISITE );
 
 // Override the PHPMailer
-if( !defined( 'WP_TESTS_SEND_MAIL' ) || !WP_TESTS_SEND_MAIL ){
+if ( ! defined( 'WP_TESTS_SEND_MAIL' ) || ! WP_TESTS_SEND_MAIL ) {
 	require_once __DIR__ . '/mock-mailer.php';
 	$phpmailer = new MockPHPMailer();
 }
@@ -274,7 +274,7 @@ if( !defined( 'WP_TESTS_SEND_MAIL' ) || !WP_TESTS_SEND_MAIL ){
 if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
 	define( 'WP_DEFAULT_THEME', 'default' );
 }
-$wp_theme_directories = array();
+$wp_theme_directories = [];
 
 if ( file_exists( DIR_TESTDATA . '/themedir1' ) ) {
 	$wp_theme_directories[] = DIR_TESTDATA . '/themedir1';
@@ -282,7 +282,7 @@ if ( file_exists( DIR_TESTDATA . '/themedir1' ) ) {
 
 if ( ! tests_skip_install() ) {
 	$core_tests = ( defined( 'WP_RUN_CORE_TESTS' ) && WP_RUN_CORE_TESTS ) ? 'run_core_tests' : 'no_core_tests';
-	$ms_tests   = $multisite ? 'run_ms_tests' : 'no_ms_tests';
+	$ms_tests = $multisite ? 'run_ms_tests' : 'no_ms_tests';
 
 	system( WP_PHP_BINARY . ' ' . escapeshellarg( __DIR__ . '/install.php' ) . ' ' . escapeshellarg( $config_file_path ) . ' ' . $ms_tests . ' ' . $core_tests, $retval );
 	if ( 0 !== $retval ) {
@@ -298,7 +298,6 @@ if ( $multisite ) {
 } else {
 	echo 'Running as single site...' . PHP_EOL;
 }
-
 
 $GLOBALS['_wp_die_disabled'] = false;
 // Allow tests to override wp_die().
@@ -324,19 +323,19 @@ if ( isset( $GLOBALS['wp_tests_options'] ) ) {
 
 	function wp_tests_network_options( $value ) {
 		$key = substr( current_filter(), strlen( 'pre_site_option_' ) );
-		return $GLOBALS['wp_tests_options'][$key];
+		return $GLOBALS['wp_tests_options'][ $key ];
 	}
 
 	//filter the site options with our test options
 	foreach ( array_keys( $GLOBALS['wp_tests_options'] ) as $key ) {
-		tests_add_filter( 'pre_site_option_'.$key, 'wp_tests_network_options' );
+		tests_add_filter( 'pre_site_option_' . $key, 'wp_tests_network_options' );
 	}
 }
 
 // Preset Filters defined in bootstrap file
 // Use to filter items before test classes are loaded
-if ( isset( $GLOBALS[ 'wp_tests_filters' ] ) ){
-	foreach( (array)$GLOBALS[ 'wp_tests_filters' ] as $filter => $callback ){
+if ( isset( $GLOBALS['wp_tests_filters'] ) ) {
+	foreach ( (array) $GLOBALS['wp_tests_filters'] as $filter => $callback ) {
 		tests_add_filter( $filter, $callback );
 	}
 }
@@ -348,15 +347,13 @@ if ( isset( $GLOBALS['wp_tests_bypass_finals'] ) ) {
 	BypassFinals::setWhitelist( $GLOBALS['wp_tests_bypass_finals'] );
 }
 
-
 // Load WordPress.
 require_once ABSPATH . 'wp-settings.php';
 require_once __DIR__ . '/template-tags/cron.php';
 
-
 // Switch to the blog we have defined in the wp-tests-config
-if( $multisite ){
-	if( defined( 'BLOG_ID_CURRENT_SITE' ) ){
+if ( $multisite ) {
+	if ( defined( 'BLOG_ID_CURRENT_SITE' ) ) {
 		switch_to_blog( BLOG_ID_CURRENT_SITE );
 		$GLOBALS['_wp_switched_stack'] = [];
 	}

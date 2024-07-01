@@ -76,7 +76,7 @@ class Snapshots {
 			$message = $this->test_path . '/' . $this->get_test_name() . '.txt snapshot does not match!';
 		}
 
-		$test->assertSame( $snapshot, $this->format_data( $actual ), $message );
+		$test::assertSame( $snapshot, $this->format_data( $actual ), $message );
 	}
 
 

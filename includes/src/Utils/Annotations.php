@@ -8,9 +8,10 @@ use PHPUnit\Metadata\Annotation\Parser\Registry;
 use PHPUnit\Util\Test;
 
 /**
+ * Utilities for working on PHPDoc annotations.
+ *
  * @author Mat Lipe
  * @since  3.7.0
- *
  */
 class Annotations {
 	use Singleton;
@@ -26,20 +27,23 @@ class Annotations {
 	 * }
 	 */
 	public function get_annotations( \WP_UnitTestCase_Base $case ): array {
-		if ( method_exists( $case, 'getAnnotations' ) ) {
+		if ( method_exists( $case, 'getAnnotations' ) ) { // @phpstan-ignore-line
 			// PHPUnit < 9.5.0.
 			$annotations = $case->getAnnotations();
-		} elseif ( method_exists( Test::class, 'parseTestMethodAnnotations' ) ) {
+		} elseif ( method_exists( Test::class, 'parseTestMethodAnnotations' ) ) { // @phpstan-ignore-line
+
 			// PHPUnit >= 9.5.0.
 			$annotations = Test::parseTestMethodAnnotations(
 				\get_class( $case ),
+
 				$case->getName( false )
+
 			);
 		} else {
 			// PHPUnit >= 10.5.0
 			$annotations = [
-				'method' => Registry::getInstance()->forMethod( \get_class( $case ), $case->name() )->symbolAnnotations(),
-				'class'  => Registry::getInstance()->forClassName( static::class )->symbolAnnotations(),
+				'method' => Registry::getInstance()->forMethod( \get_class( $case ), $case->name() )->symbolAnnotations(), // @phpstan-ignore-line
+				'class'  => Registry::getInstance()->forClassName( static::class )->symbolAnnotations(), // @phpstan-ignore-line
 			];
 		}
 		return $annotations;

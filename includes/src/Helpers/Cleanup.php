@@ -6,9 +6,12 @@ namespace Lipe\WP_Unit\Helpers;
 use Lipe\WP_Unit\Traits\Singleton;
 
 /**
+ * Cleanup global and WordPress state during tests.
+ *
+ * Methods used to be included in the `WP_UnitTestCase_Base` class, but were moved to this class.
+ *
  * @author Mat Lipe
  * @since  4.0.0
- *
  */
 class Cleanup {
 	use Singleton;
@@ -16,7 +19,7 @@ class Cleanup {
 	/**
 	 * Cleans the global scope (e.g `$_GET` and `$_POST`).
 	 */
-	public function clean_up_global_scope() {
+	public function clean_up_global_scope(): void {
 		$_GET = [];
 		$_POST = [];
 		$_REQUEST = [];
@@ -27,16 +30,19 @@ class Cleanup {
 	/**
 	 * Resets `$_SERVER` variables
 	 */
-	public function reset__SERVER() {
+	public function reset__SERVER(): void {
 		tests_reset__SERVER();
 	}
 
 
 	/**
 	 * Unregisters non-built-in post statuses.
+	 *
+	 * @see _unregister_post_status()
 	 */
-	public function reset_post_statuses() {
+	public function reset_post_statuses(): void {
 		foreach ( get_post_stati( [ '_builtin' => false ] ) as $post_status ) {
+			// @phpstan-ignore-next-line -- Private WP core function.
 			_unregister_post_status( $post_status );
 		}
 	}
@@ -51,7 +57,7 @@ class Cleanup {
 	 */
 	public function reset_taxonomies(): void {
 		foreach ( get_taxonomies() as $tax ) {
-			_unregister_taxonomy( $tax );
+			unregister_taxonomy( $tax );
 		}
 		create_initial_taxonomies();
 	}
@@ -66,7 +72,7 @@ class Cleanup {
 	 */
 	public function reset_post_types(): void {
 		foreach ( get_post_types( [], 'objects' ) as $pt ) {
-			_unregister_post_type( $pt->name );
+			unregister_post_type( $pt->name );
 		}
 		create_initial_post_types();
 	}
@@ -77,9 +83,11 @@ class Cleanup {
 	 */
 	public function reset_lazyload_queue(): void {
 		$lazyloader = wp_metadata_lazyloader();
+		$lazyloader->reset_queue( 'user' ); //@phpstan-ignore-line -- Incomplete type hinting for WP_Metadata_Lazyloader.
 		$lazyloader->reset_queue( 'term' );
 		$lazyloader->reset_queue( 'comment' );
-		$lazyloader->reset_queue( 'blog' );
+		$lazyloader->reset_queue( 'blog' ); //@phpstan-ignore-line -- Incomplete type hinting for WP_Metadata_Lazyloader.
+		$lazyloader->reset_queue( 'site' ); //@phpstan-ignore-line -- Incomplete type hinting for WP_Metadata_Lazyloader.
 	}
 
 
@@ -135,7 +143,7 @@ class Cleanup {
 	 *
 	 * @global \WP_Rewrite $wp_rewrite
 	 *
-	 * @param string      $structure Optional. Permalink structure to set. Default empty.
+	 * @param string       $structure Optional. Permalink structure to set. Default empty.
 	 */
 	public function set_permalink_structure( string $structure = '' ): void {
 		global $wp_rewrite;
@@ -147,6 +155,7 @@ class Cleanup {
 		$wp_rewrite->set_permalink_structure( $structure );
 		$wp_rewrite->flush_rules();
 	}
+
 
 	/**
 	 * Cleans up any registered meta keys.

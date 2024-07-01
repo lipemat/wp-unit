@@ -58,7 +58,7 @@ final class Wp_Die_Usage {
 	 * @param string|\WP_Error $message
 	 * @param string|int       $title
 	 * @param array{
-	 *    response?: int,
+	 *    response?: int|string,
 	 *    link_url?: string,
 	 *    back_link?: string,
 	 *    text_direction?: 'rtl'|'ltr',
@@ -70,23 +70,17 @@ final class Wp_Die_Usage {
 	 * @throws \WPDieException
 	 * @return void
 	 */
-	public function handler( $message, $title, array $args ) {
+	public function handler( $message, $title, array $args ): void {
 		if ( is_wp_error( $message ) ) {
 			$message = $message->get_error_message();
 		}
-		if ( ! is_scalar( $message ) ) {
-			$message = '0';
-		}
-		$code = 0;
-		if ( isset( $args['response'] ) ) {
-			$code = $args['response'];
-		}
+		$code = $args['response'] ?? 0;
 
 		$this->caught[ $message ] = [
 			'title' => $title,
 			'code'  => (int) $code,
 		];
-		if ( \count( $this->expected ) === 0 ) {
+		if ( 0 === \count( $this->expected ) ) {
 			// Original implementation before the handler was introduced.
 			throw new \WPDieException( $message, $code );
 		}
@@ -121,7 +115,7 @@ final class Wp_Die_Usage {
 				$errors[] = "Expected wp_die call for {$message} did not have the expected code {$this->expected[$message]['code']}.";
 			}
 		}
-		$this->case->assertEmpty( $errors, implode( "\n", $errors ) );
+		$this->case::assertEmpty( $errors, implode( "\n", $errors ) );
 	}
 
 

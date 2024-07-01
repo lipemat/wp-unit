@@ -1,0 +1,21 @@
+# @version 2.3.0
+
+parameters:
+  level: 5
+  paths:
+    - includes/abstract-testcase.php
+    - includes/src
+  bootstrapFiles:
+    - phar://E:/scripts\phpunit\phpunit-7\phpunit-7.phar\phpunit\Framework\SelfDescribing.php
+    - phar://E:/scripts\phpunit\phpunit-7\phpunit-7.phar\phpunit\Framework\Test.php
+    - phar://E:/scripts\phpunit\phpunit-7\phpunit-7.phar\phpunit\Framework\Assert.php
+    - phar://E:/scripts\phpunit\phpunit-7\phpunit-7.phar\phpunit\Framework\TestCase.php
+    - vendor/autoload.php
+    - vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php
+  scanFiles:
+    - dev/stubs/stubs.php
+    - includes/exceptions.php
+    - includes/functions.php
+    - includes/factory/class-wp-unittest-factory.php
+    - includes/mock-mailer.php
+    - includes/phpunit-adapter-testcase.php

@@ -37,33 +37,33 @@ final class Doing_It_Wrong {
 			return;
 		}
 		$errors = [];
-		$not_caught_wrong = \array_diff( \array_keys($this->expected ), \array_keys( $this->caught ) );
+		$not_caught_wrong = \array_diff( \array_keys( $this->expected ), \array_keys( $this->caught ) );
 		foreach ( $not_caught_wrong as $not_caught ) {
 			$errors[] = "Failed to assert that $not_caught triggered a doing it wrong notice.";
-			if ( null !== $this->expected[ $not_caught ]) {
+			if ( null !== $this->expected[ $not_caught ] ) {
 				$errors[] = $this->expected[ $not_caught ];
 			}
 		}
 
-		$unexpected_wrong = \array_diff( \array_keys( $this->caught ), \array_keys($this->expected ) );
+		$unexpected_wrong = \array_diff( \array_keys( $this->caught ), \array_keys( $this->expected ) );
 		foreach ( $unexpected_wrong as $unexpected ) {
 			$errors[] = "Unexpected doing it wrong notice triggered for $unexpected.";
 			$errors[] = $this->caught[ $unexpected ];
 		}
 
-		foreach( $this->expected as $function_name => $message ) {
+		foreach ( $this->expected as $function_name => $message ) {
 			if ( null !== $message && $message !== $this->caught[ $function_name ] ) {
 				$errors[] = "The expected \"doing it wrong\" message for {$function_name} was \"{$message}\" but got \"{$this->caught[ $function_name ]}\".";
 			}
 		}
 
-		$this->case->assertEmpty( $errors, \implode( "\n", $errors ) );
+		$this->case::assertEmpty( $errors, \implode( "\n", $errors ) );
 	}
 
 
 	/**
-	 * @param string $function_name - Function name passed to the `doing_it_wrong` function.
-	 * @param ?string $message - Optional message to also validate
+	 * @param string  $function_name - Function name passed to the `doing_it_wrong` function.
+	 * @param ?string $message       - Optional message to also validate
 	 *
 	 * @return void
 	 */
@@ -85,9 +85,6 @@ final class Doing_It_Wrong {
 			$message .= ' ' . \sprintf( '(This message was added in version %s.)', $version );
 		}
 		$this->caught[ $function_name ] = $message;
-
-		// Backwards compatibility. @todo remove in version 4.
-		$this->case->caught_doing_it_wrong[ $function_name ] = $this->get_expected( $function_name );
 	}
 
 

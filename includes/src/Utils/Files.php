@@ -32,7 +32,7 @@ class Files {
 			//error_log( $file );
 			unlink( $file );
 		} elseif ( ! $exists ) {
-			$this->fail( "Trying to delete a file that doesn't exist: $file" );
+			throw new \LogicException( "Trying to delete a file that doesn't exist: $file" );
 		}
 	}
 
@@ -114,13 +114,13 @@ class Files {
 	 *
 	 * @return int|\WP_Error The attachment ID on success, WP_Error object on failure.
 	 */
-	public function make_attachment( $upload, $parent_post_id = 0 ) {
+	public function make_attachment( array $upload, int $parent_post_id = 0 ) {
 		$type = '';
-		if ( ! empty( $upload['type'] ) ) {
+		if ( isset( $upload['type'] ) ) {
 			$type = $upload['type'];
 		} else {
 			$mime = wp_check_filetype( $upload['file'] );
-			if ( $mime ) {
+			if ( false !== $mime['type'] ) {
 				$type = $mime['type'];
 			}
 		}

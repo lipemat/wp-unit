@@ -18,7 +18,9 @@ trait Singleton {
 
 
 	/**
-	 * Instance of this class for use as singleton
+	 * Instance of this class for use as singleton.
+	 *
+	 * @var static
 	 */
 	protected static $instance;
 
@@ -35,9 +37,7 @@ trait Singleton {
 	 */
 	public static function init(): void {
 		static::$instance = static::instance();
-		if ( method_exists( static::$instance, 'hook' ) ) {
-			static::$instance->hook();
-		}
+		static::$instance->hook();
 		static::$initialized = true;
 	}
 
