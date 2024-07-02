@@ -58,6 +58,14 @@ trait Singleton {
 	/**
 	 * @return static
 	 */
+	public static function in() {
+		return static::instance();
+	}
+
+
+	/**
+	 * @return static
+	 */
 	public static function instance() {
 		if ( ! is_a( static::$instance, __CLASS__ ) ) {
 			static::$instance = new static();
