@@ -51,4 +51,25 @@ final class Requests {
 		       . "\r\n\r\n" .
 		       '<!DOCTYPE html />' . $html;
 	}
+
+
+	/**
+	 * Resets permalinks and flushes rewrites.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @global \WP_Rewrite $wp_rewrite
+	 *
+	 * @param string       $structure Optional. Permalink structure to set. Default empty.
+	 */
+	public function set_permalink_structure( string $structure = '' ): void {
+		global $wp_rewrite;
+		if ( ! $wp_rewrite->permalink_structure ) {
+			return;
+		}
+
+		$wp_rewrite->init();
+		$wp_rewrite->set_permalink_structure( $structure );
+		$wp_rewrite->flush_rules();
+	}
 }
