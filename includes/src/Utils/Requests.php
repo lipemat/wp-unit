@@ -64,10 +64,6 @@ final class Requests {
 	 */
 	public function set_permalink_structure( string $structure = '' ): void {
 		global $wp_rewrite;
-		if ( ! $wp_rewrite->permalink_structure ) {
-			return;
-		}
-
 		$wp_rewrite->init();
 		$wp_rewrite->set_permalink_structure( $structure );
 		$wp_rewrite->flush_rules();
