@@ -180,4 +180,22 @@ class Cleanup {
 			}
 		}
 	}
+
+
+	/**
+	 * Deletes a user from the database in a Multisite-agnostic way.
+	 *
+	 * @since 4.3.0
+	 *
+	 * @param int $user_id User ID.
+	 *
+	 * @return bool True if the user was deleted.
+	 */
+	public function delete_user( int $user_id ): bool {
+		if ( is_multisite() ) {
+			return wpmu_delete_user( $user_id );
+		}
+
+		return wp_delete_user( $user_id );
+	}
 }
