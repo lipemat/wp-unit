@@ -122,7 +122,7 @@ If you are using an external PHP Unit executable or .phar and do not want `phpun
 
 ## Enhancements
 
-#### Network Options
+### Network Options
 
 Setting a wp_tests_options value may also be used to set a network option.
 Set test options like normal, and they will automatically replace network option values as well.
@@ -131,7 +131,7 @@ Set test options like normal, and they will automatically replace network option
 $GLOBALS['wp_tests_options'][ 'site_name' ] = 'Example Site Name';
 ```
 
-#### Run all scheduled crons
+### Run all scheduled crons
 
 Used for testing crons by running them if they are schedule to run.
 
@@ -139,7 +139,7 @@ Used for testing crons by running them if they are schedule to run.
 wp_cron_run_all()
 ```
 
-#### Local wp-tests-config.php
+### Local wp-tests-config.php
 
 You may set up your wp-tests.config.php in the directory of your bootstrap.php and phpunit.xml. Really this can be put anywhere as long as you point to it in your bootstrap.php file.
 ```php
@@ -147,7 +147,7 @@ You may set up your wp-tests.config.php in the directory of your bootstrap.php a
 require __DIR__ . '/wp-tests-config.php';
 ```
 
-#### Bootstrap WP on existing database
+### Bootstrap WP on existing database
 
 Using the bootstrap-no-install.php allows you to test against your current data in the database. Out of the box it supports MySQL transactions to allow tests to set and use data without actually storing it in the database.
 
@@ -162,7 +162,7 @@ require __DIR__ . '/vendor/lipemat/wp-unit/includes/bootstrap-no-install.php';
 1. If you override the WP_UnitTestCase::setUp() method in your test class, be sure to call parent::setUp(). Otherwise, any data you set during tests will persist to the database.
 2. If your database tables are using MyISAM storage engines, data will persist. They may be converted to InnoDB or any other engine which supports transactions.
 
-#### Global filters which apply to all tests
+### Global filters which apply to all tests
 
 From within your wp-tests-config.php file add some filters to the $GLOBALS[ 'wp_tests_filters' ]
 ```php
@@ -172,13 +172,13 @@ $GLOBALS[ 'wp_tests_filters' ][ 'the_title' ] = function ( $title ) {
 };
 ```
 
-#### Turn on mail sending
+### Turn on mail sending
 ```php
 <?php
 define( 'WP_TESTS_SEND_MAIL', true );
 ```
 
-#### Set a memory limit
+### Set a memory limit
 
 From within your wp-tests.config.php add a custom memory limit.
 ```php
@@ -186,7 +186,7 @@ From within your wp-tests.config.php add a custom memory limit.
 define( 'WP_MEMORY_LIMIT', '128M' );
 ```
 
-#### Allow an outside languages directory
+### Allow an outside languages directory
 
 From within your wp-tests.config.php add a custom language directory.
 ```php
@@ -194,13 +194,13 @@ From within your wp-tests.config.php add a custom language directory.
 define( 'WP_LANG_DIR', __DIR__ . '/languages' );
 ```
 
-#### Prevent plugins from breaking mysql transactions
+### Prevent plugins from breaking mysql transactions
 
 Some third party plugins use their own transactions which cause unpredictable results with the transactions used by `wp-unit`.
 
 This library automatically accounts for outside transactions.
 
-#### Support custom ajax methods.
+### Support custom ajax methods.
 
 Sometimes you want to use ajax responses to calls which live outside the `wp_ajax` actions.
 
@@ -208,7 +208,7 @@ This library adds methods to `WP_Ajax_UnitTestCase`:
 1. `_handleAjaxCustom` which will turn any callable into an `wp_ajax` action then call it via `_handleAjax`.
 2. `_getJsonResult` call any callable which uses `wp_send_json_success` or `wp_send_json_error` and return the result.
 
-#### Support raw request testing.
+### Support raw request testing.
 
 Sometimes you want to verify requests are actually going out and not just
 assert that a method which sends requests is being called.
@@ -218,7 +218,7 @@ assert that a method which sends requests is being called.
 3. Retrieve sent via `$this->get_sent()`.
 4. Mock raw responses via `$this->mock_response`.
 
-#### Support object cache testing
+### Support object cache testing
 
 For testing your object cache a helper TestCase is available.
 Automatically resets for a fresh object cache between tests.
@@ -231,7 +231,7 @@ Automatically resets for a fresh object cache between tests.
    3. `assertCachePropertyAndExternal` - Assert a value is same in the runtime cache as external cache.
    4. `get_cache_key` - Get parsed key sent to external cache.
 
-#### Automatically generate files for Attachment factory.
+### Automatically generate files for Attachment factory.
 
 Many follow-up attachment calls require the attachment to have an actual file attached to it.
 For example `get_the_post_thumbnail_url` will always be empty if a file does not exist.
@@ -248,7 +248,7 @@ get_the_post_thumbnail_url( $post->ID );
 
 ```
 
-#### Support assertEqualSetsValues on all TestCases
+### Support assertEqualSetsValues on all TestCases
 
 Support testing two arrays of values while accounting for order but ignoring array keys.
 Useful for testing things like pagination.
@@ -267,12 +267,11 @@ $this->assertEqualSetsValues(
 
 ```
 
-#### Support assertEqualSetsIndex on all TestCases
+### Support assertEqualSetsIndex on all TestCases
 
 Asserts that the keys of two arrays are equal, regardless of the contents, without accounting for the order of elements.
 
-
-#### Support mocking `final` classes.
+### Support mocking `final` classes.
 
 Includes a utilities library to enable mocking of any final classes.
 
@@ -283,7 +282,7 @@ Enable for tests via.
 DG\BypassFinals::enable();
 ```
 
-#### Extending the WP_UnitTestCase
+### Extending the WP_UnitTestCase
 
 Some project require additional functionality to be added to every test case. Most commonly this is required for rolling back transactions on custom database adapters.
 
@@ -293,7 +292,7 @@ To use your own version of the `WP_UnitTestCase`:
 3. Add your custom test methods to your class.
 4. Define a `WP_UNIT_TESTCASE_BASE` constant with the path to your class.
 
-##### Example for a SQLite3 database
+#### Example for a SQLite3 database
 
 In your project create a `WP_UnitTestCase.php` file.
 ```php
