@@ -65,7 +65,7 @@ class Snapshots {
 	}
 
 
-	public function assert_matches_snapshot( $actual, \WP_UnitTestCase $test, string $message = '' ): void {
+	public function assert_matches_snapshot( $actual, \WP_UnitTestCase_Base $test, string $message = '' ): void {
 		$snapshot = $this->get_snapshot();
 		if ( null === $snapshot ) {
 			$this->update_snapshot( $actual );

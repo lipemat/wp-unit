@@ -19,14 +19,14 @@ class Annotations {
 	/**
 	 * Cross PHPUnit version method to get annotations.
 	 *
-	 * @param \WP_UnitTestCase $case
+	 * @param \WP_UnitTestCase_Base $case
 	 *
 	 * @return array{
 	 *     method: array<string, string[]>,
 	 *     class: array<string, string[]>
 	 * }
 	 */
-	public function get_annotations( \WP_UnitTestCase $case ): array {
+	public function get_annotations( \WP_UnitTestCase_Base $case ): array {
 		if ( method_exists( $case, 'getAnnotations' ) ) { // @phpstan-ignore-line
 			// PHPUnit < 9.5.0.
 			$annotations = $case->getAnnotations();

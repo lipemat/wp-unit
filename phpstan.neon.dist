@@ -5,6 +5,7 @@ parameters:
   paths:
     - includes/src
     - includes/factory
+    - includes/testcase-base.php
     - includes/abstract-testcase.php
     - includes/class-wp-http-unit-test-transport.php
   bootstrapFiles:

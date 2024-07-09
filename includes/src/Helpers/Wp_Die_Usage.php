@@ -26,12 +26,12 @@ final class Wp_Die_Usage {
 	private $caught = [];
 
 	/**
-	 * @var \WP_UnitTestCase
+	 * @var \WP_UnitTestCase_Base
 	 */
 	private $case;
 
 
-	final private function __construct( \WP_UnitTestCase $case ) {
+	final private function __construct( \WP_UnitTestCase_Base $case ) {
 		$this->case = $case;
 		add_filter( 'wp_die_handler', [ $this, 'get_handler' ] );
 	}
@@ -119,7 +119,7 @@ final class Wp_Die_Usage {
 	}
 
 
-	public static function factory( \WP_UnitTestCase $case ): self {
+	public static function factory( \WP_UnitTestCase_Base $case ): self {
 		return new self( $case );
 	}
 }

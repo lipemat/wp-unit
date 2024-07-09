@@ -13,15 +13,13 @@ use Lipe\WP_Unit\Helpers\Wp_Die_Usage;
 require_once __DIR__ . '/factory.php';
 
 /**
- * Defines a basic fixture to run multiple tests.
+ * Do not use this class directly. Instead, extend `WP_UnitTestCase`.
  *
- * Resets the state of the WordPress installation before and after every test.
- *
- * Includes utility functions and assertions useful for testing WordPress.
- *
- * All WordPress unit tests should inherit from this class.
+ * - Defines a basic fixture to run multiple tests.
+ * - Resets the state of the WordPress installation before and after every test.
+ * - Includes assertions useful for testing WordPress.
  */
-abstract class WP_UnitTestCase extends PHPUnit_Adapter_TestCase {
+abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	/**
 	 * @var ?Hook_State
 	 */

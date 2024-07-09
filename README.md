@@ -282,3 +282,39 @@ Enable for tests via.
 ```php
 DG\BypassFinals::enable();
 ```
+
+#### Extending the WP_UnitTestCase
+
+Some project require additional functionality to be added to every test case. Most commonly this is required for rolling back transactions on custom database adapters.
+
+To use your own version of the `WP_UnitTestCase`:
+1. Create a `WP_UnitTestCase` class in your local project.
+2. Extend `WP_UnitTestCase_Base` in your class.
+3. Add your custom test methods to your class.
+4. Define a `WP_UNIT_TESTCASE_BASE` constant with the path to your class.
+
+##### Example for a SQLite3 database
+
+In your project create a `WP_UnitTestCase.php` file.
+```php
+class WP_UnitTestCase extends WP_UnitTestCase_Base {
+    // Normally live somewhere in your project.
+    static SQLite3 $sqlite_db;
+    
+	protected function setUp(): void {
+		parent::setUp();
+	    self::sqlite_db = new SQLite3( ':memory:' );
+		self::sqlite_db->exec( 'BEGIN TRANSACTION' );
+	}
+
+
+	protected function tearDown(): void {
+		self::sqlite_db->exec( 'ROLLBACK' );
+		parent::tearDown();
+	}
+}
+```
+In your bootstrap.php file add the following line.
+```php
+const WP_UNIT_TESTCASE_BASE = __DIR__ . '/WP_UnitTestCase.php';
+```
