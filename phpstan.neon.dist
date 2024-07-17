@@ -9,10 +9,13 @@ parameters:
     - includes/abstract-testcase.php
     - includes/class-wp-http-unit-test-transport.php
   bootstrapFiles:
-    - phar://E:/scripts\phpunit\phpunit-7\phpunit-7.phar\phpunit\Framework\SelfDescribing.php
-    - phar://E:/scripts\phpunit\phpunit-7\phpunit-7.phar\phpunit\Framework\Test.php
-    - phar://E:/scripts\phpunit\phpunit-7\phpunit-7.phar\phpunit\Framework\Assert.php
-    - phar://E:/scripts\phpunit\phpunit-7\phpunit-7.phar\phpunit\Framework\TestCase.php
+    - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Framework\Reorderable.php
+    - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Framework\SelfDescribing.php
+    - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Framework\Test.php
+    - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Framework\Assert.php
+    - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Framework\TestCase.php
+    - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Runner\Version.php
+    - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Util\Test.php
     - vendor/autoload.php
     - vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php
   scanFiles:

@@ -27,11 +27,7 @@ class Annotations {
 	 * }
 	 */
 	public function get_annotations( \WP_UnitTestCase_Base $case ): array {
-		if ( method_exists( $case, 'getAnnotations' ) ) { // @phpstan-ignore-line
-			// PHPUnit < 9.5.0.
-			$annotations = $case->getAnnotations();
-		} elseif ( method_exists( Test::class, 'parseTestMethodAnnotations' ) ) { // @phpstan-ignore-line
-
+		if ( \method_exists( Test::class, 'parseTestMethodAnnotations' ) ) { // @phpstan-ignore-line
 			// PHPUnit >= 9.5.0.
 			$annotations = Test::parseTestMethodAnnotations(
 				\get_class( $case ),
