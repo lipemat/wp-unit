@@ -51,8 +51,6 @@ global $phpmailer;
 require_once __DIR__ . '/mock-mailer.php';
 $phpmailer = new MockPHPMailer();
 
-register_theme_directory( __DIR__ . '/../data/themedir1' );
-
 if ( version_compare( $wpdb->db_version(), '5.5.3', '>=' ) ) {
 	$wpdb->query( 'SET default_storage_engine = InnoDB' );
 }
