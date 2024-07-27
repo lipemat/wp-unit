@@ -24,6 +24,23 @@ class DatabaseTransactions {
 		add_filter( 'query', [ $this, '_drop_temporary_tables' ] );
 		add_filter( 'query', [ $this, '_prevent_premature_commit' ] );
 		add_filter( 'query', [ $this, '_prevent_second_transaction' ] );
+
+		$wpdb->num_queries = 0;
+		$wpdb->queries = [];
+	}
+
+
+	/**
+	 * Cleanup the transaction.
+	 *
+	 * @return void
+	 */
+	public function rollback_transaction(): void {
+		global $wpdb;
+		remove_filter( 'query', [ $this, '_create_temporary_tables' ] );
+		remove_filter( 'query', [ $this, '_drop_temporary_tables' ] );
+
+		$wpdb->query( 'ROLLBACK;' );
 	}
 
 
@@ -38,6 +55,7 @@ class DatabaseTransactions {
 		$wpdb->query( 'COMMIT;' );
 		add_filter( 'query', [ $this, '_prevent_premature_commit' ] );
 	}
+
 
 	/**
 	 * Replaces the `CREATE TABLE` statement with a `CREATE TEMPORARY TABLE` statement.

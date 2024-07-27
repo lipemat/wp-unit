@@ -121,8 +121,9 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * After a test method runs, resets any state in WordPress the test method might have changed.
 	 */
 	public function tear_down() {
-		global $wpdb, $wp_the_query, $wp_query, $wp;
-		$wpdb->query( 'ROLLBACK' );
+		global $wp_the_query, $wp_query, $wp;
+		DatabaseTransactions::instance()->rollback_transaction();
+
 		if ( is_multisite() ) {
 			while ( ms_is_switched() ) {
 				restore_current_blog();
@@ -180,8 +181,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$GLOBALS['wp_template_path'] = null;
 
 		Cleanup::instance()->unregister_all_meta_keys();
-		remove_filter( 'query', [ $this, '_create_temporary_tables' ] );
-		remove_filter( 'query', [ $this, '_drop_temporary_tables' ] );
 
 		// Reset a project container if available.
 		if ( function_exists( 'tests_reset_container' ) ) {
