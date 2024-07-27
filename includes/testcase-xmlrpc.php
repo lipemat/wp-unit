@@ -7,7 +7,9 @@ require_once ABSPATH . WPINC . '/class-IXR.php';
 require_once ABSPATH . WPINC . '/class-wp-xmlrpc-server.php';
 
 abstract class WP_XMLRPC_UnitTestCase extends WP_UnitTestCase {
-	use RemoveUploaded;
+	use RemoveUploaded {
+		set_up as protected remove_uploaded_set_up;
+	}
 
 	/**
 	 * @var wp_xmlrpc_server
@@ -15,7 +17,7 @@ abstract class WP_XMLRPC_UnitTestCase extends WP_UnitTestCase {
 	protected $myxmlrpcserver;
 
 	public function set_up() {
-		parent::set_up();
+		$this->remove_uploaded_set_up();
 
 		add_filter( 'pre_option_enable_xmlrpc', '__return_true' );
 

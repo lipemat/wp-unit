@@ -15,12 +15,15 @@ use Lipe\WP_Unit\Utils\Files;
  *
  */
 trait RemoveUploaded {
-	protected static $ignore_files = [];
+	/**
+	 * @var string[]|null
+	 */
+	protected static ?array $ignore_files = null;
 
 
 	public function set_up() {
 		parent::set_up();
-		if ( [] === static::$ignore_files ) {
+		if ( null === static::$ignore_files ) {
 			// Only scan the directory once per test run.
 			static::$ignore_files = $this->scan_user_uploads();
 		}
@@ -38,13 +41,17 @@ trait RemoveUploaded {
 	 *
 	 * This method works in tandem with the `set_up()` and `rmdir()` methods:
 	 * - `set_up()` scans the `uploads` directory before every test, and stores
-	 *   its contents inside of the `$ignore_files` property.
+	 *   its contents inside the `$ignore_files` property.
 	 * - `rmdir()` and its helper methods only delete files that are not listed
 	 *   in the `$ignore_files` property. If called during `tear_down()` in tests,
 	 *   this will only delete files added during the previously run test.
 	 */
 	public function remove_added_uploads(): void {
 		$uploads = wp_upload_dir();
+		if ( null === static::$ignore_files ) {
+			static::$ignore_files = $this->scan_user_uploads();
+		}
+
 		Files::instance()->rmdir( $uploads['basedir'], static::$ignore_files );
 	}
 
@@ -54,16 +61,15 @@ trait RemoveUploaded {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return array List of file paths.
+	 * @return string[] List of file paths.
 	 */
 	public function scan_user_uploads(): array {
 		static $files = [];
-		if ( ! empty( $files ) ) {
+		if ( [] !== $files ) {
 			return $files;
 		}
 
 		$uploads = wp_upload_dir();
-		$files = Files::instance()->files_in_dir( $uploads['basedir'] );
-		return $files;
+		return Files::instance()->files_in_dir( $uploads['basedir'] );
 	}
 }
