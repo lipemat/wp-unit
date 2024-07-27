@@ -3,8 +3,9 @@
 declare( strict_types=1 );
 
 use DG\BypassFinals;
+
 /**
- * Version 2.6.0
+ * Version 2.6.3
  */
 
 /**
@@ -57,12 +58,12 @@ function get_private_property( $object, string $property ) {
  *
  * @return void
  */
-function set_private_property(  $object, string $property, $value ): void {
+function set_private_property( $object, string $property, $value ): void {
 	$reflection = new \ReflectionClass( is_string( $object ) ? $object : get_class( $object ) );
 	$reflection_property = $reflection->getProperty( $property );
 	$reflection_property->setAccessible( true );
 	if ( $reflection_property->isStatic() ) {
-		$reflection_property->setValue( $value );
+		$reflection_property->setValue( null, $value );
 	} else {
 		if ( is_string( $object ) ) {
 			throw new LogicException( 'Setting a non-static value on a non instantiated object is useless.' );
@@ -70,7 +71,6 @@ function set_private_property(  $object, string $property, $value ): void {
 		$reflection_property->setValue( $object, $value );
 	}
 }
-
 
 /**
  * Allow extending a particular final class.
