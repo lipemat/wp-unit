@@ -166,6 +166,49 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 		parent::tear_down();
 	}
 
+
+	/**
+	 * Assert that the response is a from a `wp_send_json_error` call.
+	 *
+	 * @since 4.2.0
+	 *
+	 * @param string $response - Response from calling `_getResult`.
+	 * @param mixed  $data     - Optional. Data to compare with the response.
+	 * @param string $message  - Optional. Message to display with the assertion.
+	 *
+	 * @throws JsonException
+	 * @return void
+	 */
+	protected function assertErrorResponse( string $response, $data = null, string $message = '' ) {
+		$result = json_decode( $response, true, 512, JSON_THROW_ON_ERROR );
+		$this->assertFalse( $result['success'] );
+		if ( null !== $data ) {
+			$this->assertEquals( $data, $result['data'], $message );
+		}
+	}
+
+
+	/**
+	 * Assert that the response is a from a `wp_send_json_success` call.
+	 *
+	 * @since 4.2.0
+	 *
+	 * @param string $response - Response from calling `_getResult`.
+	 * @param mixed  $data     - Optional. Data to compare with the response.
+	 * @param string $message  - Optional. Message to display with the assertion.
+	 *
+	 * @throws JsonException
+	 * @return void
+	 */
+	protected function assertSuccessResponse( string $response, $data = null, string $message = '' ) {
+		$result = json_decode( $response, true, 512, JSON_THROW_ON_ERROR );
+		$this->assertTrue( $result['success'], $message );
+		if ( null !== $data ) {
+			$this->assertEquals( $data, $result['data'], $message );
+		}
+	}
+
+
 	/**
 	 * Clears login cookies, unsets the current user.
 	 */
@@ -265,6 +308,7 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 	 *         test will stop executing after this is called.
 	 *
 	 * @throws WPAjaxDieContinueException
+	 * @throws WPAjaxDieStopException
 	 */
 	protected function _handleAjax( $action ) {
 		$this->_last_response = '';
