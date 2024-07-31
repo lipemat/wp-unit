@@ -275,7 +275,7 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 		// Build the request.
 		$_POST['action'] = $action;
 		$_GET['action']  = $action;
-		$_REQUEST        = array_merge( $_POST, $_GET );
+		$_REQUEST = \array_merge( $_REQUEST, $_POST, $_GET );
 
 		// Call the hooks.
 		do_action( 'admin_init' );
