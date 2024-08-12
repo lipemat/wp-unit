@@ -196,6 +196,10 @@ define( 'DIR_TESTROOT', realpath( dirname( __DIR__ ) ) );
  */
 define( 'DISABLE_WP_CRON', true );
 
+if ( ! defined( 'SAVEQUERIES')) {
+	define( 'SAVEQUERIES', true );
+}
+
 if ( ! defined( 'WP_MEMORY_LIMIT' ) ) {
 	define( 'WP_MEMORY_LIMIT', - 1 );
 }
