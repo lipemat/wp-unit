@@ -115,8 +115,8 @@ final class Doing_It_Wrong {
 	}
 
 
-	public function catch( string $function_name, string $message, string $version ): void {
-		if ( '' !== $version ) {
+	public function catch( string $function_name, string $message, $version ): void {
+		if ( '' !== $version && null !== $version ) {
 			$message .= ' ' . \sprintf( '(This message was added in version %s.)', $version );
 		}
 		if ( ! isset( $this->caught[ $function_name ] ) ) {
