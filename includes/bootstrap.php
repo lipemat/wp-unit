@@ -201,7 +201,7 @@ if ( ! defined( 'SAVEQUERIES')) {
 }
 
 if ( ! defined( 'WP_MEMORY_LIMIT' ) ) {
-	define( 'WP_MEMORY_LIMIT', - 1 );
+	define( 'WP_MEMORY_LIMIT', '528M' );
 }
 define( 'WP_MAX_MEMORY_LIMIT', WP_MEMORY_LIMIT );
 
