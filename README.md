@@ -110,6 +110,7 @@ phpunit
 ```
 
 ## Excluding PHPUnit From Composer
+
 If you are using an external PHP Unit executable or .phar and do not want `phpunit/phpunit` to be installed as part of your composer vendor, you may add the following configuration to your `composer.json` file.
 
 ```json
@@ -226,10 +227,10 @@ Automatically resets for a fresh object cache between tests.
 1. Extend the `Object_Cache_TestCase` from your test's class.
 2. Interact with `$this->object_cache` to access your object cache.
 3. Use include helper assertions and utilities.
-   1. `assertNotCacheExternal` - Assert a key is not available in the external cache.
-   2. `assertCacheExternal` - Assert a key is available in the external cache.
-   3. `assertCachePropertyAndExternal` - Assert a value is same in the runtime cache as external cache.
-   4. `get_cache_key` - Get parsed key sent to external cache.
+    1. `assertNotCacheExternal` - Assert a key is not available in the external cache.
+    2. `assertCacheExternal` - Assert a key is available in the external cache.
+    3. `assertCachePropertyAndExternal` - Assert a value is same in the runtime cache as external cache.
+    4. `get_cache_key` - Get parsed key sent to external cache.
 
 ### Automatically generate files for Attachment factory.
 
@@ -284,7 +285,7 @@ DG\BypassFinals::enable();
 
 ### Extending the WP_UnitTestCase
 
-Some project require additional functionality to be added to every test case. Most commonly this is required for rolling back transactions on custom database adapters.
+Some projects require additional functionality to be added to every test case. Most commonly this is required for rolling back transactions on custom database adapters.
 
 To use your own version of the `WP_UnitTestCase`:
 1. Create a `WP_UnitTestCase` class in your local project.
@@ -297,15 +298,14 @@ To use your own version of the `WP_UnitTestCase`:
 In your project create a `WP_UnitTestCase.php` file.
 ```php
 class WP_UnitTestCase extends WP_UnitTestCase_Base {
-    // Normally live somewhere in your project.
-    static SQLite3 $sqlite_db;
-    
+	// Normally live somewhere in your project.
+	static SQLite3 $sqlite_db;
+
 	protected function setUp(): void {
 		parent::setUp();
-	    self::sqlite_db = new SQLite3( ':memory:' );
+		self::sqlite_db = new SQLite3( ':memory:' );
 		self::sqlite_db->exec( 'BEGIN TRANSACTION' );
 	}
-
 
 	protected function tearDown(): void {
 		self::sqlite_db->exec( 'ROLLBACK' );
