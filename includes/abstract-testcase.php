@@ -187,7 +187,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 			tests_reset_container();
 		}
 		// Reset the PHP mailer.
-		reset_phpmailer_instance();
+		tests_reset_phpmailer_instance();
 
 		if ( $this->hook_state instanceof Hook_State ) {
 			Global_Hooks::instance()->restore_hooks( $this->hook_state );

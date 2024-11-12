@@ -94,11 +94,11 @@ function tests_retrieve_phpmailer_instance() {
 /**
  * Helper method to reset the phpmailer instance.
  *
- * @since 4.6.0
+ * @since 4.3.0
  *
  * @return bool
  */
-function reset_phpmailer_instance() {
+function tests_reset_phpmailer_instance() {
 	$mailer = tests_retrieve_phpmailer_instance();
 	if ( $mailer ) {
 		$mailer             = new MockPHPMailer( true );
@@ -111,4 +111,11 @@ function reset_phpmailer_instance() {
 	}
 
 	return false;
+}
+
+/**
+ * @deprecated in favor of tests_reset_phpmailer_instance()
+ */
+function reset_phpmailer_instance() {
+	tests_reset_phpmailer_instance();
 }
