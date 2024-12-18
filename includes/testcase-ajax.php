@@ -124,6 +124,8 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 		remove_action( 'admin_init', '_maybe_update_themes' );
 		remove_action( 'admin_init', '_wp_check_for_scheduled_split_terms' );
 		remove_action( 'admin_init', '_wp_check_for_scheduled_update_comment_type' );
+		remove_action( 'admin_init', 'send_frame_options_header', 10 );
+		remove_action( 'admin_init', 'wp_admin_headers' );
 		remove_action( 'admin_init', 'wp_schedule_update_user_counts' );
 
 		// Register the core actions.
