@@ -39,7 +39,7 @@ final class Hook_State {
 	private $wp_current_filter;
 
 	/**
-	 * @phpstan-var META_BOXES
+	 * @phpstan-var META_BOXES|null
 	 */
 	private $wp_meta_boxes;
 

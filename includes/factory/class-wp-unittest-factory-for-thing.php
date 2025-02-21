@@ -75,7 +75,7 @@ abstract class WP_UnitTest_Factory_For_Thing {
 			return $object_id;
 		}
 
-		if ( $callbacks ) {
+		if ( \count( $callbacks ) > 0 ) {
 			$updated_fields = $this->apply_callbacks( $callbacks, $object_id );
 			$save_result    = $this->update_object( $object_id, $updated_fields );
 
@@ -152,12 +152,12 @@ abstract class WP_UnitTest_Factory_For_Thing {
 	 * @param array       $args                   Optional. The arguments to combine with defaults.
 	 *                                            Default empty array.
 	 * @param array|null  $generation_definitions Optional. The defaults. Default null.
-	 * @param array|null  $callbacks              Optional. Array with callbacks to apply on the fields.
+	 * @param array $callbacks                    Optional. Array with callbacks to apply on the fields.
 	 *                                            Default null.
 	 *
-	 * @return array|WP_Error Combined array on success. WP_Error when default value is incorrent.
+	 * @return array|\WP_Error Combined array on success. WP_Error when default value is incorrent.
 	 */
-	public function generate_args( array $args = [], ?array $generation_definitions = null, &$callbacks = null ) {
+	public function generate_args( array $args = [], ?array $generation_definitions = null, &$callbacks = [] ) {
 		$callbacks = array();
 		if ( null === $generation_definitions ) {
 			$generation_definitions = $this->default_generation_definitions;

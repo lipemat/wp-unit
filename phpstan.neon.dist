@@ -8,6 +8,7 @@ parameters:
     - includes/testcase-base.php
     - includes/abstract-testcase.php
     - includes/class-wp-http-unit-test-transport.php
+    - includes/testcase-xmlrpc.php
   bootstrapFiles:
     - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Framework\Reorderable.php
     - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Framework\SelfDescribing.php
