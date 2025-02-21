@@ -35,6 +35,10 @@ class Global_HooksTest extends \WP_UnitTestCase {
 
 		add_meta_box( 'test', 'test', '__return_true', 'post' );
 		$this->assertNotEmpty( $GLOBALS['wp_meta_boxes']['post']['advanced']['default']['test'] );
+
+		$this->assertFalse( wp_script_is( __FILE__ ) );
+		wp_enqueue_script( __FILE__, 'test.js' );
+		$this->assertTrue( wp_script_is( __FILE__ ) );
 	}
 
 
@@ -48,6 +52,8 @@ class Global_HooksTest extends \WP_UnitTestCase {
 		$this->assertArrayNotHasKey( self::NAME, get_registered_meta_keys( 'post', 'page' ) );
 		$this->assertArrayNotHasKey( self::NAME, get_registered_settings() );
 		$this->assertEmpty( $GLOBALS['wp_meta_boxes']['post']['advanced']['default']['test'] ?? null );
+
+		$this->assertFalse( wp_script_is( __FILE__ ) );
 	}
 
 }

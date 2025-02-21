@@ -53,6 +53,11 @@ final class Hook_State {
 	 */
 	private $wp_registered_settings;
 
+	/**
+	 * @var ?\WP_Scripts
+	 */
+	private $wp_scripts = null;
+
 
 	private function __construct() {
 		$this->backup_wp_filter();
@@ -62,6 +67,9 @@ final class Hook_State {
 		$this->wp_meta_boxes = $GLOBALS['wp_meta_boxes'] ?? null;
 		$this->wp_meta_keys = $GLOBALS['wp_meta_keys'] ?? [];
 		$this->wp_registered_settings = $GLOBALS['wp_registered_settings'] ?? [];
+		if ( isset( $GLOBALS['wp_scripts'] ) && $GLOBALS['wp_scripts'] instanceof \WP_Scripts ) {
+			$this->wp_scripts = clone( $GLOBALS['wp_scripts'] );
+		}
 	}
 
 
@@ -110,6 +118,14 @@ final class Hook_State {
 	 */
 	public function get_wp_registered_settings(): array {
 		return $this->wp_registered_settings;
+	}
+
+
+	/**
+	 * @return ?\WP_Scripts
+	 */
+	public function get_wp_scripts(): ?\WP_Scripts {
+		return $this->wp_scripts instanceof \WP_Scripts ? clone $this->wp_scripts : null;
 	}
 
 
