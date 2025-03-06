@@ -5,9 +5,10 @@ parameters:
   paths:
     - includes/src
     - includes/factory
-    - includes/testcase-base.php
     - includes/abstract-testcase.php
     - includes/class-wp-http-unit-test-transport.php
+    - includes/mock-mailer.php
+    - includes/testcase-base.php
     - includes/testcase-xmlrpc.php
   bootstrapFiles:
     - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Framework\Reorderable.php
