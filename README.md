@@ -1,12 +1,10 @@
 # WP Unit
 
 <p>
-<a href="https://github.com/lipemat/wp-unitreleases">
-<img src="https://img.shields.io/packagist/v/lipemat/wp-unit.svg?label=version"  alt=""/>
-</a>
-    <img alt="" src="https://img.shields.io/badge/wordpress->=6.1.0-green.svg">
-    <img src="https://img.shields.io/packagist/php-v/lipemat/wp-unit.svg?color=brown"  alt=""/>
-    <img alt="Packagist" src="https://img.shields.io/packagist/l/lipemat/wp-unit.svg">
+<a href="https://github.com/lipemat/wp-unitreleases"><img src="https://img.shields.io/packagist/v/lipemat/wp-unit.svg?label=version" alt=""/></a>
+<img alt="" src="https://img.shields.io/badge/wordpress->=6.1.0-green.svg">
+<img src="https://img.shields.io/packagist/php-v/lipemat/wp-unit.svg?color=brown" alt=""/>
+<img alt="Packagist" src="https://img.shields.io/packagist/l/lipemat/wp-unit.svg">
 </p>
 
 Fork of wp-unit to support bootstrapping an existing database and many other enhancements.
