@@ -7,6 +7,7 @@
  */
 
 namespace {
+
 	use WP_CLI\ExitException;
 
 	class WP_CLI {
@@ -101,11 +102,12 @@ namespace {
 		 * Store messages in this class.
 		 *
 		 * @param string|WP_Error|Exception|Throwable $message Message to output.
-		 * @param string|bool $group Organize debug message to a specific group.
+		 * @param string|bool                         $group   Organize debug message to a specific group.
+		 *                                                     Use `false` to not group the message.
 		 *
 		 * @return void
 		 */
-		public static function debug( $message, bool|string $group = false ): void {
+		public static function debug( $message, $group = false ): void {
 			self::$case->debug[] = [ $message, $group ];
 		}
 
