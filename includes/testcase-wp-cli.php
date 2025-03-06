@@ -29,6 +29,13 @@ abstract class WP_CLI_UnitTestCase extends WP_UnitTestCase {
 	 */
 	public $error = [];
 
+	/**
+	 * Hold debug messages added during this test.
+	 *
+	 * @var array<array{string|WP_Error|Exception|Throwable, bool|string}>
+	 */
+	public $debug = [];
+
 
 	public static function set_up_before_class() {
 		parent::set_up_before_class();
