@@ -98,6 +98,18 @@ namespace {
 
 
 		/**
+		 * Store messages in this class.
+		 *
+		 * @param string|WP_Error|Exception|Throwable $message Message to output.
+		 * @param string|bool $group Organize debug message to a specific group.
+		 *
+		 * @return void
+		 */
+		public static function debug( $message, bool|string $group = false ): void {
+			self::$case->debug[] = [ $message, $group ];
+		}
+
+		/**
 		 * Currently a noop to prevent fatal errors during testing.
 		 *
 		 * @param string $command
