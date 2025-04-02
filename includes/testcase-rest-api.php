@@ -35,11 +35,15 @@ abstract class WP_Test_REST_TestCase extends WP_UnitTestCase {
 	 *
 	 * Verifies provided code matche error code.
 	 *
-	 * @param      $code
-	 * @param      $response
-	 * @param null $status
+	 * @since 4.3.0 -- Allow validating a response message.
+	 *
+	 * @param int|string                  $code     - Error code. (e.g. 'rest_forbidden')
+	 * @param \WP_REST_Response|\WP_Error $response - Response from REST request.
+	 * @param ?int                        $status   - HTTP status code.
+	 * @param ?string                     $message  - Error message.
+	 *
 	 */
-	protected function assertErrorResponse( $code, $response, $status = null ) {
+	protected function assertErrorResponse( $code, $response, ?int $status = null, ?string $message = null ) {
 		if ( $response instanceof WP_REST_Response ) {
 			$response = $response->as_error();
 		}
@@ -52,6 +56,9 @@ abstract class WP_Test_REST_TestCase extends WP_UnitTestCase {
 			$this->assertArrayHasKey( 'status', $data );
 			$this->assertSame( $status, $data['status'] );
 		}
+		if ( null !== $message ) {
+			$this->assertSame( $message, $response->get_error_message() );
+		}
 	}
 
 
@@ -63,7 +70,7 @@ abstract class WP_Test_REST_TestCase extends WP_UnitTestCase {
 	 */
 	protected function assertNotErrorResponse( $response ) {
 		$this->assertNotInstanceOf( 'WP_Error', $response );
-		if ( is_a( $response, 'WP_REST_Response' ) ) {
+		if ( \is_a( $response, 'WP_REST_Response' ) ) {
 			$this->assertNull( $response->as_error() );
 		}
 	}
@@ -76,7 +83,7 @@ abstract class WP_Test_REST_TestCase extends WP_UnitTestCase {
 	 * @param array                                     $args   - Query parameters to pass.
 	 * @param 'GET'|'POST'|'PATCH'|'PUT'|'DELETE'|'URL' $method - Request method
 	 *
-	 * @return WP_REST_Response
+	 * @return \WP_REST_Response
 	 */
 	protected function get_response( string $route, array $args, string $method = 'POST' ) {
 		$this->start_request();
