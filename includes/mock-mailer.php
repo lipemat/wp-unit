@@ -2,8 +2,21 @@
 require_once ABSPATH . 'wp-includes/PHPMailer/PHPMailer.php';
 require_once ABSPATH . 'wp-includes/PHPMailer/Exception.php';
 
+/**
+ * @author Mat Lipe
+ * @since  March 2025
+ *
+ * @phpstan-type SENT object{
+ *     to: array<int, array{0: string, 1: string}>,
+ *     cc: array<int, array{0: string, 1: string}>,
+ *     bcc: array<int, array{0: string, 1: string}>,
+ *     header: string,
+ *     subject: string,
+ *     body: string
+ * }
+ */
 class MockPHPMailer extends PHPMailer\PHPMailer\PHPMailer {
-	public $mock_sent = array();
+	public array $mock_sent = [];
 
 	public function preSend() {
 		$this->Encoding = '8bit';
@@ -32,15 +45,15 @@ class MockPHPMailer extends PHPMailer\PHPMailer\PHPMailer {
 	 * @since 4.5.0
 	 *
 	 * @param int $index Optional. Array index of mock_sent value.
-	 * @param array $fields Optional. Limit results to specified fields.
+	 * @param key-of<SENT> $fields Optional. Limit results to specified fields.
 	 *
-	 * @return object|false
+	 * @return SENT|bool
 	 */
 	public function get_sent( $index = 0, $fields = [] ) {
 		if ( isset( $this->mock_sent[ $index ] ) ) {
 			$sent = $this->mock_sent[ $index ];
-			if ( ! empty( $fields ) ) {
-				$sent = array_intersect_key( $sent, array_flip( $fields ) );
+			if ( [] !== $fields ) {
+				$sent = \array_intersect_key( $sent, \array_flip( $fields ) );
 			}
 			return (object) $sent;
 		}
@@ -52,24 +65,28 @@ class MockPHPMailer extends PHPMailer\PHPMailer\PHPMailer {
 	 *
 	 * @since 4.5.0
 	 *
-	 * @param string $address_type    The type of address for the email such as to, cc or bcc.
+	 * @param 'to'|'bcc'|'cc' $address_type The type of address for the email.
 	 * @param int    $mock_sent_index Optional. The sent_mock index we want to get the recipient for.
 	 * @param int    $recipient_index Optional. The recipient index in the array.
-	 * @return bool|object Returns object on success, or false if any of the indices don't exist.
+	 *
+	 * @return bool|object{address: string, name: string} Returns object on success, or false if any of the indices don't exist.
 	 */
-	public function get_recipient( $address_type, $mock_sent_index = 0, $recipient_index = 0 ) {
+	public function get_recipient( string $address_type, int $mock_sent_index = 0, int $recipient_index = 0 ) {
 		$retval = false;
-		$mock   = $this->get_sent( $mock_sent_index );
-		if ( $mock ) {
-			if ( isset( $mock->{$address_type}[ $recipient_index ] ) ) {
-				$address_index  = $mock->{$address_type}[ $recipient_index ];
-				$recipient_data = array(
-					'address' => ( isset( $address_index[0] ) && ! empty( $address_index[0] ) ) ? $address_index[0] : 'No address set',
-					'name'    => ( isset( $address_index[1] ) && ! empty( $address_index[1] ) ) ? $address_index[1] : 'No name set',
-				);
-
-				$retval = (object) $recipient_data;
+		$mock = $this->get_sent( $mock_sent_index );
+		if ( \is_object( $mock ) ) {
+			if ( 'to' === $address_type ) {
+				$address_index = $mock->to[ $recipient_index ] ?? [];
+			} elseif ( 'cc' === $address_type ) {
+				$address_index = $mock->cc[ $recipient_index ] ?? [];
+			} else {
+				$address_index = $mock->bcc[ $recipient_index ] ?? [];
 			}
+			$recipient_data = [
+				'address' => ( isset( $address_index[0] ) && '' !== $address_index[0] ) ? $address_index[0] : 'No address set',
+				'name'    => ( isset( $address_index[1] ) && '' !== $address_index[1] ) ? $address_index[1] : 'No name set',
+			];
+			$retval = (object) $recipient_data;
 		}
 
 		return $retval;

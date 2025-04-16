@@ -187,6 +187,7 @@ if ( ! defined( 'WP_TESTS_TABLE_PREFIX' ) && isset( $table_prefix ) ) {
 } else {
 	$table_prefix = WP_TESTS_TABLE_PREFIX;
 }
+define( 'DIR_TESTDATA', realpath( dirname( __DIR__ ) . '/data' ) );
 define( 'DIR_TEST_IMAGES', realpath( dirname( __DIR__ ) . '/data/images' ) );
 define( 'DIR_TESTROOT', realpath( dirname( __DIR__ ) ) );
 
