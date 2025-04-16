@@ -1,5 +1,7 @@
 <?php
 
+use Lipe\WP_Unit\Traits\RemoveUploaded;
+
 /**
  * Unit test factory for attachments.
  *
@@ -17,19 +19,16 @@ class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
 	/**
 	 * Create an attachment fixture.
 	 *
-	 * @since UT (3.7.0)
-	 * @since 6.2.0 Returns a WP_Error object on failure.
-	 *
 	 * @since 1.8.0 (Automatically generate file to go with attachment)
 	 *
+	 * Array of arguments. Accepts all arguments that can be passed to
+	 * `wp_insert_attachment()`, in addition to the following:
 	 *
-	 * @param array $args          {
-	 *                             Array of arguments. Accepts all arguments that can be passed to
-	 *                             wp_insert_attachment(), in addition to the following:
+	 * @param array $args        {
 	 *
-	 * @type int    $post_parent   ID of the post to which the attachment belongs.
-	 * @type string $file          Path of the attached file.
-	 *                             }
+	 * @type int    $post_parent ID of the post to which the attachment belongs.
+	 * @type string $file        Path of the attached file.
+	 *                           }
 	 * @return int|WP_Error The attachment ID on success, WP_Error object on failure.
 	 */
 	public function create_object( array $args ) {
@@ -54,18 +53,20 @@ class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
 
 
 	/**
-	 * Saves an attachment.
+	 * Converts a file into an attachment object.
+	 * - Uploads file to the uploads directory.
+	 * - Creates an attachment post object.
+	 * - Generates the attachment metadata (e.g. image sizes).
 	 *
-	 * @since 4.4.0
-	 * @since 6.2.0 Returns a WP_Error object on failure.
+	 * @see RemoveUploaded for cleanup of uploaded files.
 	 *
-	 * @param string $file           The file name to create attachment object for.
+	 * @param string $file The file path and name to create attachment object for.
 	 * @param int    $parent_post_id ID of the post to attach the file to.
 	 *
-	 * @return int|WP_Error The attachment ID on success, WP_Error object on failure.
+	 * @return int|\WP_Error The attachment ID on success, \WP_Error object on failure.
 	 */
-	public function create_upload_object( $file, $parent_post_id = 0 ) {
-		$contents = file_get_contents( $file );
+	public function create_upload_object( string $file, int $parent_post_id = 0 ) {
+		$contents = \file_get_contents( $file );
 		$upload = wp_upload_bits( wp_basename( $file ), null, $contents );
 
 		$type = '';
