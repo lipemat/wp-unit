@@ -2,7 +2,8 @@
 /**
  * Installs WordPress for the unit-tests.
  */
-error_reporting( E_ALL & ~E_DEPRECATED & ~E_STRICT );
+
+error_reporting( E_ALL & ~E_DEPRECATED );
 
 $config_file_path = $argv[1];
 $multisite = in_array( 'run_ms_tests', $argv, true );
