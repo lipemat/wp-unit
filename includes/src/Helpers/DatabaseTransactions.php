@@ -66,6 +66,13 @@ class DatabaseTransactions {
 	 */
 	public function _create_temporary_tables( string $query ): string {
 		if ( 0 === \strpos( \trim( $query ), 'CREATE TABLE' ) ) {
+			// Temporary tables cannot have constraints.
+			if ( \str_contains( \strtolower( $query ), 'constraint' ) ) {
+				if ( ! \str_contains( \strtolower( $query ), 'if not exists' ) ) {
+					return \substr_replace( \trim( $query ), 'CREATE TABLE IF NOT EXISTS', 0, 12 );
+				}
+				return $query;
+			}
 			return \substr_replace( \trim( $query ), 'CREATE TEMPORARY TABLE', 0, 12 );
 		}
 		return $query;

@@ -99,4 +99,39 @@ class DatabaseTransactionsTest extends \WP_UnitTestCase {
 		$this->assertSame( 1, $wpdb->num_queries );
 		$this->assertSame( 'SELECT 1;', $wpdb->queries[0][0] );
 	}
+
+
+	public function test_create_temporary_tables(): void {
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+		global $wpdb;
+		$mock = $this->getMockBuilder( 'wpdb' )
+		             ->disableOriginalConstructor()
+		             ->getMock();
+
+		$mock->method( 'tables' )
+		     ->willReturn( [] );
+
+		$mock->expects( $this->exactly( 3 ) )
+		     ->method( 'query' )
+		     ->with(
+			     $this->callback( function( $arg ) {
+				     $arg = \apply_filters( 'query', $arg );
+
+				     static $calls = [
+					     'CREATE TEMPORARY TABLE test_table ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY )',
+					     'CREATE TABLE IF NOT EXISTS test_no_temp ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, CONSTRAINT kk FOREIGN KEY (id) REFERENCES test_table(id) ON DELETE RESTRICT )',
+					     'CREATE TABLE IF NOT EXISTS test_no_temp ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, constraint ky FOREIGN KEY (id) REFERENCES test_table(id) ON DELETE cascade )',
+				     ];
+				     return \in_array( $arg, $calls );
+			     } )
+		     );
+
+		$wpdb = $mock;
+		$wpdb->global_tables = [];
+
+		\dbDelta( "CREATE TABLE test_table ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY );" );
+		\dbDelta( 'CREATE TABLE test_no_temp ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, CONSTRAINT kk FOREIGN KEY (id) REFERENCES test_table(id) ON DELETE RESTRICT );' );
+		\dbDelta( 'CREATE TABLE test_no_temp ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, constraint ky FOREIGN KEY (id) REFERENCES test_table(id) ON DELETE cascade );' );
+	}
 }
