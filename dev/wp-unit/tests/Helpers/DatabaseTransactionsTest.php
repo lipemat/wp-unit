@@ -116,22 +116,27 @@ class DatabaseTransactionsTest extends \WP_UnitTestCase {
 		     ->method( 'query' )
 		     ->with(
 			     $this->callback( function( $arg ) {
+				     static $i = 0;
 				     $arg = \apply_filters( 'query', $arg );
 
 				     static $calls = [
-					     'CREATE TEMPORARY TABLE test_table ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY )',
-					     'CREATE TABLE IF NOT EXISTS test_no_temp ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, CONSTRAINT kk FOREIGN KEY (id) REFERENCES test_table(id) ON DELETE RESTRICT )',
-					     'CREATE TABLE IF NOT EXISTS test_no_temp ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, constraint ky FOREIGN KEY (id) REFERENCES test_table(id) ON DELETE cascade )',
+					     0 => 'CREATE TEMPORARY TABLE test_table ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY )',
+					     1 => 'CREATE TABLE IF NOT EXISTS test_no_temp ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, constRAINT kk FOREIGN KEY (id) REFERENCES test_table(id) ON DELETE RESTRICT )',
+					     2 => 'CREATE TABLE IF NOT EXISTS test_no_temp ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, constraint ky FOREIGN KEY (id) REFERENCES test_table(id) ON DELETE cascade )',
 				     ];
-				     return \in_array( $arg, $calls );
+				     $result = $arg === $calls[ $i ];
+				     if ( $result ) {
+					     $i ++;
+				     }
+				     return $result;
 			     } )
 		     );
 
 		$wpdb = $mock;
 		$wpdb->global_tables = [];
 
-		\dbDelta( "CREATE TABLE test_table ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY );" );
-		\dbDelta( 'CREATE TABLE test_no_temp ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, CONSTRAINT kk FOREIGN KEY (id) REFERENCES test_table(id) ON DELETE RESTRICT );' );
+		\dbDelta( 'CREATE TABLE test_table ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY );' );
+		\dbDelta( 'CREATE TABLE test_no_temp ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, constRAINT kk FOREIGN KEY (id) REFERENCES test_table(id) ON DELETE RESTRICT );' );
 		\dbDelta( 'CREATE TABLE test_no_temp ( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, constraint ky FOREIGN KEY (id) REFERENCES test_table(id) ON DELETE cascade );' );
 	}
 }

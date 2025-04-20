@@ -65,7 +65,7 @@ class DatabaseTransactions {
 	 * @return string The altered query.
 	 */
 	public function _create_temporary_tables( string $query ): string {
-		if ( 0 === \strpos( \trim( $query ), 'CREATE TABLE' ) ) {
+		if ( 0 === stripos( \trim( $query ), 'CREATE TABLE' ) ) {
 			// Temporary tables cannot have constraints.
 			if ( \str_contains( \strtolower( $query ), 'constraint' ) ) {
 				if ( ! \str_contains( \strtolower( $query ), 'if not exists' ) ) {
@@ -87,7 +87,7 @@ class DatabaseTransactions {
 	 * @return string The altered query.
 	 */
 	public function _drop_temporary_tables( string $query ): string {
-		if ( 0 === \strpos( \trim( $query ), 'DROP TABLE' ) ) {
+		if ( 0 === stripos( \trim( $query ), 'DROP TABLE' ) ) {
 			return \substr_replace( \trim( $query ), 'DROP TEMPORARY TABLE', 0, 10 );
 		}
 		return $query;
@@ -95,7 +95,7 @@ class DatabaseTransactions {
 
 
 	public function _prevent_premature_commit( string $query ): string {
-		if ( 0 === \strpos( \trim( $query ), 'COMMIT' ) ) {
+		if ( 0 === \stripos( \trim( $query ), 'COMMIT' ) ) {
 			return 'SELECT "Bypassed COMMIT transaction _prevent_premature_commit"';
 		}
 		return $query;
@@ -103,7 +103,7 @@ class DatabaseTransactions {
 
 
 	public function _prevent_second_transaction( string $query ): string {
-		if ( 0 === \strpos( \trim( $query ), 'START TRANSACTION' ) ) {
+		if ( 0 === \stripos( \trim( $query ), 'START TRANSACTION' ) ) {
 			return 'SELECT "Bypassed START TRANSACTIONT transaction _prevent_second_transaction"';
 		}
 		return $query;
