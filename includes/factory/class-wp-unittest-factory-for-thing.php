@@ -64,10 +64,6 @@ abstract class WP_UnitTest_Factory_For_Thing {
 	 * @return int|WP_Error The object ID on success, WP_Error object on failure.
 	 */
 	public function create( array $args = [], ?array $generation_definitions = null ) {
-		if ( null === $generation_definitions ) {
-			$generation_definitions = $this->default_generation_definitions;
-		}
-
 		$generated_args = $this->generate_args( $args, $generation_definitions, $callbacks );
 		$object_id      = $this->create_object( $generated_args );
 
@@ -159,7 +155,9 @@ abstract class WP_UnitTest_Factory_For_Thing {
 	 */
 	public function generate_args( array $args = [], ?array $generation_definitions = null, &$callbacks = [] ) {
 		$callbacks = array();
-		if ( null === $generation_definitions ) {
+		if ( \is_array( $generation_definitions ) ) {
+			$generation_definitions = \array_merge( $this->default_generation_definitions, $generation_definitions );
+		} else {
 			$generation_definitions = $this->default_generation_definitions;
 		}
 
@@ -171,16 +169,16 @@ abstract class WP_UnitTest_Factory_For_Thing {
 		foreach ( array_keys( $generation_definitions ) as $field_name ) {
 			if ( ! isset( $args[ $field_name ] ) ) {
 				$generator = $generation_definitions[ $field_name ];
-				if ( is_scalar( $generator ) ) {
+				if ( \is_scalar( $generator ) ) {
 					$args[ $field_name ] = $generator;
-				} elseif ( is_object( $generator ) && method_exists( $generator, 'call' ) ) {
+				} elseif ( \is_object( $generator ) && \method_exists( $generator, 'call' ) ) {
 					$callbacks[ $field_name ] = $generator;
-				} elseif ( is_object( $generator ) ) {
-					$args[ $field_name ] = sprintf( $generator->get_template_string(), $incr );
+				} elseif ( \is_object( $generator ) && \method_exists( $generator, 'get_template_string' ) ) {
+					$args[ $field_name ] = \sprintf( $generator->get_template_string(), $incr );
 				} else {
-					return new WP_Error(
+					return new \WP_Error(
 						'invalid_argument',
-						'Factory default value should be either a scalar or an generator object.'
+						'Factory default value should be either a scalar, or a generator object.'
 					);
 				}
 			}
@@ -194,6 +192,8 @@ abstract class WP_UnitTest_Factory_For_Thing {
 	 * Applies the callbacks on the created object.
 	 *
 	 * @since UT (3.7.0)
+	 *
+	 * @see WP_UnitTest_Factory_For_Thing::callback
 	 *
 	 * @param WP_UnitTest_Factory_Callback_After_Create[] $callbacks Array with callback functions.
 	 * @param int                                         $object_id ID of the object to apply callbacks for.
@@ -217,10 +217,10 @@ abstract class WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @param callable $callback The callback function.
 	 *
-	 * @return WP_UnitTest_Factory_Callback_After_Create
+	 * @return \WP_UnitTest_Factory_Callback_After_Create
 	 */
 	public function callback( $callback ) {
-		return new WP_UnitTest_Factory_Callback_After_Create( $callback );
+		return new \WP_UnitTest_Factory_Callback_After_Create( $callback );
 	}
 
 	/**
