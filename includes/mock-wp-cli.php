@@ -66,8 +66,8 @@ namespace {
 		/**
 		 * Store messages in this class.
 		 *
-		 * @param string $message Message to output.
-		 * @param boolean|integer   $exit    Whether to exit the script.
+		 * @param string          $message Message to output.
+		 * @param boolean|integer $exit    Whether to exit the script.
 		 *
 		 * @throws ExitException
 		 * @return void
@@ -75,11 +75,11 @@ namespace {
 		public static function error( string $message = '', $exit = true ): void {
 			self::$case->error[] = "Error: {$message}";
 			$return_code = false;
-            if ( true === $exit ) {
-            	$return_code = 1;
-            } elseif ( is_int( $exit ) && $exit >= 1 ) {
-            	$return_code = $exit;
-            }
+			if ( true === $exit ) {
+				$return_code = 1;
+			} elseif ( is_int( $exit ) && $exit >= 1 ) {
+				$return_code = $exit;
+			}
 			if ( false !== $return_code ) {
 				throw new ExitException( '', $return_code );
 			}
@@ -111,6 +111,7 @@ namespace {
 			self::$case->debug[] = [ $message, $group ];
 		}
 
+
 		/**
 		 * Currently a noop to prevent fatal errors during testing.
 		 *
@@ -124,13 +125,11 @@ namespace {
 	}
 }
 
-
 namespace WP_CLI {
 
 	class ExitException extends \Exception {
 	}
 }
-
 
 namespace cli\progress {
 
@@ -191,8 +190,14 @@ namespace WP_CLI\Utils {
 		foreach ( $items as $item ) {
 			$picked = \array_intersect_key( $item, \array_flip( $fields ) );
 			$sorted = \array_merge( \array_flip( $fields ), $picked );
+			$sanitized = \array_map( function( $value ) {
+				if ( ! \is_scalar( $value ) ) {
+					return json_encode( $value );
+				}
+				return $value;
+			}, $sorted );
 
-			\WP_CLI::line( \implode( ', ', $sorted ) );
+			\WP_CLI::line( \implode( ', ', $sanitized ) );
 		}
 	}
 
