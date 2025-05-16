@@ -2,13 +2,6 @@
 
 /**
  * Unit test factory for users.
- *
- * Note: The below @method notations are defined solely for the benefit of IDEs,
- * as a way to indicate expected return values from the given factory methods.
- *
- * @method int|WP_Error     create( $args = [], array $generation_definitions = null )
- * @method WP_User|WP_Error create_and_get( array $args = [], array $generation_definitions = null )
- * @method (int|WP_Error)[] create_many( $count, $args = array(), $generation_definitions = null )
  */
 class WP_UnitTest_Factory_For_User extends WP_UnitTest_Factory_For_Thing {
 
@@ -54,11 +47,11 @@ class WP_UnitTest_Factory_For_User extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @since UT (3.7.0)
 	 *
-	 * @param int $user_id ID of the user ID to retrieve.
+	 * @param int $object_id ID of the user ID to retrieve.
 	 *
 	 * @return WP_User The user object.
 	 */
-	public function get_object_by_id( $user_id ) {
-		return new WP_User( $user_id );
+	public function get_object_by_id( int $object_id ) {
+		return new WP_User( $object_id );
 	}
 }

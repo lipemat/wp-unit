@@ -1,6 +1,9 @@
 <?php
+declare( strict_types=1 );
 
-class WP_UnitTest_Factory_Callback_After_Create {
+use Lipe\WP_Unit\Generators\Callback;
+
+class WP_UnitTest_Factory_Callback_After_Create implements Callback {
 
 	/**
 	 * @var callable
@@ -8,13 +11,13 @@ class WP_UnitTest_Factory_Callback_After_Create {
 	public $callback;
 
 	/**
-	 * WP_UnitTest_Factory_Callback_After_Create constructor.
+	 * Callback constructor.
 	 *
 	 * @since UT (3.7.0)
 	 *
 	 * @param callable $callback A callback function.
 	 */
-	public function __construct( $callback ) {
+	public function __construct( callable $callback ) {
 		$this->callback = $callback;
 	}
 
@@ -27,7 +30,7 @@ class WP_UnitTest_Factory_Callback_After_Create {
 	 *
 	 * @return mixed Updated object field.
 	 */
-	public function call( $object_id ) {
-		return call_user_func( $this->callback, $object_id );
+	public function call( int $object_id ) {
+		return \call_user_func( $this->callback, $object_id );
 	}
 }

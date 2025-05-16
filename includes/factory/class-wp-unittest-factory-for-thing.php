@@ -1,32 +1,41 @@
 <?php
+declare( strict_types=1 );
+
+use Lipe\WP_Unit\Generators\Callback;
+use Lipe\WP_Unit\Generators\Template_String;
 
 /**
- * An abstract class that serves as a basis for all WordPress object-type factory classes.
+ * Serves as a basis for all WordPress object-type factory classes.
+ *
+ * @noinspection PhpUndefinedClassInspection
+ * @phpstan-type GENERATORS array<string, Template_String|Callback|scalar>
+ *
  */
 abstract class WP_UnitTest_Factory_For_Thing {
 
-	public $default_generation_definitions;
-	public $factory;
+	/**
+	 * @phpstan-var GENERATORS
+	 */
+	public array $default_generation_definitions;
+
+	public \WP_UnitTest_Factory $factory;
 
 	/**
 	 * Creates a new factory, which will create objects of a specific Thing.
 	 *
 	 * @since UT (3.7.0)
 	 *
-	 * @param object $factory                       Global factory that can be used to create other objects
+	 * @phpstan-param GENERATORS   $default_generators
+	 *
+	 * @param \WP_UnitTest_Factory $factory            Global factory that can be used to create other objects
 	 *                                              on the system.
-	 * @param array $default_generation_definitions Defines what default values should the properties
-	 *                                              of the object have. The default values can be generators --
-	 *                                              an object with the next() method.
-	 *                                              There are some default generators:
-	 *                                               - {@link WP_UnitTest_Generator_Sequence}
-	 *                                               - {@link WP_UnitTest_Generator_Locale_Name}
-	 *                                               - {@link WP_UnitTest_Factory_Callback_After_Create}
+	 * @param array                $default_generators Optional. The default values for the object properties.
 	 */
-	public function __construct( $factory, $default_generation_definitions = array() ) {
+	public function __construct( \WP_UnitTest_Factory $factory, array $default_generators = [] ) {
 		$this->factory                        = $factory;
-		$this->default_generation_definitions = $default_generation_definitions;
+		$this->default_generation_definitions = $default_generators;
 	}
+
 
 	/**
 	 * Creates an object and returns its ID.
@@ -56,14 +65,15 @@ abstract class WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @since UT (3.7.0)
 	 *
-	 * @param array      $args                   Optional. The arguments for the object to create.
-	 *                                      Default empty array.
-	 * @param array|null $generation_definitions Optional. The default values for the object.
-	 *                                      Default null.
+	 * @phpstan-param GENERATORS|null $generation_definitions
+	 *
+	 * @param array<string, mixed>    $args                   Optional. The arguments for the object to create.
+	 * @param array|null              $generation_definitions Optional. Generators or values to use for the object properties.
 	 *
 	 * @return int|WP_Error The object ID on success, WP_Error object on failure.
 	 */
 	public function create( array $args = [], ?array $generation_definitions = null ) {
+		$callbacks = [];
 		$generated_args = $this->generate_args( $args, $generation_definitions, $callbacks );
 		$object_id      = $this->create_object( $generated_args );
 
@@ -88,10 +98,10 @@ abstract class WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @since UT (3.7.0)
 	 *
-	 * @param array  $args                   Optional. The arguments for the object to create.
-	 *                                      Default empty array.
-	 * @param ?array $generation_definitions Optional. The default values for the object.
-	 *                                      Default null.
+	 * @phpstan-param GENERATORS|null $generation_definitions
+	 *
+	 * @param array<string, mixed>    $args                   Optional. The arguments for the object to create.
+	 * @param array|null              $generation_definitions Optional. Generators or values to use for the object properties.
 	 *
 	 * @return mixed The created object. Can be anything. WP_Error object on failure.
 	 */
@@ -114,22 +124,23 @@ abstract class WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @return mixed The object. Can be anything.
 	 */
-	abstract public function get_object_by_id( $object_id );
+	abstract public function get_object_by_id( int $object_id );
 
 	/**
 	 * Creates multiple objects.
 	 *
 	 * @since UT (3.7.0)
 	 *
-	 * @param int   $count                  Amount of objects to create.
-	 * @param array $args                   Optional. The arguments for the object to create.
-	 *                                      Default empty array.
-	 * @param null  $generation_definitions Optional. The default values for the object.
-	 *                                      Default null.
+	 *
+	 * @phpstan-param GENERATORS|null $generation_definitions
+	 *
+	 * @param int                     $count                  Number of objects to create.
+	 * @param array<string, mixed>    $args                   Optional. The arguments for the object to create.
+	 * @param array|null              $generation_definitions Optional. Generators or values to use for the object properties.
 	 *
 	 * @return array
 	 */
-	public function create_many( $count, $args = array(), $generation_definitions = null ) {
+	public function create_many( int $count, array $args = [], ?array $generation_definitions = null ): array {
 		$results = array();
 
 		for ( $i = 0; $i < $count; $i++ ) {
@@ -145,15 +156,18 @@ abstract class WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @since UT (3.7.0)
 	 *
-	 * @param array       $args                   Optional. The arguments to combine with defaults.
-	 *                                            Default empty array.
-	 * @param array|null  $generation_definitions Optional. The defaults. Default null.
-	 * @param array $callbacks                    Optional. Array with callbacks to apply on the fields.
-	 *                                            Default null.
+	 * @template T of GENERATORS
+	 * @phpstan-param T  $args
 	 *
-	 * @return array|\WP_Error Combined array on success. WP_Error when default value is incorrent.
+	 * @param array      $args                   Optional. The arguments to combine with defaults.
+	 * @param array|null $generation_definitions Optional. Generators or values to use for the object properties.
+	 * @param array      $callbacks              Optional. Array with callbacks to apply on the fields.
+	 *
+	 *
+	 * @phpstan-return T|\WP_Error
+	 * @return array|\WP_Error
 	 */
-	public function generate_args( array $args = [], ?array $generation_definitions = null, &$callbacks = [] ) {
+	public function generate_args( array $args = [], ?array $generation_definitions = null, array &$callbacks = [] ) {
 		$callbacks = array();
 		if ( \is_array( $generation_definitions ) ) {
 			$generation_definitions = \array_merge( $this->default_generation_definitions, $generation_definitions );
@@ -171,14 +185,14 @@ abstract class WP_UnitTest_Factory_For_Thing {
 				$generator = $generation_definitions[ $field_name ];
 				if ( \is_scalar( $generator ) ) {
 					$args[ $field_name ] = $generator;
-				} elseif ( \is_object( $generator ) && \method_exists( $generator, 'call' ) ) {
+				} elseif ( $generator instanceof Callback ) {
 					$callbacks[ $field_name ] = $generator;
-				} elseif ( \is_object( $generator ) && \method_exists( $generator, 'get_template_string' ) ) {
+				} elseif ( $generator instanceof Template_String ) {
 					$args[ $field_name ] = \sprintf( $generator->get_template_string(), $incr );
 				} else {
 					return new \WP_Error(
 						'invalid_argument',
-						'Factory default value should be either a scalar, or a generator object.'
+						'Factory default value must be a scalar or a generator object.'
 					);
 				}
 			}
@@ -195,19 +209,19 @@ abstract class WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @see WP_UnitTest_Factory_For_Thing::callback
 	 *
-	 * @param WP_UnitTest_Factory_Callback_After_Create[] $callbacks Array with callback functions.
-	 * @param int                                         $object_id ID of the object to apply callbacks for.
+	 * @template T of GENERATORS
+	 * @phpstan-param T $callbacks
 	 *
+	 * @param array     $callbacks Array of object fields, and their corresponding callback objects.
+	 * @param int       $object_id ID of the object to apply callbacks for.
+	 *
+	 * @phpstan-return T
 	 * @return array The altered fields.
 	 */
-	public function apply_callbacks( $callbacks, $object_id ) {
-		$updated_fields = array();
-
-		foreach ( $callbacks as $field_name => $generator ) {
-			$updated_fields[ $field_name ] = $generator->call( $object_id );
-		}
-
-		return $updated_fields;
+	public function apply_callbacks( array $callbacks, int $object_id ): array {
+		return \array_map( function( $generator ) use ( $object_id ) {
+			return $generator->call( $object_id );
+		}, $callbacks );
 	}
 
 	/**
@@ -219,7 +233,7 @@ abstract class WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @return \WP_UnitTest_Factory_Callback_After_Create
 	 */
-	public function callback( $callback ) {
+	public function callback( callable $callback ): WP_UnitTest_Factory_Callback_After_Create {
 		return new \WP_UnitTest_Factory_Callback_After_Create( $callback );
 	}
 
@@ -233,15 +247,15 @@ abstract class WP_UnitTest_Factory_For_Thing {
 	 * @return array|string The value with the possibly applied slashes.
 	 */
 	public function addslashes_deep( $value ) {
-		if ( is_array( $value ) ) {
-			$value = array_map( array( $this, 'addslashes_deep' ), $value );
-		} elseif ( is_object( $value ) ) {
+		if ( \is_array( $value ) ) {
+			$value = \array_map( [ $this, 'addslashes_deep' ], $value );
+		} elseif ( \is_object( $value ) ) {
 			$vars = get_object_vars( $value );
 			foreach ( $vars as $key => $data ) {
 				// @phpstan-ignore-next-line -- Variable access on an object.
 				$value->{$key} = $this->addslashes_deep( $data );
 			}
-		} elseif ( is_string( $value ) ) {
+		} elseif ( \is_string( $value ) ) {
 			$value = addslashes( $value );
 		}
 

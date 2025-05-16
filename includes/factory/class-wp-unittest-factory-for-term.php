@@ -3,12 +3,7 @@
 /**
  * Unit test factory for terms.
  *
- * Note: The below @method notations are defined solely for the benefit of IDEs,
- * as a way to indicate expected return values from the given factory methods.
- *
- * @method int|WP_Error          create( $args = [], array $generation_definitions = null )
- * @method WP_Term|WP_Error|null create_and_get( $args = array(), $generation_definitions = null )
- * @method (int|WP_Error)[]      create_many( $count, $args = array(), $generation_definitions = null )
+ * @phpstan-import-type GENERATORS from WP_UnitTest_Factory_For_Thing
  */
 class WP_UnitTest_Factory_For_Term extends WP_UnitTest_Factory_For_Thing {
 
@@ -92,7 +87,9 @@ class WP_UnitTest_Factory_For_Term extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param array      $args                   Array or string of arguments for inserting a term.
+	 * @phpstan-param GENERATORS   $generation_definitions
+	 *
+	 * @param array<string, mixed> $args Array or string of arguments for inserting a term.
 	 * @param array|null $generation_definitions The default values.
 	 *
 	 * @return WP_Term|WP_Error|null WP_Term on success. WP_Error if taxonomy does not exist. Null for miscellaneous failure.
@@ -118,7 +115,7 @@ class WP_UnitTest_Factory_For_Term extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @return WP_Term|WP_Error|null WP_Term on success. WP_Error if taxonomy does not exist. Null for miscellaneous failure.
 	 */
-	public function get_object_by_id( $object_id ) {
+	public function get_object_by_id( int $object_id ) {
 		return get_term( $object_id, $this->taxonomy );
 	}
 }

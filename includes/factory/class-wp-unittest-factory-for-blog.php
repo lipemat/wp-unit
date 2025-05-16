@@ -81,11 +81,11 @@ class WP_UnitTest_Factory_For_Blog extends WP_UnitTest_Factory_For_Thing {
 	/**
 	 * Retrieves a site by a given ID.
 	 *
-	 * @param int $blog_id ID of the site to retrieve.
+	 * @param int $object_id ID of the site to retrieve.
 	 *
 	 * @return WP_Site|null The site object on success, null on failure.
 	 */
-	public function get_object_by_id( $blog_id ) {
-		return get_site( $blog_id );
+	public function get_object_by_id( int $object_id ) {
+		return get_site( $object_id );
 	}
 }

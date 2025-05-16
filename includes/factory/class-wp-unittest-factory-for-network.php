@@ -3,12 +3,6 @@
 /**
  * Unit test factory for networks.
  *
- * Note: The below @method notations are defined solely for the benefit of IDEs,
- * as a way to indicate expected return values from the given factory methods.
- *
- * @method int|WP_Error        create( $args = [], array $generation_definitions = null )
- * @method WP_Network|WP_Error create_and_get( array $args = [], array $generation_definitions = null )
- * @method (int|WP_Error)[]    create_many( $count, $args = array(), $generation_definitions = null )
  */
 class WP_UnitTest_Factory_For_Network extends WP_UnitTest_Factory_For_Thing {
 
@@ -75,11 +69,11 @@ class WP_UnitTest_Factory_For_Network extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param int $network_id ID of the network to retrieve.
+	 * @param int $object_id ID of the network to retrieve.
 	 *
 	 * @return WP_Network|null The network object on success, null on failure.
 	 */
-	public function get_object_by_id( $network_id ) {
-		return get_network( $network_id );
+	public function get_object_by_id( int $object_id ) {
+		return get_network( $object_id );
 	}
 }

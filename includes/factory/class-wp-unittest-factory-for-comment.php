@@ -89,11 +89,11 @@ class WP_UnitTest_Factory_For_Comment extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @since UT (3.7.0)
 	 *
-	 * @param int $comment_id ID of the comment to retrieve.
+	 * @param int $object_id ID of the comment to retrieve.
 	 *
 	 * @return WP_Comment|null WP_Comment object on success, null on failure.
 	 */
-	public function get_object_by_id( $comment_id ) {
-		return get_comment( $comment_id );
+	public function get_object_by_id( int $object_id ) {
+		return get_comment( $object_id );
 	}
 }

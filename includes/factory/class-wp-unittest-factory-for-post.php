@@ -3,12 +3,6 @@
 /**
  * Unit test factory for posts.
  *
- * Note: The below @method notations are defined solely for the benefit of IDEs,
- * as a way to indicate expected return values from the given factory methods.
- *
- * @method int|WP_Error     create( $args = [], array $generation_definitions = null )
- * @method WP_Post|WP_Error create_and_get( array $args = [], array $generation_definitions = null )
- * @method ( int|WP_Error )[] create_many( $count, $args = array(), $generation_definitions = null )
  */
 class WP_UnitTest_Factory_For_Post extends WP_UnitTest_Factory_For_Thing {
 
@@ -61,11 +55,11 @@ class WP_UnitTest_Factory_For_Post extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @since UT (3.7.0)
 	 *
-	 * @param int $post_id ID of the post to retrieve.
+	 * @param int $object_id ID of the post to retrieve.
 	 *
 	 * @return WP_Post|null WP_Post object on success, null on failure.
 	 */
-	public function get_object_by_id( $post_id ) {
-		return get_post( $post_id );
+	public function get_object_by_id( int $object_id ) {
+		return get_post( $object_id );
 	}
 }

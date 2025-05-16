@@ -1,4 +1,5 @@
 <?php
+declare( strict_types=1 );
 
 /**
  * A factory for making WordPress data with a cross-object type API.
@@ -12,63 +13,63 @@ class WP_UnitTest_Factory {
 	 *
 	 * @var WP_UnitTest_Factory_For_Post
 	 */
-	public $post;
+	public WP_UnitTest_Factory_For_Post $post;
 
 	/**
 	 * Generates attachment fixtures for use in tests.
 	 *
 	 * @var WP_UnitTest_Factory_For_Attachment
 	 */
-	public $attachment;
+	public WP_UnitTest_Factory_For_Attachment $attachment;
 
 	/**
 	 * Generates comment fixtures for use in tests.
 	 *
 	 * @var WP_UnitTest_Factory_For_Comment
 	 */
-	public $comment;
+	public WP_UnitTest_Factory_For_Comment $comment;
 
 	/**
 	 * Generates user fixtures for use in tests.
 	 *
 	 * @var WP_UnitTest_Factory_For_User
 	 */
-	public $user;
+	public WP_UnitTest_Factory_For_User $user;
 
 	/**
 	 * Generates taxonomy term fixtures for use in tests.
 	 *
 	 * @var WP_UnitTest_Factory_For_Term
 	 */
-	public $term;
+	public WP_UnitTest_Factory_For_Term $term;
 
 	/**
 	 * Generates category fixtures for use in tests.
 	 *
 	 * @var WP_UnitTest_Factory_For_Term
 	 */
-	public $category;
+	public WP_UnitTest_Factory_For_Term $category;
 
 	/**
 	 * Generates tag fixtures for use in tests.
 	 *
 	 * @var WP_UnitTest_Factory_For_Term
 	 */
-	public $tag;
+	public WP_UnitTest_Factory_For_Term $tag;
 
 	/**
 	 * Generates blog (site) fixtures for use in Multisite tests.
 	 *
 	 * @var WP_UnitTest_Factory_For_Blog
 	 */
-	public $blog;
+	public WP_UnitTest_Factory_For_Blog $blog;
 
 	/**
 	 * Generates network fixtures for use in Multisite tests.
 	 *
 	 * @var WP_UnitTest_Factory_For_Network
 	 */
-	public $network;
+	public WP_UnitTest_Factory_For_Network $network;
 
 	public function __construct() {
 		$this->post       = new WP_UnitTest_Factory_For_Post( $this );
