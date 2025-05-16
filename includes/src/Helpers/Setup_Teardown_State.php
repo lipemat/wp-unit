@@ -67,16 +67,23 @@ class Setup_Teardown_State {
 	}
 
 
+	/**
+	 * @throws \ErrorException
+	 */
 	public static function tear_down_after_class( string $class ): void {
 		unset( self::$tear_down_after_classes[ $class ] );
 
 		try {
 			if ( ! self::$tear_down ) {
-				trigger_error( 'Test case did not tear down properly. Did you forget to call the `parent::tear_down` or `parent::tearDown` method?', E_USER_ERROR );
-			} elseif ( ! self::$setup_before ) {
-				trigger_error( 'Test case did not set up before properly?. Did you forget to call the `parent::set_up_before_class` or `parent::setUpBeforeClass` method?', E_USER_ERROR );
-			} elseif ( ! self::$setup ) {
-				trigger_error( 'Test case did not set up properly. Did you forget to call the `parent::set_up` or `parent::setUp` method?', E_USER_ERROR );
+				throw new \ErrorException( 'Test case did not tear down properly. Did you forget to call the `parent::tear_down` or `parent::tearDown` method?', E_USER_ERROR );
+			}
+
+			if ( ! self::$setup_before ) {
+				throw new \ErrorException( 'Test case did not set up before properly?. Did you forget to call the `parent::set_up_before_class` or `parent::setUpBeforeClass` method?', E_USER_ERROR );
+			}
+
+			if ( ! self::$setup ) {
+				throw new \ErrorException( 'Test case did not set up properly. Did you forget to call the `parent::set_up` or `parent::setUp` method?', E_USER_ERROR );
 			}
 		} finally {
 			self::reset();

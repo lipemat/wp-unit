@@ -54,7 +54,7 @@ class Dates implements Callback {
 	private int $counter = 0;
 
 
-	public function __construct( DateTimeZone $timezone = null ) {
+	public function __construct( ?DateTimeZone $timezone = null ) {
 		if ( null === $timezone ) {
 			$timezone = wp_timezone();
 		}
