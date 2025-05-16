@@ -103,7 +103,7 @@ abstract class WP_UnitTest_Factory_For_Thing {
 	 * @param array<string, mixed>    $args                   Optional. The arguments for the object to create.
 	 * @param array|null              $generation_definitions Optional. Generators or values to use for the object properties.
 	 *
-	 * @return mixed The created object. Can be anything. WP_Error object on failure.
+	 * @return mixed
 	 */
 	public function create_and_get( array $args = [], ?array $generation_definitions = null ) {
 		$object_id = $this->create( $args, $generation_definitions );
@@ -138,7 +138,7 @@ abstract class WP_UnitTest_Factory_For_Thing {
 	 * @param array<string, mixed>    $args                   Optional. The arguments for the object to create.
 	 * @param array|null              $generation_definitions Optional. Generators or values to use for the object properties.
 	 *
-	 * @return array
+	 * @return int[]
 	 */
 	public function create_many( int $count, array $args = [], ?array $generation_definitions = null ): array {
 		$results = array();

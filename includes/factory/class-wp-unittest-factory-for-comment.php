@@ -1,14 +1,10 @@
 <?php
+declare( strict_types=1 );
 
 /**
  * Unit test factory for comments.
  *
- * Note: The below @method notations are defined solely for the benefit of IDEs,
- * as a way to indicate expected return values from the given factory methods.
- *
- * @method int|WP_Error        create( $args = [], array $generation_definitions = null )
- * @method WP_Comment|WP_Error create_and_get( array $args = [], array $generation_definitions = null )
- * @method (int|WP_Error)[]    create_many( $count, $args = array(), $generation_definitions = null )
+ * @phpstan-import-type GENERATORS from WP_UnitTest_Factory_For_Thing
  */
 class WP_UnitTest_Factory_For_Comment extends WP_UnitTest_Factory_For_Thing {
 
@@ -79,7 +75,7 @@ class WP_UnitTest_Factory_For_Comment extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @return int[] Array with the comment IDs.
 	 */
-	public function create_post_comments( $post_id, $count = 1, $args = array(), $generation_definitions = null ) {
+	public function create_post_comments( $post_id, $count = 1, $args = [], $generation_definitions = null ): array {
 		$args['comment_post_ID'] = $post_id;
 		return $this->create_many( $count, $args, $generation_definitions );
 	}
@@ -93,7 +89,24 @@ class WP_UnitTest_Factory_For_Comment extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @return WP_Comment|null WP_Comment object on success, null on failure.
 	 */
-	public function get_object_by_id( int $object_id ) {
+	public function get_object_by_id( int $object_id ): ?WP_Comment {
 		return get_comment( $object_id );
+	}
+
+
+	/**
+	 * Creates a comment and retrieves it.
+	 *
+	 * @since 4.3.0
+	 *
+	 * @phpstan-param GENERATORS|null $generation_definitions
+	 *
+	 * @param array                   $args                   Array with elements for the comment.
+	 * @param array|null              $generation_definitions Optional generation definitions.
+	 *
+	 * @return WP_Comment The comment object.
+	 */
+	public function create_and_get( array $args = [], ?array $generation_definitions = null ): WP_Comment {
+		return parent::create_and_get( $args, $generation_definitions );
 	}
 }

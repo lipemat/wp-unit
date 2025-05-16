@@ -1,8 +1,10 @@
 <?php
+declare( strict_types=1 );
 
 /**
  * Unit test factory for networks.
  *
+ * @phpstan-import-type GENERATORS from WP_UnitTest_Factory_For_Thing
  */
 class WP_UnitTest_Factory_For_Network extends WP_UnitTest_Factory_For_Thing {
 
@@ -30,10 +32,10 @@ class WP_UnitTest_Factory_For_Network extends WP_UnitTest_Factory_For_Thing {
 	public function create_object( array $args ) {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-		if ( ! isset( $args['user'] ) ) {
-			$email = WP_TESTS_EMAIL;
-		} else {
+		if ( isset( $args['user'] ) ) {
 			$email = get_userdata( $args['user'] )->user_email;
+		} else {
+			$email = WP_TESTS_EMAIL;
 		}
 
 		$result = populate_network(
@@ -60,7 +62,7 @@ class WP_UnitTest_Factory_For_Network extends WP_UnitTest_Factory_For_Thing {
 	 * @param int   $object_id ID of the network to update.
 	 * @param array $fields    The fields to update.
 	 */
-	public function update_object( int $object_id, array $fields ) {
+	public function update_object( int $object_id, array $fields ): WP_Error {
 		return new WP_Error( 'not_implemented', 'Network updates are not implemented.' );
 	}
 
@@ -73,7 +75,24 @@ class WP_UnitTest_Factory_For_Network extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @return WP_Network|null The network object on success, null on failure.
 	 */
-	public function get_object_by_id( int $object_id ) {
+	public function get_object_by_id( int $object_id ): ?WP_Network {
 		return get_network( $object_id );
+	}
+
+
+	/**
+	 * Creates a network and retrieves it.
+	 *
+	 * @since 4.3.0
+	 *
+	 * @phpstan-param GENERATORS|null $generation_definitions
+	 *
+	 * @param array                   $args                   Array with elements for the network.
+	 * @param array|null              $generation_definitions Optional generation definitions.
+	 *
+	 * @return WP_Network The network object.
+	 */
+	public function create_and_get( array $args = [], ?array $generation_definitions = null ): WP_Network {
+		return parent::create_and_get( $args, $generation_definitions );
 	}
 }

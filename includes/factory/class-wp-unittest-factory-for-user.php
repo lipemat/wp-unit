@@ -1,7 +1,10 @@
 <?php
+declare( strict_types=1 );
 
 /**
  * Unit test factory for users.
+ *
+ * @phpstan-import-type GENERATORS from WP_UnitTest_Factory_For_Thing
  */
 class WP_UnitTest_Factory_For_User extends WP_UnitTest_Factory_For_Thing {
 
@@ -51,7 +54,25 @@ class WP_UnitTest_Factory_For_User extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @return WP_User The user object.
 	 */
-	public function get_object_by_id( int $object_id ) {
+	public function get_object_by_id( int $object_id ): WP_User {
 		return new WP_User( $object_id );
 	}
+
+
+	/**
+	 * Creates a user and retrieves the user object.
+	 *
+	 * @since 4.3.0
+	 *
+	 * @phpstan-param GENERATORS|null $generation_definitions
+	 *
+	 * @param array                   $args                   Array with elements for the user.
+	 * @param array|null              $generation_definitions Optional generation definitions.
+	 *
+	 * @return WP_User The user object.
+	 */
+	public function create_and_get( array $args = [], ?array $generation_definitions = null ): WP_User {
+		return parent::create_and_get( $args, $generation_definitions );
+	}
+
 }

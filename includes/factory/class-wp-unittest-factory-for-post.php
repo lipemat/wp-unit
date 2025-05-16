@@ -1,7 +1,10 @@
 <?php
+declare( strict_types=1 );
 
 /**
  * Unit test factory for posts.
+ *
+ * @phpstan-import-type GENERATORS from WP_UnitTest_Factory_For_Thing
  *
  */
 class WP_UnitTest_Factory_For_Post extends WP_UnitTest_Factory_For_Thing {
@@ -59,7 +62,25 @@ class WP_UnitTest_Factory_For_Post extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @return WP_Post|null WP_Post object on success, null on failure.
 	 */
-	public function get_object_by_id( int $object_id ) {
+	public function get_object_by_id( int $object_id ): ?WP_Post {
 		return get_post( $object_id );
 	}
+
+
+	/**
+	 * Creates a post and retrieves it.
+	 *
+	 * @since 4.3.0
+	 *
+	 * @phpstan-param GENERATORS|null $generation_definitions
+	 *
+	 * @param array                   $args                   Array with elements for the post.
+	 * @param array|null              $generation_definitions Optional generation definitions.
+	 *
+	 * @return WP_Post
+	 */
+	public function create_and_get( array $args = [], ?array $generation_definitions = null ): WP_Post {
+		return parent::create_and_get( $args, $generation_definitions );
+	}
+
 }

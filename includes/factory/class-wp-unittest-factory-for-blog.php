@@ -1,14 +1,10 @@
 <?php
+declare( strict_types=1 );
 
 /**
  * Unit test factory for sites on a multisite network.
  *
- * Note: The below @method notations are defined solely for the benefit of IDEs,
- * as a way to indicate expected return values from the given factory methods.
- *
- * @method int|WP_Error     create( $args = [], array $generation_definitions = null )
- * @method WP_Site|WP_Error create_and_get( array $args = [], array $generation_definitions = null )
- * @method (int|WP_Error)[] create_many( $count, $args = array(), $generation_definitions = null )
+ * @phpstan-import-type GENERATORS from WP_UnitTest_Factory_For_Thing
  */
 class WP_UnitTest_Factory_For_Blog extends WP_UnitTest_Factory_For_Thing {
 
@@ -74,7 +70,7 @@ class WP_UnitTest_Factory_For_Blog extends WP_UnitTest_Factory_For_Thing {
 	 * @param int   $object_id ID of the site to update.
 	 * @param array $fields    The fields to update.
 	 */
-	public function update_object( int $object_id, array $fields ) {
+	public function update_object( int $object_id, array $fields ): WP_Error {
 		return new WP_Error( 'not_implemented', 'Blog updates are not implemented.' );
 	}
 
@@ -85,7 +81,20 @@ class WP_UnitTest_Factory_For_Blog extends WP_UnitTest_Factory_For_Thing {
 	 *
 	 * @return WP_Site|null The site object on success, null on failure.
 	 */
-	public function get_object_by_id( int $object_id ) {
+	public function get_object_by_id( int $object_id ): ?WP_Site {
 		return get_site( $object_id );
+	}
+
+
+	/**
+	 * Creates a site and retrieves it.
+	 *
+	 * @param array      $args                   Array with elements for the site.
+	 * @param array|null $generation_definitions Optional generation definitions.
+	 *
+	 * @return WP_Site The site object.
+	 */
+	public function create_and_get( array $args = [], ?array $generation_definitions = null ): WP_Site {
+		return parent::create_and_get( $args, $generation_definitions );
 	}
 }

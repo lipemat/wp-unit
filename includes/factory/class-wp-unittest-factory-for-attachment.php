@@ -1,4 +1,5 @@
 <?php
+declare( strict_types=1 );
 
 use Lipe\WP_Unit\Traits\RemoveUploaded;
 
@@ -13,10 +14,10 @@ class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
 	/**
 	 * Create an attachment fixture.
 	 *
-	 * @since 1.8.0 (Automatically generate file to go with attachment)
+	 * @since 1.8.0 (Automatically generate a file to go with attachment)
 	 *
 	 * Array of arguments. Accepts all arguments that can be passed to
-	 * `wp_insert_attachment()`, in addition to the following:
+	 * `wp_insert_attachment()`, besides the following:
 	 *
 	 * @param array $args        {
 	 *
@@ -54,7 +55,7 @@ class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
 	 *
 	 * @see RemoveUploaded for cleanup of uploaded files.
 	 *
-	 * @param string $file The file path and name to create attachment object for.
+	 * @param string $file The file path and name to create an attachment object for.
 	 * @param int    $parent_post_id ID of the post to attach the file to.
 	 *
 	 * @return int|\WP_Error The attachment ID on success, \WP_Error object on failure.
