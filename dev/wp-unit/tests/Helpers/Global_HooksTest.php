@@ -39,6 +39,11 @@ class Global_HooksTest extends \WP_UnitTestCase {
 		$this->assertFalse( wp_script_is( __FILE__ ) );
 		wp_enqueue_script( __FILE__, 'test.js' );
 		$this->assertTrue( wp_script_is( __FILE__ ) );
+
+		register_block_type( 'wp-unit/test', [
+			'editor_script' => __FILE__,
+		] );
+		$this->assertSame( __FILE__, \WP_Block_Type_Registry::get_instance()->get_registered( 'wp-unit/test' )->editor_script_handles[0] );
 	}
 
 
@@ -56,4 +61,11 @@ class Global_HooksTest extends \WP_UnitTestCase {
 		$this->assertFalse( wp_script_is( __FILE__ ) );
 	}
 
+
+	/**
+	 * @depends test_make_changes
+	 */
+	public function test_reset_block_type_registry(): void {
+		$this->assertNull( \WP_Block_Type_Registry::get_instance()->get_registered( 'wp-unit/test' ) );
+	}
 }

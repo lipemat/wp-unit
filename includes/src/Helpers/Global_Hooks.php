@@ -59,5 +59,8 @@ final class Global_Hooks {
 		$GLOBALS['wp_meta_keys'] = $hooks->get_wp_meta_keys();
 		$GLOBALS['wp_registered_settings'] = $hooks->get_wp_registered_settings();
 		$GLOBALS['wp_scripts'] = $hooks->get_wp_scripts();
+		if ( \function_exists( 'set_private_property' ) ) {
+			set_private_property( \WP_Block_Type_Registry::class, 'instance', $hooks->get_wp_block_type_registry() );
+		}
 	}
 }
