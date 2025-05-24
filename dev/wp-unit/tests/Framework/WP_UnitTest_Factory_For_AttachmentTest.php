@@ -34,5 +34,7 @@ class WP_UnitTest_Factory_For_AttachmentTest extends \WP_UnitTestCase {
 
 		$this->assertSame( 'http://wp-unit.loc/wp-content/uploads/2025/05/test-image-548x0.jpg', wp_get_attachment_image_url( $attachment, 'my-content-thumb' ) );;
 		$this->assertSame( 'http://wp-unit.loc/wp-content/uploads/2025/05/test-image-274x205.jpg', wp_get_attachment_image_url( $attachment, 'test-size-medium' ) );
+
+		$this->assertSame( 'http://wp-unit.loc/wp-content/uploads/2025/05/test-image.jpg', wp_get_attachment_image_url( $attachment, 'full' ) );
 	}
 }
