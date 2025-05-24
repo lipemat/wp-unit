@@ -15,6 +15,7 @@ class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
 	 * Create an attachment fixture.
 	 *
 	 * @since 1.8.0 (Automatically generate a file to go with attachment)
+	 * @since 4.3.0 Return simulated image size URLs for the attachment.
 	 *
 	 * Array of arguments. Accepts all arguments that can be passed to
 	 * `wp_insert_attachment()`, besides the following:
@@ -43,7 +44,39 @@ class WP_UnitTest_Factory_For_Attachment extends WP_UnitTest_Factory_For_Post {
 			$r['post_mime_type'] = 'image/jpg';
 		}
 
-		return wp_insert_attachment( $r, $r['file'], $r['post_parent'], true );
+		$attachment_id = wp_insert_attachment( $r, $r['file'], $r['post_parent'], true );
+
+		/**
+		 * Return simulated image size URLs for the attachment.
+		 *
+		 * - Allows differiciation between sizes for testing.
+		 * - Uses size values verbatim from the registered image sizes.
+		 *
+		 * @since 4.3.0
+		 */
+		add_filter( 'wp_get_attachment_image_src', function( $image, $id, $size ) use ( $attachment_id ) {
+			if ( $id === $attachment_id ) {
+				$sizes = wp_get_registered_image_subsizes();
+				$uploads = wp_upload_dir()['url'];
+				$basename = \pathinfo( get_attached_file( $attachment_id ) );
+
+				if ( 'full' === $size ) {
+					$url = $uploads . '/' . $basename['filename'] . '.' . $basename['extension'];
+				} else {
+					$url = $uploads . '/' . $basename['filename'] . '-' . $sizes[ $size ]['width'] . 'x' . $sizes[ $size ]['height'] . '.' . $basename['extension'];
+				}
+
+				return [
+					0 => $url,
+					1 => $sizes[ $size ]['width'] ?? 100,
+					2 => $sizes[ $size ]['height'] ?? 100,
+					3 => 'full' !== $size,
+				];
+			}
+			return $image;
+		}, 10, 3 );
+
+		return $attachment_id;
 	}
 
 
