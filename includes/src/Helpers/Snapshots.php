@@ -1,11 +1,12 @@
 <?php
+declare( strict_types=1 );
 
 namespace Lipe\WP_Unit\Helpers;
 
 /**
  * Snapshot testing specific to the lipemat version of wp-unit.
  *
- * - Snapshots are generated in the __snapshots__ directory in test root.
+ * - Snapshots are generated in the __snapshots__ directory in the test root.
  * - Multiple files are generated for test cases with multiple snapshot assertions.
  *
  * @author Mat Lipe
@@ -18,32 +19,32 @@ class Snapshots {
 	 *
 	 * @var array<string, int>
 	 */
-	protected static $snapshots = [];
+	protected static array $snapshots = [];
 
 	/**
 	 * Name of the test class and method making the assertion.
 	 *
 	 * @var string
 	 */
-	protected $test_name;
+	protected string $test_name;
 
 	/**
 	 * Path to the test file making the assertion.
 	 *
 	 * @var string
 	 */
-	protected $test_path;
+	protected string $test_path;
 
 
 	/**
 	 * @throws \Exception -- If the `WP_TESTS_SNAPSHOTS_DIR` constant is not defined.
 	 */
 	public function __construct( array $backtrace = [], string $id = '' ) {
-		if ( ! defined( 'WP_TESTS_SNAPSHOTS_DIR' ) ) {
-			throw new \Exception( 'The `WP_TESTS_SNAPSHOTS_DIR` constant must be defined to use snapshot testing.' );
+		if ( ! \defined( 'WP_TESTS_SNAPSHOTS_DIR' ) ) {
+			throw new \RuntimeException( 'The `WP_TESTS_SNAPSHOTS_DIR` constant must be defined to use snapshot testing.' );
 		}
-		if ( ! defined( 'WP_TESTS_SNAPSHOTS_BASE' ) ) {
-			define( 'WP_TESTS_SNAPSHOTS_BASE', '' );
+		if ( ! \defined( 'WP_TESTS_SNAPSHOTS_BASE' ) ) {
+			\define( 'WP_TESTS_SNAPSHOTS_BASE', '' );
 		}
 
 		$caller = \array_pop( $backtrace );
@@ -69,7 +70,7 @@ class Snapshots {
 		$snapshot = $this->get_snapshot();
 		if ( null === $snapshot ) {
 			$this->update_snapshot( $actual );
-			trigger_error( 'Snapshot created for ' . $this->get_test_name(), E_USER_WARNING );
+			\trigger_error( 'Snapshot created for ' . $this->get_test_name(), E_USER_WARNING );
 			return;
 		}
 		if ( '' === $message ) {
@@ -82,8 +83,8 @@ class Snapshots {
 
 	public function get_snapshot() {
 		$snapshot_file = $this->get_snapshot_file_path();
-		if ( file_exists( $snapshot_file ) ) {
-			return file_get_contents( $snapshot_file );
+		if ( \file_exists( $snapshot_file ) ) {
+			return \file_get_contents( $snapshot_file );
 		}
 
 		return null;
@@ -92,11 +93,11 @@ class Snapshots {
 
 	public function update_snapshot( $actual ): void {
 		$snapshots_path = $this->get_snapshots_directory();
-		if ( ! is_dir( $snapshots_path ) ) {
-			mkdir( $snapshots_path, 0777, true );
+		if ( ! \is_dir( $snapshots_path ) && ! \mkdir( $snapshots_path, 0777, true ) && ! \is_dir( $snapshots_path ) ) {
+			throw new \RuntimeException( \sprintf( 'Directory "%s" was not created', $snapshots_path ) );
 		}
 
-		file_put_contents( $this->get_snapshot_file_path(), $this->format_data( $actual ) );
+		\file_put_contents( $this->get_snapshot_file_path(), $this->format_data( $actual ) );
 	}
 
 
@@ -106,8 +107,8 @@ class Snapshots {
 
 
 	protected function format_data( $data ): string {
-		if ( ! is_scalar( $data ) ) {
-			$data = print_r( $data, true );
+		if ( ! \is_scalar( $data ) ) {
+			$data = \print_r( $data, true );
 		}
 
 		return $this->normalize_line_endings( $data );
@@ -115,7 +116,7 @@ class Snapshots {
 
 
 	protected function normalize_line_endings( $string ) {
-		return str_replace( "\r\n", "\n", $string );
+		return \str_replace( "\r\n", "\n", $string );
 	}
 
 
