@@ -1,0 +1,11 @@
+Array
+(
+    [foo] => bar
+    [empty] => 
+    [null] => 
+    [array] => Array
+        (
+            [foo] => bar
+        )
+
+)

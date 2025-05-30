@@ -3,6 +3,8 @@ declare( strict_types=1 );
 
 namespace Lipe\WP_Unit\Helpers;
 
+use Symfony\Component\VarExporter\VarExporter;
+
 /**
  * Snapshot testing specific to the lipemat version of wp-unit.
  *
@@ -66,10 +68,10 @@ class Snapshots {
 	}
 
 
-	public function assert_matches_snapshot( $actual, \WP_UnitTestCase_Base $test, string $message = '' ): void {
+	public function assert_matches_snapshot( $actual, \WP_UnitTestCase_Base $test, string $message = '', bool $with_falsy = false ): void {
 		$snapshot = $this->get_snapshot();
 		if ( null === $snapshot ) {
-			$this->update_snapshot( $actual );
+			$this->update_snapshot( $actual, $with_falsy );
 			\trigger_error( 'Snapshot created for ' . $this->get_test_name(), E_USER_WARNING );
 			return;
 		}
@@ -77,7 +79,7 @@ class Snapshots {
 			$message = $this->test_path . '/' . $this->get_test_name() . '.txt snapshot does not match!';
 		}
 
-		$test::assertSame( $snapshot, $this->format_data( $actual ), $message );
+		$test::assertSame( $snapshot, $this->format_data( $actual, $with_falsy ), $message );
 	}
 
 
@@ -91,13 +93,13 @@ class Snapshots {
 	}
 
 
-	public function update_snapshot( $actual ): void {
+	public function update_snapshot( $actual, bool $with_falsy ): void {
 		$snapshots_path = $this->get_snapshots_directory();
 		if ( ! \is_dir( $snapshots_path ) && ! \mkdir( $snapshots_path, 0777, true ) && ! \is_dir( $snapshots_path ) ) {
 			throw new \RuntimeException( \sprintf( 'Directory "%s" was not created', $snapshots_path ) );
 		}
 
-		\file_put_contents( $this->get_snapshot_file_path(), $this->format_data( $actual ) );
+		\file_put_contents( $this->get_snapshot_file_path(), $this->format_data( $actual, $with_falsy ) );
 	}
 
 
@@ -106,8 +108,13 @@ class Snapshots {
 	}
 
 
-	protected function format_data( $data ): string {
-		if ( ! \is_scalar( $data ) ) {
+	protected function format_data( $data, bool $with_falsy = false ): string {
+		if ( ! $with_falsy && ( false === $data || null === $data || '' === $data ) ) {
+			return '';
+		}
+		if ( $with_falsy ) {
+			$data = VarExporter::export( $data );
+		} elseif ( ! \is_scalar( $data ) ) {
 			$data = \print_r( $data, true );
 		}
 
@@ -118,7 +125,6 @@ class Snapshots {
 	protected function normalize_line_endings( $string ) {
 		return \str_replace( "\r\n", "\n", $string );
 	}
-
 
 	protected function get_snapshot_file_path(): string {
 		return $this->get_snapshots_directory() . DIRECTORY_SEPARATOR . $this->get_test_name() . '.txt';

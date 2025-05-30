@@ -681,9 +681,10 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 *
 	 * @since 3.6.0
 	 *
-	 * @see   WP_Unit_Snapshots
+	 * @see        WP_Unit_Snapshots
+	 * @see        WP_UnitTestCase_Base::assertMatchesFullSnapshot()
 	 *
-	 * @param mixed  $actual  A value which may be stored in a file using print_r().
+	 * @param mixed $actual A value which may be stored in a file using `print_r()`.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 * @param string $id      Optional. An identifier to be appended to the snapshot filename.
 	 *
@@ -695,6 +696,32 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 		$snapshots = Snapshots::factory( $backtrace, $id );
 		$snapshots->assert_matches_snapshot( $actual, $this, $message );
+	}
+
+
+	/**
+	 * Assert a value matches a snapshot.
+	 *
+	 * Newer version of `assertMatchesSnapshot()` that uses
+	 * `\Symfony\Component\VarExporter\VarExporter::export` instead of `print_r()`
+	 * to include false, null and empty values in the snapshot.
+	 *
+	 * @since 4.3.0
+	 *
+	 * @see   WP_Unit_Snapshots
+	 *
+	 * @param mixed  $actual  A value which may be stored in a file using \Symfony\Component\VarExporter\VarExporter::export().
+	 * @param string $id      Optional. An identifier to be appended to the snapshot filename.
+	 * @param string $message Optional. Message to display when the assertion fails.
+	 *
+	 * @return void
+	 */
+	public function assertMatchesFullSnapshot( $actual, string $message = '', string $id = '' ): void {
+		require_once __DIR__ . '/src/Helpers/Snapshots.php';
+		$backtrace = \debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2 );
+
+		$snapshots = Snapshots::factory( $backtrace, $id );
+		$snapshots->assert_matches_snapshot( $actual, $this, $message, true );
 	}
 
 

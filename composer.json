@@ -9,11 +9,17 @@
       "email": "mat@matlipe.com"
     }
   ],
+  "config": {
+    "platform": {
+      "php": "7.4.0"
+    }
+  },
   "minimum-stability": "stable",
   "require": {
     "php": ">=7.4.0",
     "yoast/phpunit-polyfills": "^2.0.0",
-    "dg/bypass-finals": "^1.5"
+    "dg/bypass-finals": "^1.5",
+    "symfony/var-exporter": "^v5.4.45"
   },
   "autoload": {
     "psr-4": {

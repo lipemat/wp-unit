@@ -1,0 +1,8 @@
+[
+    'foo' => 'bar',
+    'empty' => false,
+    'null' => null,
+    'array' => [
+        'foo' => 'bar',
+    ],
+]
