@@ -1,0 +1,46 @@
+class@anonymous Object
+(
+    [function:class@anonymous:private] => Closure Object
+        (
+            [this] => class@anonymous Object
+ *RECURSION*
+        )
+
+    [private_property:class@anonymous:private] => private_value
+    [public_property] => public_value
+    [protected_property:protected] => protected_value
+    [array_property] => Array
+        (
+            [foo] => bar
+            [baz] => qux
+            [nested] => Array
+                (
+                    [key] => value
+                )
+
+            [null] => 
+            [false] => 
+            [empty_string] => 
+        )
+
+    [internal_class:class@anonymous:private] => class@anonymous Object
+        (
+            [internal_property] => internal_value
+            [private_internal_property:class@anonymous:private] => private_internal_value
+            [internal_array:class@anonymous:private] => Array
+                (
+                    [foo] => bar
+                    [baz] => qux
+                    [nested] => Array
+                        (
+                            [key] => value
+                        )
+
+                    [null] => 
+                    [false] => 
+                    [empty_string] => 
+                )
+
+        )
+
+)

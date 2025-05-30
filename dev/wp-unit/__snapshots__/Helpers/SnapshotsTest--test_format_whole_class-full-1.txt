@@ -1,0 +1,37 @@
+class@anonymous Object (
+     'function' =>
+        Closure Object (
+        )
+     'private_property' => 'private_value',
+     'public_property' => 'public_value',
+     'protected_property' => 'protected_value',
+     'array_property' =>
+      Array (
+        'foo' => 'bar',
+        'baz' => 'qux',
+        'nested' =>
+          Array (
+            'key' => 'value',
+          ),
+        'null' => null,
+        'false' => false,
+        'empty_string' => '',
+      ),
+     'internal_class' =>
+        class@anonymous Object (
+         'internal_property' => 'internal_value',
+         'private_internal_property' => 'private_internal_value',
+         'internal_array' =>
+          Array (
+            'foo' => 'bar',
+            'baz' => 'qux',
+            'nested' =>
+              Array (
+                'key' => 'value',
+              ),
+            'null' => null,
+            'false' => false,
+            'empty_string' => '',
+          ),
+        )
+)

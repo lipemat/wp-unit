@@ -3,8 +3,6 @@ declare( strict_types=1 );
 
 namespace Lipe\WP_Unit\Helpers;
 
-use Symfony\Component\VarExporter\VarExporter;
-
 /**
  * Snapshot testing specific to the lipemat version of wp-unit.
  *
@@ -113,7 +111,7 @@ class Snapshots {
 			return '';
 		}
 		if ( $with_falsy ) {
-			$data = VarExporter::export( $data );
+			$data = $this->formatted_var_export( $data );
 		} elseif ( ! \is_scalar( $data ) ) {
 			$data = \print_r( $data, true );
 		}
@@ -121,6 +119,45 @@ class Snapshots {
 		return $this->normalize_line_endings( $data );
 	}
 
+
+	protected function formatted_var_export( $value ) {
+		$export = var_export( $value, true );
+
+		$lines = \explode( "\n", $export );
+		$export = \array_map( function( $line ) {
+			$line = \rtrim( $line );
+			$line = \preg_replace_callback( '/^( {2})+/', function( $matches ) {
+				return \str_repeat( '    ', \strlen( $matches[0] ) / 2 );
+			}, $line );
+
+			return \preg_replace(
+				[
+					'/(\s*?)\\\\?class@anonymous.\S+?::__set_state\(array/',
+					'/(\s*?)\\\\?Clousure::__set_state\(array/',
+					'/(\s*?)\\\\?(\S+)::__set_state\(array/',
+					'/^(\'?)array \(/',
+					'/(\s*?)array \(/',
+					'/(\s*?)\)\),$/',
+					'/(\s*?)\),$/',
+					'/(\s*?)\)\)$/',
+				],
+				[
+					'$1$1class@anonymous Object ',
+					'$1$1Closure Object ',
+					'$1$1$2 Object ',
+					'$1Array (',
+					'$1  Array (',
+					'$1    )',
+					'$1  ),',
+					'$1)',
+				],
+				$line
+			);
+		}, $lines );
+		$export = \str_replace( 'NULL', 'null', $export );
+
+		return \implode( "\n", $export );
+	}
 
 	protected function normalize_line_endings( $string ) {
 		return \str_replace( "\r\n", "\n", $string );

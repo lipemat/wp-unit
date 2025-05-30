@@ -18,8 +18,7 @@
   "require": {
     "php": ">=7.4.0",
     "yoast/phpunit-polyfills": "^2.0.0",
-    "dg/bypass-finals": "^1.5",
-    "symfony/var-exporter": "^v5.4.45"
+    "dg/bypass-finals": "^1.5"
   },
   "autoload": {
     "psr-4": {

@@ -12,7 +12,7 @@
 ###################################################################
 
 # shellcheck disable=SC2039
-array=("vendor/yoast/" "vendor/composer/" "vendor/dg/" "vendor/symfony/")
+array=("vendor/yoast/" "vendor/composer/" "vendor/dg/")
 
 echo "Cleaning unused directories...".
 

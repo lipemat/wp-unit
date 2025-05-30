@@ -1,8 +1,9 @@
-[
+Array (
     'foo' => 'bar',
     'empty' => false,
     'null' => null,
-    'array' => [
+    'array' =>
+      Array (
         'foo' => 'bar',
-    ],
-]
+      ),
+)
