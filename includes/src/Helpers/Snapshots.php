@@ -113,14 +113,40 @@ class Snapshots {
 		if ( $with_falsy ) {
 			$data = $this->formatted_var_export( $data );
 		} elseif ( ! \is_scalar( $data ) ) {
-			$data = \print_r( $data, true );
+			$data = $this->formatted_print_r( $data );
 		}
 
 		return $this->normalize_line_endings( $data );
 	}
 
 
-	protected function formatted_var_export( $value ) {
+	protected function formatted_print_r( $value ): string {
+		$export = \print_r( $value, true );
+
+		$lines = \explode( "\n", $export );
+
+		// Remove extra information for closures added in PHP 8.4.
+		$export = \array_filter( \array_map( function( $line ) {
+			$result = \preg_replace(
+				[
+					'/\[name] => \{closure:[\S ]+?:\d+}/',
+					'/\[file] => [\S ]+?\.php/',
+					'/\[line] => \d+/',
+				], '',
+				$line, 1, $count );
+			if ( 0 === $count ) {
+				return $result;
+			}
+			return null;
+		}, $lines ), function( $line ): bool {
+			return ! \is_null( $line );
+		} );
+
+		return \implode( "\n", $export );
+	}
+
+
+	protected function formatted_var_export( $value ): string {
 		$export = var_export( $value, true );
 
 		$lines = \explode( "\n", $export );
