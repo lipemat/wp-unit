@@ -9,11 +9,6 @@
       "email": "mat@matlipe.com"
     }
   ],
-  "config": {
-    "platform": {
-      "php": "7.4.0"
-    }
-  },
   "minimum-stability": "stable",
   "require": {
     "php": ">=7.4.0",
