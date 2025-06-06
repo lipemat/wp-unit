@@ -32,9 +32,12 @@ class WP_UnitTest_Factory_For_AttachmentTest extends \WP_UnitTestCase {
 			'post_title'     => 'Test JPG',
 		] );
 
-		$this->assertSame( 'http://wp-unit.loc/wp-content/uploads/2025/05/test-image-548x0.jpg', wp_get_attachment_image_url( $attachment, 'my-content-thumb' ) );;
-		$this->assertSame( 'http://wp-unit.loc/wp-content/uploads/2025/05/test-image-274x205.jpg', wp_get_attachment_image_url( $attachment, 'test-size-medium' ) );
+		$dir = wp_upload_dir();
+		$this->assertMatchesRegularExpression( '#https://wp-unit\.loc/wp-content/uploads/\d{4}/\d{2}#', $dir['url'] );
 
-		$this->assertSame( 'http://wp-unit.loc/wp-content/uploads/2025/05/test-image.jpg', wp_get_attachment_image_url( $attachment, 'full' ) );
+		$this->assertSame( $dir['url'] . '/test-image-548x0.jpg', wp_get_attachment_image_url( $attachment, 'my-content-thumb' ) );;
+		$this->assertSame( $dir['url'] . '/test-image-274x205.jpg', wp_get_attachment_image_url( $attachment, 'test-size-medium' ) );
+
+		$this->assertSame( $dir['url'] . '/test-image.jpg', wp_get_attachment_image_url( $attachment, 'full' ) );
 	}
 }
