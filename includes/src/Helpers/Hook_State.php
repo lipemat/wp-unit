@@ -59,6 +59,11 @@ final class Hook_State {
 	private $wp_scripts = null;
 
 	/**
+	 * @var ?\WP_Styles
+	 */
+	private $wp_styles = null;
+
+	/**
 	 * @var \WP_Block_Type_Registry
 	 */
 	private \WP_Block_Type_Registry $WP_block_type_registry;
@@ -75,6 +80,9 @@ final class Hook_State {
 		$this->WP_block_type_registry = clone \WP_Block_Type_Registry::get_instance();
 		if ( isset( $GLOBALS['wp_scripts'] ) && $GLOBALS['wp_scripts'] instanceof \WP_Scripts ) {
 			$this->wp_scripts = clone( $GLOBALS['wp_scripts'] );
+		}
+		if ( isset( $GLOBALS['wp_styles'] ) && $GLOBALS['wp_styles'] instanceof \WP_Styles ) {
+			$this->wp_styles = clone( $GLOBALS['wp_styles'] );
 		}
 	}
 
@@ -132,6 +140,14 @@ final class Hook_State {
 	 */
 	public function get_wp_scripts(): ?\WP_Scripts {
 		return $this->wp_scripts instanceof \WP_Scripts ? clone $this->wp_scripts : null;
+	}
+
+
+	/**
+	 * @return ?\WP_Styles
+	 */
+	public function get_wp_styles(): ?\WP_Styles {
+		return $this->wp_styles instanceof \WP_Styles ? clone $this->wp_styles : null;
 	}
 
 

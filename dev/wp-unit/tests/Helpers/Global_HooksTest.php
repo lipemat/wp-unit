@@ -40,6 +40,10 @@ class Global_HooksTest extends \WP_UnitTestCase {
 		wp_enqueue_script( __FILE__, 'test.js' );
 		$this->assertTrue( wp_script_is( __FILE__ ) );
 
+		$this->assertFalse( wp_style_is( __FILE__, 'enqueued' ) );
+		wp_enqueue_style( __FILE__, 'test.css' );
+		$this->assertTrue( wp_style_is( __FILE__, 'enqueued' ) );
+
 		register_block_type( 'wp-unit/test', [
 			'editor_script' => __FILE__,
 		] );
@@ -59,6 +63,7 @@ class Global_HooksTest extends \WP_UnitTestCase {
 		$this->assertEmpty( $GLOBALS['wp_meta_boxes']['post']['advanced']['default']['test'] ?? null );
 
 		$this->assertFalse( wp_script_is( __FILE__ ) );
+		$this->assertFalse( wp_style_is( __FILE__, 'enqueued' ) );
 	}
 
 
