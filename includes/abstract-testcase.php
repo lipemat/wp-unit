@@ -180,8 +180,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$GLOBALS['wp_stylesheet_path'] = null;
 		$GLOBALS['wp_template_path'] = null;
 
-		Cleanup::instance()->unregister_all_meta_keys();
-
 		// Reset a project container if available.
 		if ( function_exists( 'tests_reset_container' ) ) {
 			tests_reset_container();
@@ -679,12 +677,12 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	/**
 	 * Assert a value matches a snapshot.
 	 *
-	 * @since 3.6.0
+	 * @since      3.6.0
 	 *
 	 * @see        WP_Unit_Snapshots
 	 * @see        WP_UnitTestCase_Base::assertMatchesFullSnapshot()
 	 *
-	 * @param mixed $actual A value which may be stored in a file using `print_r()`.
+	 * @param mixed  $actual  A value which may be stored in a file using `print_r()`.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 * @param string $id      Optional. An identifier to be appended to the snapshot filename.
 	 *
