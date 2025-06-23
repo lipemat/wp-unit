@@ -197,7 +197,7 @@ define( 'DIR_TESTROOT', realpath( dirname( __DIR__ ) ) );
  */
 define( 'DISABLE_WP_CRON', true );
 
-if ( ! defined( 'SAVEQUERIES')) {
+if ( ! defined( 'SAVEQUERIES' ) ) {
 	define( 'SAVEQUERIES', true );
 }
 
@@ -312,7 +312,7 @@ unset( $multisite );
 Global_Hooks::init_once();
 
 // Delete any default posts & related data.
-if ( ! tests_skip_install() ) {
+if ( ! tests_skip_install() && ! \defined( 'WP_UNIT_SKIP_DELETE_ALL' ) ) {
 	_delete_all_posts();
 }
 

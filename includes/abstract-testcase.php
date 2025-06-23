@@ -77,11 +77,13 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 	/**
 	 * Runs the routine after all tests have been run.
+	 *
+	 * @throws ErrorException - If test setup fails.
 	 */
 	public static function tear_down_after_class() {
 		$class = static::class;
 
-		if ( ! tests_skip_install() ) {
+		if ( ! tests_skip_install() && ! \defined( 'WP_UNIT_SKIP_DELETE_ALL' ) ) {
 			_delete_all_data();
 		}
 		Cleanup::instance()->flush_cache();
