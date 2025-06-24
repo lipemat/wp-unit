@@ -52,6 +52,7 @@ final class Global_Hooks {
 	 */
 	public function restore_hooks( Hook_State $hooks ): void {
 		$hooks->restore_wp_filter();
+		$GLOBALS['wp'] = $hooks->get_wp();
 		$GLOBALS['wp_actions'] = $hooks->get_wp_actions();
 		$GLOBALS['wp_filters'] = $hooks->get_wp_filters();
 		$GLOBALS['wp_current_filter'] = $hooks->get_wp_current_filter();

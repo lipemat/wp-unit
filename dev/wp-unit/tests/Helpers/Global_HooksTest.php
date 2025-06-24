@@ -44,6 +44,10 @@ class Global_HooksTest extends \WP_UnitTestCase {
 		wp_enqueue_style( __FILE__, 'test.css' );
 		$this->assertTrue( wp_style_is( __FILE__, 'enqueued' ) );
 
+		$this->assertNotContains( __FILE__, $GLOBALS['wp']->public_query_vars );
+		add_rewrite_endpoint( 'test', EP_ROOT, __FILE__ );
+		$this->assertContains( __FILE__, $GLOBALS['wp']->public_query_vars );
+
 		register_block_type( 'wp-unit/test', [
 			'editor_script' => __FILE__,
 		] );
@@ -64,6 +68,8 @@ class Global_HooksTest extends \WP_UnitTestCase {
 
 		$this->assertFalse( wp_script_is( __FILE__ ) );
 		$this->assertFalse( wp_style_is( __FILE__, 'enqueued' ) );
+
+		$this->assertNotContains( __FILE__, $GLOBALS['wp']->public_query_vars );
 	}
 
 

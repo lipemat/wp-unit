@@ -64,9 +64,14 @@ final class Hook_State {
 	private $wp_styles = null;
 
 	/**
+	 * @var ?\WP
+	 */
+	private ?\WP $wp = null;
+
+	/**
 	 * @var \WP_Block_Type_Registry
 	 */
-	private \WP_Block_Type_Registry $WP_block_type_registry;
+	private \WP_Block_Type_Registry $wp_block_type_registry;
 
 
 	private function __construct() {
@@ -77,13 +82,26 @@ final class Hook_State {
 		$this->wp_meta_boxes = $GLOBALS['wp_meta_boxes'] ?? null;
 		$this->wp_meta_keys = $GLOBALS['wp_meta_keys'] ?? [];
 		$this->wp_registered_settings = $GLOBALS['wp_registered_settings'] ?? [];
-		$this->WP_block_type_registry = clone \WP_Block_Type_Registry::get_instance();
+		$this->wp_block_type_registry = clone \WP_Block_Type_Registry::get_instance();
+
+		if ( isset( $GLOBALS['wp'] ) && $GLOBALS['wp'] instanceof \WP ) {
+			$this->wp = clone $GLOBALS['wp'];
+		}
+
 		if ( isset( $GLOBALS['wp_scripts'] ) && $GLOBALS['wp_scripts'] instanceof \WP_Scripts ) {
 			$this->wp_scripts = clone( $GLOBALS['wp_scripts'] );
 		}
 		if ( isset( $GLOBALS['wp_styles'] ) && $GLOBALS['wp_styles'] instanceof \WP_Styles ) {
 			$this->wp_styles = clone( $GLOBALS['wp_styles'] );
 		}
+	}
+
+
+	/**
+	 * @return \WP
+	 */
+	public function get_wp(): \WP {
+		return $this->wp instanceof \WP ? clone $this->wp : new \WP();
 	}
 
 
@@ -155,7 +173,7 @@ final class Hook_State {
 	 * @return \WP_Block_Type_Registry
 	 */
 	public function get_wp_block_type_registry(): \WP_Block_Type_Registry {
-		return clone $this->WP_block_type_registry;
+		return clone $this->wp_block_type_registry;
 	}
 
 
