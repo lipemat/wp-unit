@@ -64,8 +64,8 @@ class Dates implements Callback {
 
 
 	public function call( int $object_id ): string {
-		$this->counter %= \count( self::DAYS );
-		$date = new \DateTime( '-' . self::DAYS[ $this->counter ] . ' days', $this->timezone );
+		$this->counter %= \count( static::DAYS );
+		$date = new \DateTime( '-' . static::DAYS[ $this->counter ] . ' days', $this->timezone );
 		// Set seconds to 0 to avoid issues tests taking more than 1 second.
 		$date->setTime( (int) $date->format( 'H' ), (int) $date->format( 'i' ) );
 

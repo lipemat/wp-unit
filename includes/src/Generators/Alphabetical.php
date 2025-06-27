@@ -51,8 +51,8 @@ class Alphabetical implements Callback {
 	 * @inheritDoc
 	 */
 	public function call( int $object_id ): string {
-		$this->counter %= \count( self::TITLES );
-		$title = self::TITLES[ $this->counter ];
+		$this->counter %= \count( static::TITLES );
+		$title = static::TITLES[ $this->counter ];
 		$this->counter ++;
 
 		return $title;
