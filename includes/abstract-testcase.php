@@ -753,11 +753,12 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		}
 		$parts = parse_url( $url );
 		if ( isset( $parts['scheme'] ) ) {
-			$req = isset( $parts['path'] ) ? $parts['path'] : '';
+			$req = $parts['path'] ?? '';
 			if ( isset( $parts['query'] ) ) {
 				$req .= '?' . $parts['query'];
 				// Parse the URL query vars into $_GET.
-				parse_str( $parts['query'], $_GET );
+				\parse_str( $parts['query'], $_GET );
+				$_REQUEST = $_GET;
 			}
 		} else {
 			$req = $url;
