@@ -10,15 +10,14 @@ namespace Lipe\WP_Unit\Generators;
  */
 class DatesTest extends \WP_UnitTestCase {
 
-	public function test_call(): void {
+	public function test_get_template_string(): void {
 		$dates = new Dates();
-		$object_id = 1;
 
-		$date = $dates->call( $object_id );
+		$date = $dates->get_template_string();
 		$expected = \date_create( '-' . Dates::DAYS[0] . ' days', wp_timezone() );
 		$this->assertSame( $expected->format( 'Y-m-d H:i:' ) . '00', $date );
 
-		$date = $dates->call( $object_id );
+		$date = $dates->get_template_string();
 		$expected = \date_create( '-' . Dates::DAYS[1] . ' days', wp_timezone() );
 		$this->assertSame( $expected->format( 'Y-m-d H:i:' ) . '00', $date );
 	}

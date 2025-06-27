@@ -21,7 +21,7 @@ use DateTimeZone;
  *  ```
  *
  */
-class Dates implements Callback {
+class Dates implements Template_String {
 	public const DAYS = [
 		12,
 		3,
@@ -63,7 +63,10 @@ class Dates implements Callback {
 	}
 
 
-	public function call( int $object_id ): string {
+	/**
+	 * @throws \Exception - If the date cannot be created.
+	 */
+	public function get_template_string(): string {
 		$this->counter %= \count( static::DAYS );
 		$date = new \DateTime( '-' . static::DAYS[ $this->counter ] . ' days', $this->timezone );
 		// Set seconds to 0 to avoid issues tests taking more than 1 second.

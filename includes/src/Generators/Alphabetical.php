@@ -18,7 +18,7 @@ namespace Lipe\WP_Unit\Generators;
  *  ] );
  * ```
  */
-class Alphabetical implements Callback {
+class Alphabetical implements Template_String {
 	public const TITLES = [
 		'Zebra',
 		'Alpha',
@@ -47,10 +47,7 @@ class Alphabetical implements Callback {
 	private int $counter = 0;
 
 
-	/**
-	 * @inheritDoc
-	 */
-	public function call( int $object_id ): string {
+	public function get_template_string(): string {
 		$this->counter %= \count( static::TITLES );
 		$title = static::TITLES[ $this->counter ];
 		$this->counter ++;

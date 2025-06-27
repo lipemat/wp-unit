@@ -10,13 +10,12 @@ namespace Lipe\WP_Unit\Generators;
  */
 class AlphabeticalTest extends \WP_UnitTestCase {
 
-	public function test_call(): void {
+	public function test_get_template_string(): void {
 		$alphabetical = new Alphabetical();
-		$object_id = 1;
 
-		$title = $alphabetical->call( $object_id );
+		$title = $alphabetical->get_template_string();
 		$this->assertSame( Alphabetical::TITLES[0], $title );
-		$title = $alphabetical->call( $object_id );
+		$title = $alphabetical->get_template_string();
 		$this->assertSame( Alphabetical::TITLES[1], $title );
 	}
 
