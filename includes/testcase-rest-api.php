@@ -85,7 +85,7 @@ abstract class WP_Test_REST_TestCase extends WP_UnitTestCase {
 	 *
 	 * @return \WP_REST_Response
 	 */
-	protected function get_response( string $route, array $args, string $method = 'POST' ) {
+	protected function get_response( string $route, array $args, string $method = 'POST', array $headers = [] ): \WP_REST_Response {
 		$this->start_request();
 
 		$request = new \WP_REST_Request( $method, $route );
@@ -100,6 +100,7 @@ abstract class WP_Test_REST_TestCase extends WP_UnitTestCase {
 				$request->set_body_params( $args );
 				break;
 		}
+		$request->set_headers( $headers );
 		$result = rest_get_server()->dispatch( $request );
 
 		$this->end_request();
