@@ -43,20 +43,20 @@ abstract class WP_Test_REST_TestCase extends WP_UnitTestCase {
 	 * @param ?string                     $message  - Error message.
 	 *
 	 */
-	protected function assertErrorResponse( $code, $response, ?int $status = null, ?string $message = null ) {
+	protected function assertErrorResponse( $code, $response, ?int $status = null, ?string $message = '' ) {
 		if ( $response instanceof WP_REST_Response ) {
 			$response = $response->as_error();
 		}
 
-		$this->assertWPError( $response );
-		$this->assertSame( $code, $response->get_error_code() );
+		$this->assertWPError( $response, $message . ' Passed $response is not a WP_Error object.' );
+		$this->assertSame( $code, $response->get_error_code(), $message . ' The expected error code does not match.' );
 
 		if ( null !== $status ) {
 			$data = $response->get_error_data();
-			$this->assertArrayHasKey( 'status', $data );
-			$this->assertSame( $status, $data['status'] );
+			$this->assertArrayHasKey( 'status', $data, $message );
+			$this->assertSame( $status, $data['status'], $message );
 		}
-		if ( null !== $message ) {
+		if ( null !== $message && '' !== $message ) {
 			$this->assertSame( $message, $response->get_error_message() );
 		}
 	}
