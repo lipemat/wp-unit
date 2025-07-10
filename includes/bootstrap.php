@@ -255,6 +255,8 @@ tests_add_filter( 'wp_rest_server_class', '_wp_rest_server_class_filter' );
 tests_add_filter( 'async_update_translation', '__return_false' );
 // Disable background updates.
 tests_add_filter( 'automatic_updater_disabled', '__return_true' );
+// Reduce the cost of hashing to speed up tests.
+tests_add_filter( 'wp_hash_password_options', '_wp_hash_password_options', 1, 2 );
 
 // Preset WordPress options defined in bootstrap file.
 // Used to activate themes, plugins, as well as other settings.

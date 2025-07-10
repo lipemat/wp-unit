@@ -332,6 +332,20 @@ function _wp_rest_server_class_filter() {
 	return 'Spy_REST_Server';
 }
 
+/**
+ * Sets the bcrypt cost option for password hashing during tests.
+ *
+ * @param array  $options   The options for password hashing.
+ * @param string $algorithm The algorithm to use for hashing.
+ */
+function _wp_hash_password_options( array $options, string $algorithm ): array {
+	if ( PASSWORD_BCRYPT === $algorithm ) {
+		$options['cost'] = 4;
+	}
+	return $options;
+}
+
+
 // Skip `setcookie` calls in auth_cookie functions due to warning:
 // Cannot modify header information - headers already sent by...
 tests_add_filter( 'send_auth_cookies', '__return_false' );
