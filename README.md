@@ -7,7 +7,7 @@
 <img alt="Packagist" src="https://img.shields.io/packagist/l/lipemat/wp-unit.svg">
 </p>
 
-Fork of wp-unit to support bootstrapping an existing database and many other enhancements.
+Fork of WordPress core phpunit test suite to support bootstrapping an existing database plus many other enhancements.
 
 > Note: Version 4 has diverged from the original WordPress core tests. [More information here.](https://github.com/lipemat/wp-unit/wiki/Version-4-Migration)
 
@@ -15,7 +15,7 @@ Original may be cloned from here: **git://develop.git.wordpress.org/tests/phpuni
 
 ## Usage
 
-Install using composer either in you project or in a global location to be used among all projects.
+Install using composer either in your project or in a global location to be used among all projects.
 
 ```bash
 composer require --dev lipemat/wp-unit
@@ -82,7 +82,7 @@ define( 'WP_UNIT_DIR', __DIR__ . '/vendor/lipemat/wp-unit' );
 define( 'WP_TESTS_SNAPSHOTS_BASE', 'Lipe\Project' );
 define( 'WP_TESTS_SNAPSHOTS_DIR', __DIR__ . '/__snapshots__' );
 
-// If your not bootstrapping an exiting database.
+// If you're not bootstrapping an exiting database.
 define( 'WP_TESTS_TABLE_PREFIX', 'tests_' );
 
 // If your tests must use `https` URL.
@@ -130,9 +130,9 @@ Set test options like normal, and they will automatically replace network option
 $GLOBALS['wp_tests_options'][ 'site_name' ] = 'Example Site Name';
 ```
 
-### Run all scheduled crons
+### Run all scheduled cron events.
 
-Used for testing crons by running them if they are schedule to run.
+Used for testing cron events by running them if they are scheduled to run.
 
 ```php
 wp_cron_run_all()
@@ -148,9 +148,9 @@ require __DIR__ . '/wp-tests-config.php';
 
 ### Bootstrap WP on existing database
 
-Using the bootstrap-no-install.php allows you to test against your current data in the database. Out of the box it supports MySQL transactions to allow tests to set and use data without actually storing it in the database.
+Using the bootstrap-no-install.php allows you to test it against your current data in the database. Out of the box it supports MySQL transactions to allow tests to set and use data without actually storing it in the database.
 
-1. Update your wp-tests-config.php file to point to database you want to use.
+1. Update your wp-tests-config.php file to point to a database you want to use.
 2. Change your bootstrap.php to use the bootstrap-no-install.php file like so;
 ```php
 <?php
@@ -158,12 +158,14 @@ require __DIR__ . '/wp-tests-config.php';
 require __DIR__ . '/vendor/lipemat/wp-unit/includes/bootstrap-no-install.php';
 ```
 **Gotchas:**
-1. If you override the WP_UnitTestCase::setUp() method in your test class, be sure to call parent::setUp(). Otherwise, any data you set during tests will persist to the database.
-2. If your database tables are using MyISAM storage engines, data will persist. They may be converted to InnoDB or any other engine which supports transactions.
+1. If you override the WP_UnitTestCase::setUp() method in your test class, be sure to call parent::setUp(). Otherwise, any data you set during tests will persist in the database.
+   1. The test cases are designed to detect these kinds of issues, so if this is not setup correctly, you will see a warning in your test output.
+2. If your database tables are using MyISAM storage engines, data will persist.
+   1. They must be converted to InnoDB or any other engine that supports transactions.
 
 ### Global filters which apply to all tests
 
-From within your wp-tests-config.php file add some filters to the $GLOBALS[ 'wp_tests_filters' ]
+From within your wp-tests-config.php file, add some filters to the $GLOBALS[ 'wp_tests_filters' ]
 ```php
 <?php
 $GLOBALS[ 'wp_tests_filters' ][ 'the_title' ] = function ( $title ) {
@@ -185,7 +187,7 @@ From within your wp-tests.config.php add a custom memory limit.
 define( 'WP_MEMORY_LIMIT', '128M' );
 ```
 
-### Allow an outside languages directory
+### Use an external "languages" directory
 
 From within your wp-tests.config.php add a custom language directory.
 ```php
@@ -213,18 +215,18 @@ Sometimes you want to verify requests are actually going out and not just
 assert that a method which sends requests is being called.
 
 1. Extend the `WP_Http_Remote_Post_TestCase` from your test's class.
-2. All requests will not send but instead be stored in the test's class' properties.
+2. All requests will not be sent but instead be stored in the test's class' properties.
 3. Retrieve sent via `$this->get_sent()`.
 4. Mock raw responses via `$this->mock_response`.
 
 ### Support object cache testing
 
-For testing your object cache a helper TestCase is available.
+For testing your object cache, a helper TestCase is available.
 Automatically resets for a fresh object cache between tests.
 
 1. Extend the `Object_Cache_TestCase` from your test's class.
 2. Interact with `$this->object_cache` to access your object cache.
-3. Use include helper assertions and utilities.
+3. Use the include helper assertions and utilities.
     1. `assertNotCacheExternal` - Assert a key is not available in the external cache.
     2. `assertCacheExternal` - Assert a key is available in the external cache.
     3. `assertCachePropertyAndExternal` - Assert a value is same in the runtime cache as external cache.
@@ -272,7 +274,7 @@ Asserts that the keys of two arrays are equal, regardless of the contents, witho
 
 ### Support mocking `final` classes.
 
-Includes a utilities library to enable mocking of any final classes.
+Includes an utilities library to enable mocking of any final classes.
 
 [db/bypass-finals](https://github.com/dg/bypass-finals#usage)
 
@@ -291,7 +293,7 @@ To use your own version of the `WP_UnitTestCase`:
 3. Add your custom test methods to your class.
 4. Define a `WP_UNIT_TESTCASE_BASE` constant with the path to your class.
 
-#### Example for a SQLite3 database
+#### Example for an SQLite3 database
 
 In your project create a `WP_UnitTestCase.php` file.
 ```php
