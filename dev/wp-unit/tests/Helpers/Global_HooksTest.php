@@ -52,6 +52,14 @@ class Global_HooksTest extends \WP_UnitTestCase {
 			'editor_script' => __FILE__,
 		] );
 		$this->assertSame( __FILE__, \WP_Block_Type_Registry::get_instance()->get_registered( 'wp-unit/test' )->editor_script_handles[0] );
+
+		add_action( 'rest_api_init', function() {
+			register_rest_route( 'tests', 'wp-unit' );
+			register_rest_field( 'post', 'wp-unit/test', [ 'name' => 'from-test' ] );
+		} );
+		do_action( 'rest_api_init' );
+		$this->assertContains( 'tests', rest_get_server()->get_namespaces() );
+		$this->assertArrayHasKey( 'wp-unit/test', $GLOBALS['wp_rest_additional_fields']['post'] ?? [] );
 	}
 
 
@@ -78,5 +86,15 @@ class Global_HooksTest extends \WP_UnitTestCase {
 	 */
 	public function test_reset_block_type_registry(): void {
 		$this->assertNull( \WP_Block_Type_Registry::get_instance()->get_registered( 'wp-unit/test' ) );
+	}
+
+
+	/**
+	 * @depends test_make_changes
+	 */
+	public function test_reset_rest_server(): void {
+		$this->assertInstanceOf( \WP_REST_Server::class, rest_get_server() );
+		$this->assertNotContains( 'tests', rest_get_server()->get_namespaces() );
+		$this->assertArrayNotHasKey( 'wp-unit/test', $GLOBALS['wp_rest_additional_fields']['post'] ?? [] );
 	}
 }

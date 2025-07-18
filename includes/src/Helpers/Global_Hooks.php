@@ -59,6 +59,8 @@ final class Global_Hooks {
 		$GLOBALS['wp_meta_boxes'] = $hooks->get_wp_meta_boxes();
 		$GLOBALS['wp_meta_keys'] = $hooks->get_wp_meta_keys();
 		$GLOBALS['wp_registered_settings'] = $hooks->get_wp_registered_settings();
+		$GLOBALS['wp_rest_server'] = $hooks->get_wp_rest_server();
+		$GLOBALS['wp_rest_additional_fields'] = $hooks->get_wp_rest_additional_fields();
 		$GLOBALS['wp_scripts'] = $hooks->get_wp_scripts();
 		$GLOBALS['wp_styles'] = $hooks->get_wp_styles();
 		if ( \function_exists( 'set_private_property' ) ) {

@@ -54,6 +54,16 @@ final class Hook_State {
 	private $wp_registered_settings;
 
 	/**
+	 * @var ?\WP_REST_Server
+	 */
+	private ?\WP_REST_Server $wp_rest_server = null;
+
+	/**
+	 * @var array<string, array<string, mixed>>
+	 */
+	private $wp_rest_additional_fields;
+
+	/**
 	 * @var ?\WP_Scripts
 	 */
 	private $wp_scripts = null;
@@ -82,10 +92,15 @@ final class Hook_State {
 		$this->wp_meta_boxes = $GLOBALS['wp_meta_boxes'] ?? null;
 		$this->wp_meta_keys = $GLOBALS['wp_meta_keys'] ?? [];
 		$this->wp_registered_settings = $GLOBALS['wp_registered_settings'] ?? [];
+		$this->wp_rest_additional_fields = $GLOBALS['wp_rest_additional_fields'] ?? [];
 		$this->wp_block_type_registry = clone \WP_Block_Type_Registry::get_instance();
 
 		if ( isset( $GLOBALS['wp'] ) && $GLOBALS['wp'] instanceof \WP ) {
 			$this->wp = clone $GLOBALS['wp'];
+		}
+
+		if ( isset( $GLOBALS['wp_rest_server'] ) && $GLOBALS['wp_rest_server'] instanceof \WP_REST_Server ) {
+			$this->wp_rest_server = clone $GLOBALS['wp_rest_server'];
 		}
 
 		if ( isset( $GLOBALS['wp_scripts'] ) && $GLOBALS['wp_scripts'] instanceof \WP_Scripts ) {
@@ -150,6 +165,22 @@ final class Hook_State {
 	 */
 	public function get_wp_registered_settings(): array {
 		return $this->wp_registered_settings;
+	}
+
+
+	/**
+	 * @return ?\WP_REST_Server
+	 */
+	public function get_wp_rest_server(): ?\WP_REST_Server {
+		return $this->wp_rest_server instanceof \WP_REST_Server ? clone $this->wp_rest_server : null;
+	}
+
+
+	/**
+	 * @return array<string, array<string, mixed>>
+	 */
+	public function get_wp_rest_additional_fields(): array {
+		return $this->wp_rest_additional_fields;
 	}
 
 
