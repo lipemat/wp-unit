@@ -206,8 +206,6 @@ if ( ! defined( 'WP_MEMORY_LIMIT' ) ) {
 }
 define( 'WP_MAX_MEMORY_LIMIT', WP_MEMORY_LIMIT );
 
-define( 'REST_TESTS_IMPOSSIBLY_HIGH_NUMBER', 99999999 );
-
 $PHP_SELF = '/index.php';
 $GLOBALS['PHP_SELF'] = '/index.php';
 $_SERVER['PHP_SELF'] = '/index.php';
