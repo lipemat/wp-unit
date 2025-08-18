@@ -21,8 +21,6 @@
     }
   },
   "scripts": {
-    "git-hooks": "dev/bin/git-hooks.sh",
-    "post-install-cmd": "dev/bin/cleanup-unused-dependencies.sh",
-    "post-update-cmd": "dev/bin/cleanup-unused-dependencies.sh"
+    "git-hooks": "dev/bin/git-hooks.sh"
   }
 }
