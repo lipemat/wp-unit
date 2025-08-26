@@ -183,9 +183,11 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$GLOBALS['wp_template_path'] = null;
 
 		// Reset a project container if available.
-		if ( function_exists( 'tests_reset_container' ) ) {
+		if ( \function_exists( 'tests_reset_container' ) ) {
 			tests_reset_container();
 		}
+		do_action( 'wp-unit/reset-container' );
+
 		// Reset the PHP mailer.
 		tests_reset_phpmailer_instance();
 
