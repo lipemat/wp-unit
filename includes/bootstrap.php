@@ -288,7 +288,7 @@ if ( isset( $GLOBALS['wp_tests_filters'] ) ) {
 }
 
 // Preset BypassFinals to allow WP Core final classes to be mocked.
-// Not required for non WP Core classes as `allow_extending_final` helper function is available.
+// Not required for non WP Core classes as the `allow_extending_final` helper function is available.
 if ( isset( $GLOBALS['wp_tests_bypass_finals'] ) ) {
 	BypassFinals::enable();
 	BypassFinals::setWhitelist( $GLOBALS['wp_tests_bypass_finals'] );

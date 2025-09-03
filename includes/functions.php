@@ -1,5 +1,7 @@
 <?php
 
+use DG\BypassFinals;
+
 /**
  * Should we skip installing WordPress?
  *
@@ -71,6 +73,39 @@ function tests_add_filter( $hook_name, $callback, $priority = 10, $accepted_args
 	}
 
 	return true;
+}
+
+if ( ! \function_exists( 'allow_extending_final' ) ) {
+	/**
+	 * Allow extending a particular final class.
+	 *
+	 * Typically used with `change_container_object` when extending an
+	 * existing class with an anonymous class.
+	 *
+	 * We specify an allowed class to prevent tests from missing fatal errors with
+	 * inheriting from final classes.
+	 *
+	 * @notice   Must be called before the class is loaded into the application.
+	 *
+	 *
+	 * @param class-string $class
+	 *
+	 * @return void
+	 */
+	function allow_extending_final( string $class ): void {
+		static $bypass = [];
+		// Remove the global namespace, so the directory structure is matched.
+		$bypass[] = '*/' . \implode( '/', \array_slice( \explode( '\\', $class ), 2 ) ) . '.php';
+
+		// If we must call this function before bootstrapping the test suite.
+		if ( ! \class_exists( BypassFinals::class ) ) {
+			$GLOBALS['wp_tests_bypass_finals'] = \array_unique( $bypass );
+			return;
+		}
+
+		BypassFinals::enable();
+		BypassFinals::setWhitelist( \array_unique( $bypass ) );
+	}
 }
 
 /**
