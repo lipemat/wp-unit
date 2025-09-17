@@ -18,6 +18,8 @@
  * @author Mat Lipe
  * @since  1.10.0
  *
+ * @see \Lipe\WP_Unit\Utils\Requests for formatting responses.
+ *
  * @phpstan-import-type SENT from WP_Http_Unit_Test_Transport
  */
 class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
@@ -114,8 +116,10 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 	/**
 	 * Mock the returned raw response based on a URL.
 	 *
+	 * @see \Lipe\WP_Unit\Utils\Requests for formatting responses.
+	 *
 	 * @param string         $url
-	 * @param mixed|callable $callback_or_value
+	 * @param string|(callable(array<string, mixed>): string) $callback_or_value
 	 */
 	public function mock_response( string $url, $callback_or_value ) {
 		\WP_Http_Unit_Test_Transport::add_mock( $url, $callback_or_value );

@@ -98,7 +98,7 @@ class WP_Http_Unit_Test_Transport implements Http_Transport {
 	 * Mock the returned raw response based on a URL.
 	 *
 	 * @param string         $url
-	 * @param mixed|callable $response
+	 * @param string|(callable(array<string, mixed>): string) $response
 	 */
 	public static function add_mock( string $url, $response ) {
 		self::$mocked_responses[ $url ] = $response;
