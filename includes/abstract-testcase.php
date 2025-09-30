@@ -116,6 +116,8 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		DatabaseTransactions::instance()->start_transaction();
 
 		Setup_Teardown_State::set_up();
+
+		do_action( 'wp-unit/set_up', $this );
 	}
 
 
