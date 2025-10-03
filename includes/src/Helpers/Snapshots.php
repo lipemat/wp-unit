@@ -123,7 +123,7 @@ class Snapshots {
 			return '';
 		}
 		if ( $data instanceof SnapshotMatcher ) {
-			$data = $data->get_snapshot();
+			$data = $data->get_adjusted_snapshot();
 		}
 
 		if ( $with_falsy ) {
@@ -217,6 +217,7 @@ class Snapshots {
 	}
 
 
+	/** @noinspection PhpUnhandledExceptionInspection */
 	public static function factory( array $backtrace, string $id = '' ): self {
 		return new self( $backtrace, $id );
 	}

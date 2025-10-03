@@ -10,7 +10,7 @@ interface SnapshotMatcher {
 	 *
 	 * @return array|object
 	 */
-	public function get_snapshot();
+	public function get_adjusted_snapshot();
 
 
 	/**

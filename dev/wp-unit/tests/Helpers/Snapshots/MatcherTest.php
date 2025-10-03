@@ -65,7 +65,7 @@ class MatcherTest extends WP_UnitTestCase {
 			'key2' => 'value2',
 		];
 
-		$result = $matcher->get_snapshot();
+		$result = $matcher->get_adjusted_snapshot();
 
 		$this->assertSame( $expected, $result );
 	}
@@ -92,7 +92,7 @@ class MatcherTest extends WP_UnitTestCase {
 			public string $key2 = 'VALUE2';
 		};
 
-		$result = $matcher->get_snapshot();
+		$result = $matcher->get_adjusted_snapshot();
 
 		$this->assertSame(
 			[ 'key1' => $expected->key1, 'key2' => $expected->key2 ],
@@ -109,7 +109,7 @@ class MatcherTest extends WP_UnitTestCase {
 		$callbacks = [ 'key3' => fn( $value ) => $value ];
 
 		$matcher = new Matcher( $data, $callbacks );
-		$matcher->get_snapshot();
+		$matcher->get_adjusted_snapshot();
 	}
 
 
@@ -124,6 +124,6 @@ class MatcherTest extends WP_UnitTestCase {
 		$callbacks = [ 'key3' => fn( $value ) => $value ];
 
 		$matcher = new Matcher( $data, $callbacks );
-		$matcher->get_snapshot();
+		$matcher->get_adjusted_snapshot();
 	}
 }

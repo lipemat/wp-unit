@@ -22,13 +22,6 @@ class Matcher implements SnapshotMatcher {
 	protected $data;
 
 	/**
-	 * Array keys or property names to match.
-	 *
-	 * @var array<string>
-	 */
-	protected array $keys;
-
-	/**
 	 * Array of callbacks matching the keys or properties.
 	 *
 	 * @var array<string, CALLBACK>
@@ -52,17 +45,17 @@ class Matcher implements SnapshotMatcher {
 	 *
 	 * @return array|object
 	 */
-	public function get_snapshot() {
+	public function get_adjusted_snapshot() {
 		$data = $this->data;
 		foreach ( $this->callbacks as $key => $callback ) {
 			if ( \is_array( $data ) ) {
 				if ( ! isset( $data[ $key ] ) ) {
 					throw new \InvalidArgumentException( 'Key ' . $key . ' does not exist in the array.' );
 				}
-				$data[ $key ] = $callback( $data[ $key ], $this->data );
+				$data[ $key ] = $this->match( $data[ $key ], $callback );
 			} elseif ( \is_object( $data ) ) {
 				$value = $this->get_private_property( $data, $key );
-				$this->set_private_property( $data, $key, $callback( $value, $this->data ) );
+				$this->set_private_property( $data, $key, $this->match( $value, $callback ) );
 			}
 		}
 		return $data;
@@ -73,7 +66,7 @@ class Matcher implements SnapshotMatcher {
 	 * Run a callback on a value.
 	 *
 	 * - Callback should have an assertion call inside it.
-	 * - Callback must return a descriptive string (e.g., 'Date<callback>')
+	 * - Callback must return the same value type as the value passed in.
 	 *
 	 * @template T
 	 * @phpstan-param T                            $value
@@ -85,19 +78,19 @@ class Matcher implements SnapshotMatcher {
 	 * @return mixed
 	 */
 	public function match( $value, \Closure $callback ) {
-		return $callback( $value, $this );
+		return $callback( $value, $this->data );
 	}
 
 
 	/**
 	 * Get the value of a private constant or property from an object.
 	 *
-	 * @param class-string|object $object   An instantiated object or class name that we will run a method on.
-	 * @param string              $property Property name or constant name to get.
+	 * @param object $object   An instantiated object or class name that we will run a method on.
+	 * @param string $property Property name or constant name to get.
 	 *
 	 * @return mixed
 	 */
-	protected function get_private_property( $object, string $property ) {
+	protected function get_private_property( object $object, string $property ) {
 		$reflection = new \ReflectionClass( \get_class( $object ) );
 		if ( $reflection->hasProperty( $property ) ) {
 			$reflection_property = $reflection->getProperty( $property );
@@ -119,7 +112,7 @@ class Matcher implements SnapshotMatcher {
 	 *
 	 * @return void
 	 */
-	protected function set_private_property( $object, string $property, $value ): void {
+	protected function set_private_property( object $object, string $property, $value ): void {
 		$reflection = new \ReflectionClass( \get_class( $object ) );
 		$reflection_property = $reflection->getProperty( $property );
 		$reflection_property->setAccessible( true );
