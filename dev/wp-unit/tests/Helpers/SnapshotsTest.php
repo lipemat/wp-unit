@@ -41,7 +41,7 @@ class SnapshotsTest extends \WP_UnitTestCase {
 ", \implode( "\n", \array_map( '\rtrim', \explode( "\n", $snapshot->get_snapshot() ) ) ) );
 
 		$snapshot->update_snapshot( $data, false );
-		$this->assertMatchesSnapshot( $data, '', 'identifier' );
+		$this->assertMatchesFullSnapshot( $data, '', 'identifier' );
 	}
 
 
@@ -122,6 +122,8 @@ class SnapshotsTest extends \WP_UnitTestCase {
 			private $internal_class;
 		};
 
+		$this->expectDeprecated( 'WP_UnitTestCase_Base::assertMatchesSnapshot' );
+		$this->expectDeprecated( 'Lipe\WP_Unit\Helpers\Snapshots::assert_matches_snapshot' );
 		$this->assertMatchesSnapshot( $class, '', 'not-full' );
 		$this->assertMatchesFullSnapshot( $class, '', 'full' );
 	}
@@ -138,6 +140,8 @@ class SnapshotsTest extends \WP_UnitTestCase {
 			'post_author'  => 1,
 		] );
 
+		$this->expectDeprecated( 'WP_UnitTestCase_Base::assertMatchesSnapshot' );
+		$this->expectDeprecated( 'Lipe\WP_Unit\Helpers\Snapshots::assert_matches_snapshot' );
 		$this->assertMatchesSnapshot( $post, '', 'wp_post' );
 		$this->assertMatchesFullSnapshot( $post, '', 'wp_post-full' );
 	}

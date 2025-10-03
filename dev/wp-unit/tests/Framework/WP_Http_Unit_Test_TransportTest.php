@@ -43,7 +43,7 @@ class WP_Http_Unit_Test_TransportTest extends \WP_Http_Remote_Post_TestCase {
 		$this->assertCount( 2, \WP_Http_Unit_Test_Transport::get_mocks()['mocked'] );
 		$this->assertCount( 2, \WP_Http_Unit_Test_Transport::get_mocks()['sent'] );
 
-		$this->assertMatchesSnapshot( \WP_Http_Unit_Test_Transport::get_mocks()['mocked'] );
+		$this->assertMatchesFullSnapshot( \WP_Http_Unit_Test_Transport::get_mocks()['mocked'] );
 
 		self::$run_in_correct_order = true;
 	}

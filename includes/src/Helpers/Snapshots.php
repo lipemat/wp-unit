@@ -69,6 +69,10 @@ class Snapshots {
 
 
 	public function assert_matches_snapshot( $actual, \WP_UnitTestCase_Base $test, string $message = '', bool $with_falsy = false ): void {
+		if ( $with_falsy === false ) {
+			_deprecated_argument( __METHOD__, '4.7.0', 'The `$with_falsy` argument as `false` is deprecated and will be removed in version 5.' );
+		}
+
 		$snapshot = $this->get_snapshot();
 		if ( null === $snapshot ) {
 			$this->update_snapshot( $actual, $with_falsy );

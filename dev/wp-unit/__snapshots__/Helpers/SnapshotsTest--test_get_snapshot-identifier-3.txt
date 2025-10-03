@@ -1,11 +1,9 @@
-Array
-(
-    [foo] => bar
-    [empty] => 
-    [null] => 
-    [array] => Array
-        (
-            [foo] => bar
-        )
-
+Array (
+    'foo' => 'bar',
+    'empty' => false,
+    'null' => null,
+    'array' =>
+      Array (
+        'foo' => 'bar',
+      ),
 )

@@ -42,7 +42,7 @@ class MatcherTest extends WP_UnitTestCase {
 			'time' => fn( $value ) => ( new DateTime( '2025-01-01 00:00:00' ) )->getTimestamp(),
 		] );
 
-		$this->assertMatchesSnapshot( $matcher );
+		$this->assertMatchesFullSnapshot( $matcher );
 	}
 
 

@@ -689,13 +689,19 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @see        WP_UnitTestCase_Base::assertMatchesFullSnapshot()
 	 * @see        Snapshots\Matcher
 	 *
-	 * @param mixed|SnapshotMatcher $actual A value which may be stored in a file using `print_r()`.
-	 * @param string $message Optional. Message to display when the assertion fails.
-	 * @param string $id      Optional. An identifier to be appended to the snapshot filename.
+	 * @todo       Remove in version 5 in favor or renaming `assertMatchesFullSnapshot()` to `assertMatchesSnapshot()`.
+	 *
+	 * @deprecated 4.7.0
+	 *
+	 * @param mixed|SnapshotMatcher $actual  A value which may be stored in a file using `print_r()`.
+	 * @param string                $message Optional. Message to display when the assertion fails.
+	 * @param string                $id      Optional. An identifier to be appended to the snapshot filename.
 	 *
 	 * @return void
 	 */
 	public function assertMatchesSnapshot( $actual, string $message = '', string $id = '' ): void {
+		_deprecated_function( __METHOD__, '4.7.0', 'WP_UnitTestCase_Base::assertMatchesFullSnapshot()' );
+
 		require_once __DIR__ . '/src/Helpers/Snapshots.php';
 		$backtrace = \debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2 );
 
@@ -712,11 +718,11 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 *
 	 * @since 4.3.0
 	 *
-	 * @see Snapshots\Matcher
+	 * @see   Snapshots\Matcher
 	 *
-	 * @param mixed|SnapshotMatcher $actual A value which may be stored in a file using `\var_export()`.
-	 * @param string $id      Optional. An identifier to be appended to the snapshot filename.
-	 * @param string $message Optional. Message to display when the assertion fails.
+	 * @param mixed|SnapshotMatcher $actual  A value which may be stored in a file using `\var_export()`.
+	 * @param string                $id      Optional. An identifier to be appended to the snapshot filename.
+	 * @param string                $message Optional. Message to display when the assertion fails.
 	 *
 	 * @return void
 	 */
