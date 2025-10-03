@@ -8,7 +8,7 @@ use Lipe\WP_Unit\Helpers\Global_Hooks;
 use Lipe\WP_Unit\Helpers\Hook_State;
 use Lipe\WP_Unit\Helpers\Setup_Teardown_State;
 use Lipe\WP_Unit\Helpers\Snapshots;
-use Lipe\WP_Unit\Helpers\Snapshots\SnapshotMatcher;
+use Lipe\WP_Unit\Helpers\Snapshots\SnapshotAdjuster;
 use Lipe\WP_Unit\Helpers\Wp_Die_Usage;
 
 require_once __DIR__ . '/factory.php';
@@ -687,15 +687,15 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @since      3.6.0
 	 *
 	 * @see        WP_UnitTestCase_Base::assertMatchesFullSnapshot()
-	 * @see        Snapshots\Matcher
+	 * @see        Snapshots\Adjuster
 	 *
 	 * @todo       Remove in version 5 in favor or renaming `assertMatchesFullSnapshot()` to `assertMatchesSnapshot()`.
 	 *
 	 * @deprecated 4.7.0
 	 *
-	 * @param mixed|SnapshotMatcher $actual  A value which may be stored in a file using `print_r()`.
-	 * @param string                $message Optional. Message to display when the assertion fails.
-	 * @param string                $id      Optional. An identifier to be appended to the snapshot filename.
+	 * @param mixed|SnapshotAdjuster $actual  A value which may be stored in a file using `print_r()`.
+	 * @param string                 $message Optional. Message to display when the assertion fails.
+	 * @param string                 $id      Optional. An identifier to be appended to the snapshot filename.
 	 *
 	 * @return void
 	 */
@@ -718,11 +718,11 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 *
 	 * @since 4.3.0
 	 *
-	 * @see   Snapshots\Matcher
+	 * @see   Snapshots\Adjuster
 	 *
-	 * @param mixed|SnapshotMatcher $actual  A value which may be stored in a file using `\var_export()`.
-	 * @param string                $id      Optional. An identifier to be appended to the snapshot filename.
-	 * @param string                $message Optional. Message to display when the assertion fails.
+	 * @param mixed|SnapshotAdjuster $actual  A value which may be stored in a file using `\var_export()`.
+	 * @param string                 $id      Optional. An identifier to be appended to the snapshot filename.
+	 * @param string                 $message Optional. Message to display when the assertion fails.
 	 *
 	 * @return void
 	 */

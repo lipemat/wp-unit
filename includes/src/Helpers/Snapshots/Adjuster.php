@@ -10,10 +10,11 @@ namespace Lipe\WP_Unit\Helpers\Snapshots;
  * @author Mat Lipe
  * @since  4.7.0
  *
- * @phpstan-type CALLBACK \Closure( mixed, array|object=): mixed
+ * @see MatcherTest::test_matches_snapshot for some examples.
  *
+ * @phpstan-type REPLACER \Closure( mixed, array|object=): mixed
  */
-class Matcher implements SnapshotMatcher {
+class Adjuster implements SnapshotAdjuster {
 	/**
 	 * Array or object to match.
 	 *
@@ -24,18 +25,51 @@ class Matcher implements SnapshotMatcher {
 	/**
 	 * Array of callbacks matching the keys or properties.
 	 *
-	 * @var array<string, CALLBACK>
+	 * @phpstan-var array<string, Callback>
 	 */
 	protected array $callbacks;
 
 
 	/**
-	 * @param array|object            $data      Array or object to match.
-	 * @param array<string, CALLBACK> $callbacks Array of callbacks matching the keys or properties.
+	 * @phpstan-param array|object            $data      Array or object to match.
+	 * @phpstan-param array<string, Callback> $callbacks Array of callbacks matching the keys or properties.
+	 *                                                   May also be set using `replace` or `callback`.
 	 */
 	public function __construct( $data, array $callbacks = [] ) {
 		$this->data = $data;
 		$this->callbacks = $callbacks;
+	}
+
+
+	/**
+	 * Replace the value of a key or property with a callback.
+	 *
+	 * @param string   $key
+	 * @param REPLACER $callback
+	 *
+	 * @return $this
+	 */
+	public function replace( string $key, \Closure $callback ): Adjuster {
+		$this->callbacks[ $key ] = Callback::factory( $callback );
+		return $this;
+	}
+
+
+	/**
+	 * Add a custom callback to match a key or property.
+	 *
+	 * Only needed if the default callback is not enough.
+	 *
+	 * @see Adjuster::replace()
+	 *
+	 * @param string   $key
+	 * @param Callback $callback
+	 *
+	 * @return $this
+	 */
+	public function callback( string $key, Callback $callback ): Adjuster {
+		$this->callbacks[ $key ] = $callback;
+		return $this;
 	}
 
 
@@ -52,33 +86,13 @@ class Matcher implements SnapshotMatcher {
 				if ( ! isset( $data[ $key ] ) ) {
 					throw new \InvalidArgumentException( 'Key ' . $key . ' does not exist in the array.' );
 				}
-				$data[ $key ] = $this->match( $data[ $key ], $callback );
+				$data[ $key ] = $callback->replace_value( $data[ $key ], $data );
 			} elseif ( \is_object( $data ) ) {
 				$value = $this->get_private_property( $data, $key );
-				$this->set_private_property( $data, $key, $this->match( $value, $callback ) );
+				$this->set_private_property( $data, $key, $callback->replace_value( $value, $data ) );
 			}
 		}
 		return $data;
-	}
-
-
-	/**
-	 * Run a callback on a value.
-	 *
-	 * - Callback should have an assertion call inside it.
-	 * - Callback must return the same value type as the value passed in.
-	 *
-	 * @template T
-	 * @phpstan-param T                            $value
-	 *
-	 * @param mixed                                $value
-	 * @param (\Closure( mixed, array|object=): T) $callback
-	 *
-	 * @phpstan-return T
-	 * @return mixed
-	 */
-	public function match( $value, \Closure $callback ) {
-		return $callback( $value, $this->data );
 	}
 
 

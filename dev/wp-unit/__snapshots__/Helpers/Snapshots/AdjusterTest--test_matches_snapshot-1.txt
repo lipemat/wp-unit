@@ -1,0 +1,11 @@
+Array (
+    'date' =>
+        DateTime Object (
+         'date' => '2025-01-01 00:00:00.000000',
+         'timezone_type' => 3,
+         'timezone' => 'UTC',
+        )
+    'id' => 99,
+    'time' => 1735689600,
+    'name' => 'With Date Property',
+)

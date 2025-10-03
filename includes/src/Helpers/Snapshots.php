@@ -3,7 +3,7 @@ declare( strict_types=1 );
 
 namespace Lipe\WP_Unit\Helpers;
 
-use Lipe\WP_Unit\Helpers\Snapshots\SnapshotMatcher;
+use Lipe\WP_Unit\Helpers\Snapshots\SnapshotAdjuster;
 
 /**
  * Snapshot testing specific to the lipemat version of wp-unit.
@@ -113,8 +113,8 @@ class Snapshots {
 
 
 	/**
-	 * @param mixed|SnapshotMatcher $data
-	 * @param bool                  $with_falsy
+	 * @param mixed|SnapshotAdjuster $data
+	 * @param bool                   $with_falsy
 	 *
 	 * @return string
 	 */
@@ -122,7 +122,7 @@ class Snapshots {
 		if ( ! $with_falsy && ( false === $data || null === $data || '' === $data ) ) {
 			return '';
 		}
-		if ( $data instanceof SnapshotMatcher ) {
+		if ( $data instanceof SnapshotAdjuster ) {
 			$data = $data->get_adjusted_snapshot();
 		}
 
