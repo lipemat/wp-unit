@@ -3,6 +3,8 @@ declare( strict_types=1 );
 
 namespace Lipe\WP_Unit\Helpers;
 
+use Lipe\WP_Unit\Helpers\Snapshots\SnapshotMatcher;
+
 /**
  * Snapshot testing specific to the lipemat version of wp-unit.
  *
@@ -106,10 +108,20 @@ class Snapshots {
 	}
 
 
+	/**
+	 * @param mixed|SnapshotMatcher $data
+	 * @param bool                  $with_falsy
+	 *
+	 * @return string
+	 */
 	protected function format_data( $data, bool $with_falsy = false ): string {
 		if ( ! $with_falsy && ( false === $data || null === $data || '' === $data ) ) {
 			return '';
 		}
+		if ( $data instanceof SnapshotMatcher ) {
+			$data = $data->get_snapshot();
+		}
+
 		if ( $with_falsy ) {
 			$data = $this->formatted_var_export( $data );
 		} elseif ( ! \is_scalar( $data ) ) {
@@ -120,8 +132,8 @@ class Snapshots {
 	}
 
 
-	protected function formatted_print_r( $value ): string {
-		$export = \print_r( $value, true );
+	protected function formatted_print_r( $data ): string {
+		$export = \print_r( $data, true );
 
 		$lines = \explode( "\n", $export );
 
@@ -146,8 +158,8 @@ class Snapshots {
 	}
 
 
-	protected function formatted_var_export( $value ): string {
-		$export = \var_export( $value, true );
+	protected function formatted_var_export( $data ): string {
+		$export = \var_export( $data, true );
 
 		$lines = \explode( "\n", $export );
 		$export = \array_map( function( $line ) {
@@ -185,9 +197,11 @@ class Snapshots {
 		return \implode( "\n", $export );
 	}
 
+
 	protected function normalize_line_endings( $string ) {
 		return \str_replace( "\r\n", "\n", $string );
 	}
+
 
 	protected function get_snapshot_file_path(): string {
 		return $this->get_snapshots_directory() . DIRECTORY_SEPARATOR . $this->get_test_name() . '.txt';

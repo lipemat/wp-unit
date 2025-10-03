@@ -4,7 +4,7 @@ apply: always
 
 # AI Assistant Guidelines
 
-@version 1.8.6
+@version 1.8.7
 
 ## General Coding Standards for all contexts
 - Use Yoda conditional style.
@@ -68,6 +68,7 @@ apply: always
 - Test functions using a data provider MUST accept one parameter for each value provided, rather than a single array; parameter names MUST match the keys of the data provider.
 - Test function parameter types MUST be strictly typed.
 - Use PHP 8+ function attributes (`#[DataProvider(...)]`) to specify data providers for tests.
+- Put data providers at the end of the test class after all test methods.
 - Do not include inline comments.
 - Use PHPUnit 11 for testing. Consider deprecated phpunit methods.
 

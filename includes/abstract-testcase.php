@@ -8,6 +8,7 @@ use Lipe\WP_Unit\Helpers\Global_Hooks;
 use Lipe\WP_Unit\Helpers\Hook_State;
 use Lipe\WP_Unit\Helpers\Setup_Teardown_State;
 use Lipe\WP_Unit\Helpers\Snapshots;
+use Lipe\WP_Unit\Helpers\Snapshots\SnapshotMatcher;
 use Lipe\WP_Unit\Helpers\Wp_Die_Usage;
 
 require_once __DIR__ . '/factory.php';
@@ -685,10 +686,10 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 *
 	 * @since      3.6.0
 	 *
-	 * @see        WP_Unit_Snapshots
 	 * @see        WP_UnitTestCase_Base::assertMatchesFullSnapshot()
+	 * @see        Snapshots\Matcher
 	 *
-	 * @param mixed  $actual  A value which may be stored in a file using `print_r()`.
+	 * @param mixed|SnapshotMatcher $actual A value which may be stored in a file using `print_r()`.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 * @param string $id      Optional. An identifier to be appended to the snapshot filename.
 	 *
@@ -696,7 +697,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 */
 	public function assertMatchesSnapshot( $actual, string $message = '', string $id = '' ): void {
 		require_once __DIR__ . '/src/Helpers/Snapshots.php';
-		$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2 );
+		$backtrace = \debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2 );
 
 		$snapshots = Snapshots::factory( $backtrace, $id );
 		$snapshots->assert_matches_snapshot( $actual, $this, $message );
@@ -711,9 +712,9 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 *
 	 * @since 4.3.0
 	 *
-	 * @see   WP_Unit_Snapshots
+	 * @see Snapshots\Matcher
 	 *
-	 * @param mixed $actual A value which may be stored in a file using `\var_export()`.
+	 * @param mixed|SnapshotMatcher $actual A value which may be stored in a file using `\var_export()`.
 	 * @param string $id      Optional. An identifier to be appended to the snapshot filename.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 *

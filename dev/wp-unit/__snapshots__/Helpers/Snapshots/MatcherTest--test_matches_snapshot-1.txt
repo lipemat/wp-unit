@@ -1,0 +1,13 @@
+class@anonymous Object
+(
+    [date:class@anonymous:private] => DateTime Object
+        (
+            [date] => 2025-01-01 00:00:00.000000
+            [timezone_type] => 3
+            [timezone] => UTC
+        )
+
+    [name:class@anonymous:private] => With Date Property
+    [id] => 99
+    [time] => 1735689600
+)
