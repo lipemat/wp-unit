@@ -706,15 +706,14 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	/**
 	 * Assert a value matches a snapshot.
 	 *
-	 * Newer version of `assertMatchesSnapshot()` that uses
-	 * `\Symfony\Component\VarExporter\VarExporter::export` instead of `print_r()`
+	 * Newer version of `assertMatchesSnapshot()` that uses a custom `\var_export` instead of `print_r()`
 	 * to include false, null and empty values in the snapshot.
 	 *
 	 * @since 4.3.0
 	 *
 	 * @see   WP_Unit_Snapshots
 	 *
-	 * @param mixed  $actual  A value which may be stored in a file using \Symfony\Component\VarExporter\VarExporter::export().
+	 * @param mixed $actual A value which may be stored in a file using `\var_export()`.
 	 * @param string $id      Optional. An identifier to be appended to the snapshot filename.
 	 * @param string $message Optional. Message to display when the assertion fails.
 	 *

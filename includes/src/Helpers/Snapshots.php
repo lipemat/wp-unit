@@ -147,7 +147,7 @@ class Snapshots {
 
 
 	protected function formatted_var_export( $value ): string {
-		$export = var_export( $value, true );
+		$export = \var_export( $value, true );
 
 		$lines = \explode( "\n", $export );
 		$export = \array_map( function( $line ) {
