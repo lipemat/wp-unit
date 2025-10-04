@@ -24,7 +24,7 @@ class SnapshotsTest extends \WP_UnitTestCase {
 
 		$data = [ 'foo' => 'bar', 'empty' => false, 'null' => null, 'array' => [ 'foo' => 'bar' ] ];
 		$snapshot->update_snapshot( $data, true );
-		$this->assertMatchesFullSnapshot( $data, '', 'identifier' );
+		$this->assertMatchesSnapshot( $data, '', 'identifier', true );
 
 		$snapshot = Snapshots::factory( [ '', [ 'class' => __CLASS__, 'function' => 'test_get_snapshot' ] ], 'print-r' );
 		$this->assertSame( "Array
@@ -41,7 +41,7 @@ class SnapshotsTest extends \WP_UnitTestCase {
 ", \implode( "\n", \array_map( '\rtrim', \explode( "\n", $snapshot->get_snapshot() ) ) ) );
 
 		$snapshot->update_snapshot( $data, false );
-		$this->assertMatchesFullSnapshot( $data, '', 'identifier' );
+		$this->assertMatchesSnapshot( $data, '', 'identifier', true );
 	}
 
 
@@ -122,7 +122,7 @@ class SnapshotsTest extends \WP_UnitTestCase {
 			private $internal_class;
 		};
 
-		$this->expectDeprecated( 'WP_UnitTestCase_Base::assertMatchesSnapshot' );
+		$this->expectDeprecated( 'WP_UnitTestCase_Base::assertMatchesFullSnapshot' );
 		$this->expectDeprecated( 'Lipe\WP_Unit\Helpers\Snapshots::assert_matches_snapshot' );
 		$this->assertMatchesSnapshot( $class, '', 'not-full' );
 		$this->assertMatchesFullSnapshot( $class, '', 'full' );
@@ -140,7 +140,7 @@ class SnapshotsTest extends \WP_UnitTestCase {
 			'post_author'  => 1,
 		] );
 
-		$this->expectDeprecated( 'WP_UnitTestCase_Base::assertMatchesSnapshot' );
+		$this->expectDeprecated( 'WP_UnitTestCase_Base::assertMatchesFullSnapshot' );
 		$this->expectDeprecated( 'Lipe\WP_Unit\Helpers\Snapshots::assert_matches_snapshot' );
 		$this->assertMatchesSnapshot( $post, '', 'wp_post' );
 		$this->assertMatchesFullSnapshot( $post, '', 'wp_post-full' );
@@ -149,7 +149,7 @@ class SnapshotsTest extends \WP_UnitTestCase {
 
 	public function test_get_snapshot_file_path(): void {
 		$snapshot = Snapshots::factory( [ '', [ 'class' => __CLASS__, 'function' => 'test_get_snapshot_file_path' ] ], 'identifier' );
-		$path = call_private_method( $snapshot, 'get_snapshot_file_path' );
+		$path = \call_private_method( $snapshot, 'get_snapshot_file_path' );
 		$this->assertSame( WP_TESTS_SNAPSHOTS_DIR . '\/Helpers\SnapshotsTest--test_get_snapshot_file_path-identifier-1.txt', $path );
 	}
 }

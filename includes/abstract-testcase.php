@@ -689,24 +689,23 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @see        WP_UnitTestCase_Base::assertMatchesFullSnapshot()
 	 * @see        Snapshots\Adjuster
 	 *
-	 * @todo       Remove in version 5 in favor or renaming `assertMatchesFullSnapshot()` to `assertMatchesSnapshot()`.
 	 *
-	 * @deprecated 4.7.0
-	 *
-	 * @param mixed|SnapshotAdjuster $actual  A value which may be stored in a file using `print_r()`.
-	 * @param string                 $message Optional. Message to display when the assertion fails.
-	 * @param string                 $id      Optional. An identifier to be appended to the snapshot filename.
+	 * @param mixed|SnapshotAdjuster $actual     A value which may be stored in a file using `print_r()`.
+	 *                                           A SnapshotAdjuster instance may be used to modify the snapshot.
+	 * @param string                 $message    Optional. Message to display when the assertion fails.
+	 * @param string                 $id         Optional. An identifier to be appended to the snapshot filename.
+	 * @param bool                   $with_falsy To include the full snapshot including falsy values
+	 *                                           Must be set to `true` or use `expectDeprecated()` to silence the warning.
+	 *                                           Will be removed in version 5.0.0.
 	 *
 	 * @return void
 	 */
-	public function assertMatchesSnapshot( $actual, string $message = '', string $id = '' ): void {
-		_deprecated_function( __METHOD__, '4.7.0', 'WP_UnitTestCase_Base::assertMatchesFullSnapshot()' );
-
+	public function assertMatchesSnapshot( $actual, string $message = '', string $id = '', bool $with_falsy = false ): void {
 		require_once __DIR__ . '/src/Helpers/Snapshots.php';
 		$backtrace = \debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2 );
 
 		$snapshots = Snapshots::factory( $backtrace, $id );
-		$snapshots->assert_matches_snapshot( $actual, $this, $message );
+		$snapshots->assert_matches_snapshot( $actual, $this, $message, $with_falsy );
 	}
 
 
@@ -716,17 +715,24 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * Newer version of `assertMatchesSnapshot()` that uses a custom `\var_export` instead of `print_r()`
 	 * to include false, null and empty values in the snapshot.
 	 *
-	 * @since 4.3.0
+	 * @since      4.3.0
 	 *
-	 * @see   Snapshots\Adjuster
+	 * @see        Snapshots\Adjuster
+	 *
+	 * @todo       Remove in version 5 in favor of `assertMatchesSnapshot()`.
+	 *
+	 * @deprecated 4.7.0
 	 *
 	 * @param mixed|SnapshotAdjuster $actual  A value which may be stored in a file using `\var_export()`.
+	 *                                        A SnapshotAdjuster instance may be used to modify the snapshot.
 	 * @param string                 $id      Optional. An identifier to be appended to the snapshot filename.
 	 * @param string                 $message Optional. Message to display when the assertion fails.
 	 *
 	 * @return void
 	 */
 	public function assertMatchesFullSnapshot( $actual, string $message = '', string $id = '' ): void {
+		_deprecated_function( __METHOD__, '4.7.0', 'WP_UnitTestCase_Base::assertMatchesSnapshot( with_falsy: true )' );
+
 		require_once __DIR__ . '/src/Helpers/Snapshots.php';
 		$backtrace = \debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2 );
 

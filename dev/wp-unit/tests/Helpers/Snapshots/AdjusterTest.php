@@ -42,7 +42,7 @@ class AdjusterTest extends \WP_UnitTestCase {
 			} )
 			->replace( 'time', fn( $value ) => ( new \DateTime( '2025-01-01 00:00:00' ) )->getTimestamp() );
 
-		$this->assertMatchesFullSnapshot( $matcher );
+		$this->assertMatchesSnapshot( $matcher, '', '', true );
 
 		$matcher = new Adjuster( $class, [
 			'id'   => Callback::factory( fn( $value ) => 99 ),
@@ -54,7 +54,7 @@ class AdjusterTest extends \WP_UnitTestCase {
 			'time' => Callback::factory( fn( $value ) => ( new \DateTime( '2025-01-01 00:00:00' ) )->getTimestamp() ),
 		] );
 
-		$this->assertMatchesFullSnapshot( $matcher );
+		$this->assertMatchesSnapshot( $matcher, '', '', true );
 	}
 
 
