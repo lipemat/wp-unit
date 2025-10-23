@@ -4,13 +4,19 @@ declare( strict_types=1 );
 
 namespace Lipe\WP_Unit\Helpers\Snapshots;
 
+use Lipe\WP_Unit\Utils\Classes;
+
 /**
  * Property or array key callback matcher for snapshots.
+ *
+ * - May be used to adjust snapshot data before comparison.
+ * - May also be used outside snapshots to adjust data before matching.
  *
  * @author Mat Lipe
  * @since  4.7.0
  *
- * @see MatcherTest::test_matches_snapshot for some examples.
+ * @see AdjusterTest::test_matches_snapshot for snapshot examples.
+ * @see AdjusterTest::test_matches_snapshot_with_callback for invoke examples.
  *
  * @phpstan-type REPLACER \Closure( mixed, array|object=): mixed
  */
@@ -38,6 +44,22 @@ class Adjuster implements SnapshotAdjuster {
 	public function __construct( $data, array $callbacks = [] ) {
 		$this->data = $data;
 		$this->callbacks = $callbacks;
+	}
+
+
+	/**
+	 * Invoke this class as a callback directly.
+	 *
+	 * - May be called using `\array_map( $adjuster, $data)`
+	 * - Or as a method on an object like `$adjuster($data)`
+	 *
+	 * @param array|object $data
+	 *
+	 * @return array|object
+	 */
+	public function __invoke( $data ) {
+		$this->data = $data;
+		return $this->get_adjusted_snapshot();
 	}
 
 
@@ -88,8 +110,8 @@ class Adjuster implements SnapshotAdjuster {
 				}
 				$data[ $key ] = $callback->replace_value( $data[ $key ], $data );
 			} elseif ( \is_object( $data ) ) {
-				$value = $this->get_private_property( $data, $key );
-				$this->set_private_property( $data, $key, $callback->replace_value( $value, $data ) );
+				$value = Classes::in()->get_private_property( $data, $key );
+				Classes::in()->set_private_property( $data, $key, $callback->replace_value( $value, $data ) );
 			}
 		}
 		return $data;
@@ -97,39 +119,25 @@ class Adjuster implements SnapshotAdjuster {
 
 
 	/**
-	 * Get the value of a private constant or property from an object.
+	 * Create an adjuster to be invoked later with data.
 	 *
-	 * @param object $object   An instantiated object or class name that we will run a method on.
-	 * @param string $property Property name or constant name to get.
+	 * @see Adjuster::__invoke()
 	 *
-	 * @return mixed
+	 * @return Adjuster
 	 */
-	protected function get_private_property( object $object, string $property ) {
-		$reflection = new \ReflectionClass( \get_class( $object ) );
-		if ( $reflection->hasProperty( $property ) ) {
-			$reflection_property = $reflection->getProperty( $property );
-			$reflection_property->setAccessible( true );
-			return $reflection_property->getValue( $object );
-		}
-		throw new \InvalidArgumentException( "Property `{$property}` does not exist." );
+	public static function create(): Adjuster {
+		return new self( [] );
 	}
 
 
 	/**
-	 * Set the value of a private property on an object.
+	 * A simple helper to create a new instance.
 	 *
-	 * @param object $object   An instantiated object to set property on.
-	 * @param string $property Property name to set.
-	 * @param mixed  $value    Value to set.
-	 *
-	 * @throws \ReflectionException
-	 *
-	 * @return void
+	 * @phpstan-param array|object            $data      Array or object to match.
+	 * @phpstan-param array<string, Callback> $callbacks Array of callbacks matching the keys or properties.
+	 *                                                   May also be set using `replace` or `callback`.
 	 */
-	protected function set_private_property( object $object, string $property, $value ): void {
-		$reflection = new \ReflectionClass( \get_class( $object ) );
-		$reflection_property = $reflection->getProperty( $property );
-		$reflection_property->setAccessible( true );
-		$reflection_property->setValue( $object, $value );
+	public static function factory( $data, array $callbacks = [] ): Adjuster {
+		return new self( $data, $callbacks );
 	}
 }

@@ -58,6 +58,33 @@ class AdjusterTest extends \WP_UnitTestCase {
 	}
 
 
+	public function test_adjuster_used_as_callback_outside_snapshot(): void {
+		$student = [
+			'id'          => 0,
+			'firstName'   => 'Test',
+			'lastName'    => 'Student',
+			'email'       => 'another@gmail.com',
+			'lastChanged' => (int) \gmdate( 'U' ),
+		];
+
+		$adjuster = Adjuster::create()
+		                    ->replace( 'lastChanged', fn() => (int) \gmdate( 'U' ) );
+
+		$expected = [
+			'id'          => 0,
+			'firstName'   => 'Test',
+			'lastName'    => 'Student',
+			'email'       => 'another@gmail.com',
+			'lastChanged' => \time(),
+		];
+
+		$this->assertSame( $student, $adjuster( $student ) );
+
+		$expected = \array_map( $adjuster, [ $expected, $expected ] );
+		$this->assertSame( $expected, \array_map( $adjuster, [ $student, $student ] ) );
+	}
+
+
 	public function test_get_snapshot_with_valid_array(): void {
 		$data = [
 			'key1' => 'value1',
