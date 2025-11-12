@@ -271,17 +271,16 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 	 *                                    but continue the unit test.
 	 */
 	public function dieHandler( $message ) {
-		$this->_last_response .= ob_get_clean();
+		$this->_last_response .= (string) \ob_get_clean();
 
 		if ( '' === $this->_last_response ) {
-			if ( is_scalar( $message ) ) {
+			if ( \is_scalar( $message ) ) {
 				throw new WPAjaxDieStopException( (string) $message );
-			} else {
-				throw new WPAjaxDieStopException( '0' );
 			}
-		} else {
-			throw new WPAjaxDieContinueException( $message );
+			throw new WPAjaxDieStopException( '0' );
 		}
+
+		throw new WPAjaxDieContinueException( $message );
 	}
 
 	/**
@@ -378,21 +377,24 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 	 * 2. Catch the exception
 	 * 3. Return the result that would be sent.
 	 *
-	 * @param callable $callable
-	 *
 	 * @author Mat Lipe
-	 *
-	 * @see WP_Ajax_UnitTestCase::_getJsonResult()
 	 *
 	 * @since  1.12.0
 	 *
-	 * @return mixed
+	 * @see WP_Ajax_UnitTestCase::_getJsonResult()
+	 *
+	 * @param callable $callable
+	 *
+	 * @return string
 	 */
-	protected function _getResult( callable $callable ) {
+	protected function _getResult( callable $callable ): string {
 		$this->_last_response = '';
 		try {
 			$this->_handleAjaxCustom( $callable );
 		} catch ( \Exception $exception ) {
+			if ( '' === $this->_last_response ) {
+				return $exception->getMessage();
+			}
 			return $this->_last_response;
 		}
 	}

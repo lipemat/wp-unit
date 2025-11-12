@@ -22,6 +22,6 @@ class WP_Ajax_UnitTestCaseTest extends \WP_Ajax_UnitTestCase {
 			check_ajax_referer( 'test-nonce' );
 			wp_send_json_success( 'test' );
 		} );
-		$this->assertSame( '', $result );
+		$this->assertSame( '-1', $result );
 	}
 }
