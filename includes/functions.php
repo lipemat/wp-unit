@@ -103,7 +103,7 @@ if ( ! \function_exists( 'allow_extending_final' ) ) {
 			return;
 		}
 
-		BypassFinals::enable();
+		BypassFinals::enable( false );
 		BypassFinals::setWhitelist( \array_unique( $bypass ) );
 	}
 }
