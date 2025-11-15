@@ -8,7 +8,6 @@
  * Polyfills are required from composer.
  */
 
-use DG\BypassFinals;
 use Lipe\WP_Unit\Helpers\Global_Hooks;
 
 if ( file_exists( dirname( __DIR__ ) . '/vendor/autoload.php' ) ) {
@@ -289,9 +288,10 @@ if ( isset( $GLOBALS['wp_tests_filters'] ) ) {
 
 // Preset BypassFinals to allow WP Core final classes to be mocked.
 // Not required for non WP Core classes as the `allow_extending_final` helper function is available.
-if ( isset( $GLOBALS['wp_tests_bypass_finals'] ) ) {
-	BypassFinals::enable();
-	BypassFinals::setWhitelist( $GLOBALS['wp_tests_bypass_finals'] );
+if ( isset( $GLOBALS['wp_tests_bypass_finals'] ) && \is_array( $GLOBALS['wp_tests_bypass_finals'] ) ) {
+	foreach ( $GLOBALS['wp_tests_bypass_finals'] as $class ) {
+		allow_extending_final( $class );
+	}
 }
 
 // Load WordPress.
