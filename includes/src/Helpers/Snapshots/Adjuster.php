@@ -4,7 +4,8 @@ declare( strict_types=1 );
 
 namespace Lipe\WP_Unit\Helpers\Snapshots;
 
-use Lipe\WP_Unit\Utils\Classes;
+use Lipe\WP_Unit\Exceptions\TestHelperException;
+use Lipe\WP_Unit\Utils\PrivateAccess;
 
 /**
  * Property or array key callback matcher for snapshots.
@@ -110,8 +111,12 @@ class Adjuster implements SnapshotAdjuster {
 				}
 				$data[ $key ] = $callback->replace_value( $data[ $key ], $data );
 			} elseif ( \is_object( $data ) ) {
-				$value = Classes::in()->get_private_property( $data, $key );
-				Classes::in()->set_private_property( $data, $key, $callback->replace_value( $value, $data ) );
+				try {
+					$value = PrivateAccess::in()->get_private_property( $data, $key );
+				} catch ( TestHelperException $e ) {
+					throw new \InvalidArgumentException( 'Property `' . $key . '` does not exist.' );
+				}
+				PrivateAccess::in()->set_private_property( $data, $key, $callback->replace_value( $value, $data ) );
 			}
 		}
 		return $data;

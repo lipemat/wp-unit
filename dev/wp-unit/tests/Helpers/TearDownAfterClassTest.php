@@ -3,6 +3,8 @@ declare( strict_types=1 );
 
 namespace Lipe\WP_Unit\Helpers;
 
+use Lipe\WP_Unit\Utils\PrivateAccess;
+
 /**
  * @author Mat Lipe
  * @since  April 2024
@@ -14,7 +16,7 @@ class TearDownAfterClassTest extends \WP_UnitTestCase {
 
 
 	public function tear_down(): void {
-		set_private_property( Setup_Teardown_State::class, 'setup', true );
+		PrivateAccess::in()->set_private_property( Setup_Teardown_State::class, 'setup', true );
 		parent::tear_down();
 	}
 
@@ -27,7 +29,7 @@ class TearDownAfterClassTest extends \WP_UnitTestCase {
 			self::tear_down_after_class();
 			self::set_up_before_class();
 		} finally {
-			set_private_property( Setup_Teardown_State::class, 'tear_down_after_classes', [] );
+			PrivateAccess::in()->set_private_property( Setup_Teardown_State::class, 'tear_down_after_classes', [] );
 		}
 	}
 }

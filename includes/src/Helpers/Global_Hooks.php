@@ -4,6 +4,7 @@ declare( strict_types=1 );
 namespace Lipe\WP_Unit\Helpers;
 
 use Lipe\WP_Unit\Traits\Singleton;
+use Lipe\WP_Unit\Utils\PrivateAccess;
 
 /**
  * Global hooks and other global state management.
@@ -63,8 +64,6 @@ final class Global_Hooks {
 		$GLOBALS['wp_rest_additional_fields'] = $hooks->get_wp_rest_additional_fields();
 		$GLOBALS['wp_scripts'] = $hooks->get_wp_scripts();
 		$GLOBALS['wp_styles'] = $hooks->get_wp_styles();
-		if ( \function_exists( 'set_private_property' ) ) {
-			set_private_property( \WP_Block_Type_Registry::class, 'instance', $hooks->get_wp_block_type_registry() );
-		}
+		PrivateAccess::in()->set_private_property( \WP_Block_Type_Registry::class, 'instance', $hooks->get_wp_block_type_registry() );
 	}
 }

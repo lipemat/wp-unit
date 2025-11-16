@@ -3,6 +3,8 @@ declare( strict_types=1 );
 
 namespace Lipe\WP_Unit\Helpers;
 
+use Lipe\WP_Unit\Utils\PrivateAccess;
+
 /**
  * @author Mat Lipe
  * @since  April 2024
@@ -23,7 +25,7 @@ class SetUpTest extends \WP_UnitTestCase {
 			$this->assertInstanceOf( \LogicException::class, $e );
 		}
 
-		set_private_property( Setup_Teardown_State::class, 'setup', true );
+		PrivateAccess::in()->set_private_property( Setup_Teardown_State::class, 'setup', true );
 	}
 
 
