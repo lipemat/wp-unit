@@ -17,7 +17,7 @@ use Lipe\WP_Unit\Utils\PrivateAccess;
  * @since  4.7.0
  *
  * @see AdjusterTest::test_matches_snapshot for snapshot examples.
- * @see AdjusterTest::test_matches_snapshot_with_callback for invoke examples.
+ * @see AdjusterTest::test_adjuster_used_as_callback_outside_snapshot for invoke examples.
  *
  * @phpstan-type REPLACER \Closure( mixed, array|object=): mixed
  */
