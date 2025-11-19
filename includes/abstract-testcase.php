@@ -604,20 +604,12 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 
 	/**
-	 * Checks each of the WP_Query is_* functions/properties against expected boolean value.
+	 * @todo       Remove in version 5.
 	 *
-	 * Any properties that are listed by name as parameters will be expected to be true; all others are
-	 * expected to be false. For example, assertQueryTrue( 'is_single', 'is_feed' ) means is_single()
-	 * and is_feed() must be true and everything else must be false to pass.
-	 *
-	 * @since 2.5.0
-	 * @since 3.8.0 Moved from `Tests_Query_Conditionals` to `WP_UnitTestCase`.
-	 * @since 5.3.0 Formalized the existing `...$prop` parameter by adding it
-	 *              to the function signature.
-	 *
-	 * @param string ...$prop Any number of WP_Query properties that are expected to be true for the current request.
+	 * @deprecated 4.8.0 - Will be removed in version 5.
 	 */
 	public function assertQueryTrue( ...$prop ) {
+		_deprecated_function( __METHOD__, '4.8.0' );
 		global $wp_query;
 
 		$all = [
