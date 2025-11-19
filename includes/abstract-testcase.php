@@ -483,6 +483,48 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 
 	/**
+	 * Asserts that two strings are equal, ignoring the leading and trailing
+	 * whitespace of each line in the string.
+	 *
+	 * For comparing two strings that may have different tabs, spaces or newlines
+	 * but the same trimmed string contents.
+	 *
+	 * @since 4.8.0
+	 *
+	 * @param mixed  $expected The expected value.
+	 * @param mixed  $actual   The actual value.
+	 * @param string $message  Optional. Message to display when the assertion fails.
+	 *
+	 * @return void
+	 */
+	public function assertSameIgnoreLeadingWhitespace( $expected, $actual, $message = '' ) {
+		$trim_whitespace = static function( $value ) {
+			return \implode( "\n", \array_map( function( $value ) {
+				return \trim( \str_replace( "\r\n", "\n", $value ) );
+			}, \explode( "\n", $value ) ) );
+		};
+
+		if ( null !== $actual ) {
+			$actual = map_deep( $actual, static function( $value ) use ( $trim_whitespace ) {
+				if ( \is_string( $value ) ) {
+					return $trim_whitespace( $value );
+				}
+				return $value;
+			} );
+		}
+		if ( null !== $expected ) {
+			$expected = map_deep( $expected, static function( $value ) use ( $trim_whitespace ) {
+				if ( \is_string( $value ) ) {
+					return $trim_whitespace( $value );
+				}
+				return $value;
+			} );
+		}
+
+		self::assertSame( $expected, $actual, $message );
+	}
+
+	/**
 	 * Asserts that the contents of two un-keyed, single arrays are the same, without accounting for the order of elements.
 	 *
 	 * @since 5.6.0
