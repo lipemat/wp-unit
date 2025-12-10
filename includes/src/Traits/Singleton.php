@@ -7,6 +7,7 @@ namespace Lipe\WP_Unit\Traits;
  * @author Mat Lipe
  * @since  3.7.0
  *
+ * @internal
  */
 trait Singleton {
 	final private function __construct() {
