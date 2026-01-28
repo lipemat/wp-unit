@@ -75,6 +75,30 @@ function tests_add_filter( $hook_name, $callback, $priority = 10, $accepted_args
 	return true;
 }
 
+/**
+ * Populate an option in the test database when options are available but
+ * before any plugins are loaded.
+ *
+ * Different from using `$GLOBALS['wp_tests_options']` because this function
+ * allows for settings to be changed later.
+ *
+ * @since 4.9.0
+ *
+ * @param string $option_name - Name of the option to set.
+ * @param mixed  $value       - Value to set the option to.
+ *
+ * @return void
+ */
+function tests_add_option( string $option_name, $value ): void {
+	tests_add_filter( 'muplugins_loaded', function() use ( $option_name, $value ) {
+		update_option( $option_name, $value );
+		if ( is_multisite() ) {
+			update_network_option( null, $option_name, $value );
+		}
+	}, - 1 );
+}
+
+
 if ( ! \function_exists( 'allow_extending_final' ) ) {
 	/**
 	 * Allow extending a particular final class.

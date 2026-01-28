@@ -17,4 +17,7 @@ tests_add_filter( 'wp-unit/reset-container', function() {
 	$GLOBALS['bootstrap/testing'] = false;
 } );
 
+tests_add_option( 'bootstrap/testing', 'strapped-on' );
+tests_add_option( 'default_role', 'editor' );
+
 require BOOTSTRAP;
