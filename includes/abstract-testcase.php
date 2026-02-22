@@ -10,6 +10,7 @@ use Lipe\WP_Unit\Helpers\Setup_Teardown_State;
 use Lipe\WP_Unit\Helpers\Snapshots;
 use Lipe\WP_Unit\Helpers\Snapshots\SnapshotAdjuster;
 use Lipe\WP_Unit\Helpers\Wp_Die_Usage;
+use PHPUnit\Framework\ExpectationFailedException;
 
 require_once __DIR__ . '/factory.php';
 
@@ -483,6 +484,54 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 
 	/**
+	 * Asserts that a condition becomes true within a given timeout.
+	 *
+	 * @since    4.9.0
+	 *
+	 * @phpstan-param callable(int): void $assertion
+	 *
+	 * @example  ```php
+	 *     $this->assertWaitFor( function ( int $i )  {
+	 *         $this->assertTrue( Api::in()->is_connected() );
+	 *     }, 10, 100 );
+	 * ```
+	 *
+	 *
+	 * @formatter:off
+	 *
+	 * @param callable $assertion The condition to check.
+	 * @param int      $timeout   The maximum time to wait in seconds.
+	 * @param int      $interval  The time to wait between checks in milliseconds.
+	 *
+	 * @formatter:on
+	 *
+	 * @throws ExpectationFailedException
+	 */
+	protected function assertWaitFor( callable $assertion, int $timeout = 5, int $interval = 500 ): void {
+		$start = \microtime( true );
+		$exception = null;
+		$run = - 1;
+
+		while ( \microtime( true ) - $start < $timeout ) {
+			try {
+				$assertion( ++ $run );
+				return;
+			} catch ( ExpectationFailedException $e ) {
+				$exception = $e;
+				\usleep( $interval * 1_000 );
+			}
+		}
+
+		// If the loop finishes without the assertion passing, rethrow the last exception
+		if ( $exception instanceof ExpectationFailedException ) {
+			throw new ExpectationFailedException( $exception->getMessage() );
+		}
+
+		self::fail( "The condition did not become true within the specified timeout of {$timeout} seconds." );
+	}
+
+
+	/**
 	 * Asserts that two strings are equal, ignoring the leading and trailing
 	 * whitespace of each line in the string.
 	 *
@@ -695,8 +744,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		$message = '';
 
 		foreach ( $all as $query_thing ) {
-			// @phpstan-ignore-next-line -- Using variable property access.
-			$result = is_callable( $query_thing ) ? $query_thing() : $wp_query->{$query_thing};
+			$result = \is_callable( $query_thing ) ? $query_thing() : $wp_query->{$query_thing};
 
 			if ( in_array( $query_thing, $prop, true ) ) {
 				if ( ! $result ) {

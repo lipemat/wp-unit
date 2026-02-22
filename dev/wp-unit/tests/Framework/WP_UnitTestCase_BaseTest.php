@@ -27,6 +27,20 @@ class WP_UnitTestCase_BaseTest extends \WP_UnitTestCase {
 	}
 
 
+	public function test_assertWaitFor(): void {
+		$ran = 0;
+		$this->assertWaitFor( function( $i ) use ( &$ran ) {
+			$ran ++;
+			if ( $i < 2 ) {
+				$this->assertTrue( false === $i );
+			}
+			$this->assertFalse( false );
+		}, 5, 100 );
+
+		$this->assertSame( 3, $ran );
+	}
+
+
 	public static function provideWhitespaceStrings(): array {
 		return [
 			'no whitespace'             => [

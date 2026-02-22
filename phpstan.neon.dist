@@ -20,6 +20,8 @@ parameters:
     - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Util\Test.php
     - vendor/autoload.php
     - vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php
+  scanDirectories:
+    - phar://E:/scripts/phpunit/phpunit-9/phpunit-9.phar/phpunit/Framework
   scanFiles:
     - dev/stubs/stubs.php
     - includes/exceptions.php
