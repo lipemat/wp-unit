@@ -110,6 +110,11 @@ class Adjuster implements SnapshotAdjuster {
 					throw new \InvalidArgumentException( 'Key ' . $key . ' does not exist in the array.' );
 				}
 				$data[ $key ] = $callback->replace_value( $data[ $key ], $data );
+			} elseif ( $data instanceof \stdClass ) {
+				if ( ! isset( $data->$key ) ) {
+					throw new \InvalidArgumentException( 'Key ' . $key . ' does not exist in the object.' );
+				}
+				$data->$key = $callback->replace_value( $data->$key, $data );
 			} elseif ( \is_object( $data ) ) {
 				try {
 					$value = PrivateAccess::in()->get_private_property( $data, $key );

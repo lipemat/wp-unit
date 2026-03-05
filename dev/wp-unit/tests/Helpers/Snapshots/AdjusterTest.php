@@ -138,6 +138,28 @@ class AdjusterTest extends \WP_UnitTestCase {
 	}
 
 
+	public function test_get_snapshot_with_stdClass_object(): void {
+		$data = new \stdClass();
+		$data->key1 = 'value1';
+		$data->key2 = 'value2';
+
+		$matcher = new Adjuster( $data );
+		$matcher->replace( 'key1', fn( $value ) => \strtolower( $value ) );
+		$matcher->replace( 'key2', fn( $value ) => \strtoupper( $value ) );
+
+		$expected = new \stdClass();
+		$expected->key1 = 'value1';
+		$expected->key2 = 'VALUE2';
+
+		$result = $matcher->get_adjusted_snapshot();
+
+		$this->assertSame(
+			( array ) $expected,
+			( array ) $result
+		);
+	}
+
+
 	public function test_get_snapshot_throws_exception_for_missing_key_in_array(): void {
 		$this->expectException( \InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'Key key3 does not exist in the array.' );
