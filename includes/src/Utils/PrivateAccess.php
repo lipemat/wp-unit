@@ -34,7 +34,9 @@ class PrivateAccess {
 		}
 		if ( $reflection->hasProperty( $property ) ) {
 			$reflection_property = $reflection->getProperty( $property );
-			$reflection_property->setAccessible( true );
+			if ( PHP_VERSION_ID < 80200 ) {
+				$reflection_property->setAccessible( true );
+			}
 			if ( $reflection_property->isStatic() ) {
 				return $reflection_property->getValue();
 			}
@@ -69,7 +71,9 @@ class PrivateAccess {
 		}
 		try {
 			$reflection_property = $reflection->getProperty( $property );
-			$reflection_property->setAccessible( true );
+			if ( PHP_VERSION_ID < 80200 ) {
+				$reflection_property->setAccessible( true );
+			}
 		} catch ( \ReflectionException $e ) {
 			throw new TestHelperException( 'Could not reflect property: ' . $e->getMessage(), E_USER_ERROR );
 		}
@@ -106,7 +110,9 @@ class PrivateAccess {
 				$object = $reflection->newInstanceWithoutConstructor();
 			}
 			$method = $reflection->getMethod( $method_name );
-			$method->setAccessible( true );
+			if ( PHP_VERSION_ID < 80200 ) {
+				$method->setAccessible( true );
+			}
 			return $method->invokeArgs( $object, $parameters );
 		} catch ( \ReflectionException $e ) {
 			throw new TestHelperException( 'Could not reflect method: ' . $e->getMessage(), E_USER_ERROR );
