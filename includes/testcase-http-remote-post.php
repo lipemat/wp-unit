@@ -1,5 +1,8 @@
 <?php
 
+use Lipe\WP_Unit\Utils\PrivateAccess;
+use WpOrg\Requests\Requests;
+
 /**
  * Test remote requests without actually sending them.
  *
@@ -23,44 +26,18 @@
  * @phpstan-import-type SENT from WP_Http_Unit_Test_Transport
  */
 class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
-	/**
-	 * The `Requests` class was deprecated in WP 6.2 in favor
-	 * of a `\WpOrg\Requests\Requests` class.
-	 *
-	 * This method translates the use to the appropriate class
-	 * based on availability.
-	 *
-	 * @todo Remove in favor of simple `use` at the top of the file
-	 *       when WP 6.2 becomes the minimum.
-	 *
-	 * @deprecated DO NOT USE
-	 *
-	 * @return class-string
-	 */
-	protected static function get_request_class() : string {
-		if ( class_exists( \WpOrg\Requests\Requests::class ) ) {
-			return \WpOrg\Requests\Requests::class;
-		}
-		return Requests::class;
-	}
-
-
 	public static function set_up_before_class() {
 		parent::set_up_before_class();
-		putenv( 'PHP_MOCKED_REMOTE_POST=1' );
-		self::get_request_class()::$transport[ serialize( [] ) ] = WP_Http_Unit_Test_Transport::class;
-		self::get_request_class()::$transport[ serialize( [ 'ssl' => false ] ) ] = WP_Http_Unit_Test_Transport::class;
-		self::get_request_class()::$transport[ serialize( [ 'ssl' => true ] ) ] = WP_Http_Unit_Test_Transport::class;
+		\putenv( 'PHP_MOCKED_REMOTE_POST=1' );
+		Requests::$transport[ serialize( [] ) ] = WP_Http_Unit_Test_Transport::class;
+		Requests::$transport[ serialize( [ 'ssl' => false ] ) ] = WP_Http_Unit_Test_Transport::class;
+		Requests::$transport[ serialize( [ 'ssl' => true ] ) ] = WP_Http_Unit_Test_Transport::class;
 
 		// Pre WP 6.4.
-		if ( ! defined( self::get_request_class() . "::DEFAULT_TRANSPORTS" ) ) {
+		if ( ! defined( Requests::class . "::DEFAULT_TRANSPORTS" ) ) {
 			add_filter( 'http_api_transports', [ self::class, 'use_this_class_for_transport' ], 99 );
 		} else {
-			// Swap out the transports with only our mock.
-			$reflection = new \ReflectionClass( self::get_request_class() );
-			$reflectionProperty = $reflection->getProperty( 'transports' );
-			$reflectionProperty->setAccessible( true );
-			$reflectionProperty->setValue( null, [
+			PrivateAccess::in()->set_private_property( Requests::class, 'transports', [
 				WP_Http_Unit_Test_Transport::class => WP_Http_Unit_Test_Transport::class
 			] );
 		}
@@ -69,18 +46,15 @@ class WP_Http_Remote_Post_TestCase extends WP_UnitTestCase {
 
 	public static function tear_down_after_class() {
 		putenv( 'PHP_MOCKED_REMOTE_POST' );
-		self::get_request_class()::$transport = [];
+		Requests::$transport = [];
 
 		// Pre WP 6.4.
-		if ( ! defined( self::get_request_class() . '::DEFAULT_TRANSPORTS' ) ) {
+		if ( ! defined( Requests::class . '::DEFAULT_TRANSPORTS' ) ) {
 			remove_filter( 'http_api_transports', [ self::class, 'use_this_class_for_transport' ], 99 );
 		} else {
 			// Restore the default transports.
-			self::get_request_class()::$transport = [];
-			$reflection = new \ReflectionClass( self::get_request_class());
-			$reflectionProperty = $reflection->getProperty( 'transports' );
-			$reflectionProperty->setAccessible( true );
-			$reflectionProperty->setValue( null, self::get_request_class()::DEFAULT_TRANSPORTS );
+			Requests::$transport = [];
+			PrivateAccess::in()->set_private_property( Requests::class, 'transports', Requests::DEFAULT_TRANSPORTS );
 		}
 
 		parent::tear_down_after_class();
