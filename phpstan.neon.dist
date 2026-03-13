@@ -24,6 +24,7 @@ parameters:
     - phar://E:/scripts/phpunit/phpunit-9/phpunit-9.phar/phpunit/Framework
   scanFiles:
     - dev/stubs/stubs.php
+    - includes/build-visual-html-tree.php
     - includes/exceptions.php
     - includes/functions.php
     - includes/factory/class-wp-unittest-factory.php

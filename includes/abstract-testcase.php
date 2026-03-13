@@ -695,6 +695,53 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 
 	/**
+	 * Check HTML markup (including blocks) for semantic equivalence.
+	 *
+	 * Given two markup strings, assert that they translate to the same semantic HTML tree,
+	 * normalizing tag names, attribute names, and attribute order. Furthermore, attributes
+	 * and class names are sorted and deduplicated, and whitespace in style attributes
+	 * is normalized. Finally, block delimiter comments are recognized and normalized,
+	 * applying the same principles.
+	 *
+	 * @link  https://developer.wordpress.org/news/2026/02/a-better-way-to-test-html-in-wordpress-with-assertequalhtml/
+	 *
+	 * @since 6.9.0
+	 *
+	 * @param string      $expected         The expected HTML.
+	 * @param string      $actual           The actual HTML.
+	 * @param string|null $fragment_context Optional. The fragment context, for example "<td>" expected HTML
+	 *                                      must occur within "<table><tr>" fragment context. Default "<body>".
+	 *                                      Only "<body>" or `null` are supported at this time.
+	 *                                      Set to `null` to parse a full HTML document.
+	 * @param string|null $message          Optional. The assertion error message.
+	 */
+	public function assertEqualHTML( string $expected, string $actual, ?string $fragment_context = '<body>', $message = 'HTML markup was not equivalent.' ): void {
+		require_once __DIR__ . '/build-visual-html-tree.php';
+
+		try {
+			$tree_expected = build_visual_html_tree( $expected, $fragment_context );
+			$tree_actual = build_visual_html_tree( $actual, $fragment_context );
+		} catch ( \Exception $e ) {
+			try {
+				// For PHP 8.4+, we can retry, using the built-in Dom\HTMLDocument parser.
+				if ( \class_exists( 'Dom\HTMLDocument' ) ) {
+					$dom_expected = Dom\HTMLDocument::createFromString( $expected, LIBXML_NOERROR );
+					$tree_expected = build_visual_html_tree( $dom_expected->saveHtml(), $fragment_context );
+					$dom_actual = Dom\HTMLDocument::createFromString( $actual, LIBXML_NOERROR );
+					$tree_actual = build_visual_html_tree( $dom_actual->saveHtml(), $fragment_context );
+				} else {
+					static::fail( $e->getMessage() );
+				}
+			} catch ( \Exception $e ) {
+				static::fail( $e->getMessage() );
+			}
+		}
+
+		static::assertSame( $tree_expected, $tree_actual, $message );
+	}
+
+
+	/**
 	 * @todo       Remove in version 5.
 	 *
 	 * @deprecated 4.8.0 - Will be removed in version 5.
