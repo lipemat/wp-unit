@@ -35,6 +35,7 @@ class PrivateAccess {
 		if ( $reflection->hasProperty( $property ) ) {
 			$reflection_property = $reflection->getProperty( $property );
 			if ( PHP_VERSION_ID < 80200 ) {
+				// @phpstan-disable-next-line
 				$reflection_property->setAccessible( true );
 			}
 			if ( $reflection_property->isStatic() ) {
@@ -72,6 +73,7 @@ class PrivateAccess {
 		try {
 			$reflection_property = $reflection->getProperty( $property );
 			if ( PHP_VERSION_ID < 80200 ) {
+				// @phpstan-disable-next-line
 				$reflection_property->setAccessible( true );
 			}
 		} catch ( \ReflectionException $e ) {
@@ -111,6 +113,7 @@ class PrivateAccess {
 			}
 			$method = $reflection->getMethod( $method_name );
 			if ( PHP_VERSION_ID < 80200 ) {
+				// @phpstan-disable-next-line
 				$method->setAccessible( true );
 			}
 			return $method->invokeArgs( $object, $parameters );
