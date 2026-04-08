@@ -120,6 +120,12 @@ class WP_UnitTestCase_BaseTest extends \WP_UnitTestCase {
   </html>',
 				'result'   => false,
 			],
+			'tab at end' => [
+				'actual'   => '<a href="https://plugins.matlipe.com/asm/category/gender/male/"><span class="advanced-sidebar-category-name">Custom Title</span> <span class="advanced-sidebar-category-count">(12)</span></a>
+',
+				'expected' => '<a href="https://plugins.matlipe.com/asm/category/gender/male/"><span class="advanced-sidebar-category-name">Custom Title</span> <span class="advanced-sidebar-category-count">(12)</span></a>',
+				'result'   => true,
+			],
 		];
 	}
 
