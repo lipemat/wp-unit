@@ -16,10 +16,10 @@ class WP_UnitTestCase_BaseTest extends \WP_UnitTestCase {
 	 */
 	public function test_asssertSameIgnoreLeadingWhitespace( $actual, $expected, bool $result ): void {
 		if ( $result ) {
-			$this->assertSameIgnoreLeadingWhitespace( $expected, $actual );
+			$this->assertSameTrimWhitespace( $expected, $actual );
 		} else {
 			try {
-				$this->assertSameIgnoreLeadingWhitespace( $expected, $actual );
+				$this->assertSameTrimWhitespace( $expected, $actual );
 			} catch ( ExpectationFailedException $e ) {
 				$this->assertSame( 'Failed asserting that two strings are identical.', $e->getMessage() );
 			}

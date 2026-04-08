@@ -546,7 +546,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 *
 	 * @return void
 	 */
-	public function assertSameIgnoreLeadingWhitespace( $expected, $actual, $message = '' ) {
+	public function assertSameTrimWhitespace( $expected, $actual, $message = '' ) {
 		$trim_whitespace = static function( $value ) {
 			$value = \trim( $value );
 			return \implode( "\n", \array_map( function( $value ) {
