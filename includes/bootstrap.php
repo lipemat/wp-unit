@@ -334,6 +334,7 @@ require __DIR__ . '/testcase-wp-cli.php';
 require __DIR__ . '/testcase-xml.php';
 require __DIR__ . '/exceptions.php';
 require __DIR__ . '/utils.php';
+require __DIR__ . '/deprecated.php';
 require __DIR__ . '/spy-rest-server.php';
 require __DIR__ . '/class-wp-http-unit-test-transport.php';
 

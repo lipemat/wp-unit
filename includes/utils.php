@@ -1,4 +1,5 @@
 <?php
+declare( strict_types=1 );
 
 // Misc help functions and utilities.
 
@@ -9,23 +10,24 @@
  * @param int $length Optional. The required length. Default 32.
  * @return string The string.
  */
-function rand_str( $length = 32 ) {
-	return substr( md5( uniqid( rand() ) ), 0, $length );
+function tests_rand_str( int $length = 32 ): string {
+	return \substr( \md5( \uniqid( (string) mt_rand(), true ) ), 0, $length );
 }
 
 /**
  * Returns a string of the required length containing random characters.
  *
  * @param int $length The required length.
+ *
  * @return string The string.
  */
-function rand_long_str( $length ) {
+function tests_rand_long_str( int $length ): string {
 	$chars  = 'abcdefghijklmnopqrstuvwxyz';
 	$string = '';
 
 	for ( $i = 0; $i < $length; $i++ ) {
-		$rand    = rand( 0, strlen( $chars ) - 1 );
-		$string .= substr( $chars, $rand, 1 );
+		$rand = \random_int( 0, \strlen( $chars ) - 1 );
+		$string .= $chars[ $rand ];
 	}
 
 	return $string;
@@ -35,18 +37,19 @@ function rand_long_str( $length ) {
  * Strips leading and trailing whitespace from each line in the string.
  *
  * @param string $txt The text.
+ *
  * @return string Text with line-leading and line-trailing whitespace stripped.
  */
-function strip_ws( $txt ) {
+function tests_strip_ws( string $txt ): string {
 	$lines  = explode( "\n", $txt );
 	$result = array();
 	foreach ( $lines as $line ) {
-		if ( trim( $line ) ) {
+		if ( '' !== \trim( $line ) ) {
 			$result[] = trim( $line );
 		}
 	}
 
-	return trim( implode( "\n", $result ) );
+	return \trim( \implode( "\n", $result ) );
 }
 
 /**
@@ -60,250 +63,15 @@ function strip_ws( $txt ) {
  *
  * @return string
  */
-function strip_ws_all( string $html ): string {
-	$html = preg_replace_callback( '/<[^>]+>/', function( $matches ) {
-		return str_replace( "\n", ' ', $matches[0] );
+function tests_strip_ws_all( string $html ): string {
+	$html = \preg_replace_callback( '/<[^>]+>/', function( $matches ) {
+		return \str_replace( "\n", ' ', $matches[0] );
 	}, $html );
 	// Remove new lines and tabs
-	$html = preg_replace( '/[\n\t]/', '', $html );
+	$html = (string) \preg_replace( '/[\n\t]/', '', $html );
 
 	// Remove multiple spaces
-	return \trim( preg_replace( '/\s\s+/', ' ', $html ) );
-}
-
-/**
- * Helper class for testing code that involves actions and filters.
- *
- * Typical use:
- *
- *     $ma = new MockAction();
- *     add_action( 'foo', array( &$ma, 'action' ) );
- *
- * @since UT (3.7.0)
- */
-class MockAction {
-	public $events;
-	public $debug;
-
-	/**
-	 * PHP5 constructor.
-	 *
-	 * @since UT (3.7.0)
-	 */
-	public function __construct( $debug = 0 ) {
-		$this->reset();
-		$this->debug = $debug;
-	}
-
-	/**
-	 * @since UT (3.7.0)
-	 */
-	public function reset() {
-		$this->events = array();
-	}
-
-	/**
-	 * @since UT (3.7.0)
-	 */
-	public function current_filter() {
-		global $wp_actions;
-
-		if ( is_callable( 'current_filter' ) ) {
-			return current_filter();
-		}
-
-		return end( $wp_actions );
-	}
-
-	/**
-	 * @since UT (3.7.0)
-	 */
-	public function action( $arg ) {
-		$current_filter = $this->current_filter();
-
-		if ( $this->debug ) {
-			dmp( __FUNCTION__, $current_filter );
-		}
-
-		$this->events[] = array(
-			'action'    => __FUNCTION__,
-			'hook_name' => $current_filter,
-			'tag'       => $current_filter, // Back compat.
-			'args'      => func_get_args(),
-		);
-
-		return $arg;
-	}
-
-	/**
-	 * @since UT (3.7.0)
-	 */
-	public function action2( $arg ) {
-		$current_filter = $this->current_filter();
-
-		if ( $this->debug ) {
-			dmp( __FUNCTION__, $current_filter );
-		}
-
-		$this->events[] = array(
-			'action'    => __FUNCTION__,
-			'hook_name' => $current_filter,
-			'tag'       => $current_filter, // Back compat.
-			'args'      => func_get_args(),
-		);
-
-		return $arg;
-	}
-
-	/**
-	 * @since UT (3.7.0)
-	 */
-	public function filter( $arg ) {
-		$current_filter = $this->current_filter();
-
-		if ( $this->debug ) {
-			dmp( __FUNCTION__, $current_filter );
-		}
-
-		$this->events[] = array(
-			'filter'    => __FUNCTION__,
-			'hook_name' => $current_filter,
-			'tag'       => $current_filter, // Back compat.
-			'args'      => func_get_args(),
-		);
-
-		return $arg;
-	}
-
-	/**
-	 * @since UT (3.7.0)
-	 */
-	public function filter2( $arg ) {
-		$current_filter = $this->current_filter();
-
-		if ( $this->debug ) {
-			dmp( __FUNCTION__, $current_filter );
-		}
-
-		$this->events[] = array(
-			'filter'    => __FUNCTION__,
-			'hook_name' => $current_filter,
-			'tag'       => $current_filter, // Back compat.
-			'args'      => func_get_args(),
-		);
-
-		return $arg;
-	}
-
-	/**
-	 * @since UT (3.7.0)
-	 */
-	public function filter_append( $arg ) {
-		$current_filter = $this->current_filter();
-
-		if ( $this->debug ) {
-			dmp( __FUNCTION__, $current_filter );
-		}
-
-		$this->events[] = array(
-			'filter'    => __FUNCTION__,
-			'hook_name' => $current_filter,
-			'tag'       => $current_filter, // Back compat.
-			'args'      => func_get_args(),
-		);
-
-		return $arg . '_append';
-	}
-
-	/**
-	 * Does not return the result, so it's safe to use with the 'all' filter.
-	 *
-	 * @since UT (3.7.0)
-	 */
-	public function filterall( $hook_name, ...$args ) {
-		$current_filter = $this->current_filter();
-
-		if ( $this->debug ) {
-			dmp( __FUNCTION__, $current_filter );
-		}
-
-		$this->events[] = array(
-			'filter'    => __FUNCTION__,
-			'hook_name' => $hook_name,
-			'tag'       => $hook_name, // Back compat.
-			'args'      => $args,
-		);
-	}
-
-	/**
-	 * Returns a list of all the actions, hook names and args.
-	 *
-	 * @since UT (3.7.0)
-	 */
-	public function get_events() {
-		return $this->events;
-	}
-
-	/**
-	 * Returns a count of the number of times the action was called since the last reset.
-	 *
-	 * @since UT (3.7.0)
-	 */
-	public function get_call_count( $hook_name = '' ) {
-		if ( $hook_name ) {
-			$count = 0;
-
-			foreach ( $this->events as $e ) {
-				if ( $e['action'] === $hook_name ) {
-					++$count;
-				}
-			}
-
-			return $count;
-		}
-
-		return count( $this->events );
-	}
-
-	/**
-	 * Returns an array of the hook names that triggered calls to this action.
-	 *
-	 * @since 6.1.0
-	 */
-	public function get_hook_names() {
-		$out = array();
-
-		foreach ( $this->events as $e ) {
-			$out[] = $e['hook_name'];
-		}
-
-		return $out;
-	}
-
-	/**
-	 * Returns an array of the hook names that triggered calls to this action.
-	 *
-	 * @since UT (3.7.0)
-	 * @since 6.1.0 Turned into an alias for ::get_hook_names().
-	 */
-	public function get_tags() {
-		return $this->get_hook_names();
-	}
-
-	/**
-	 * Returns an array of args passed in calls to this action.
-	 *
-	 * @since UT (3.7.0)
-	 */
-	public function get_args() {
-		$out = array();
-
-		foreach ( $this->events as $e ) {
-			$out[] = $e['args'];
-		}
-
-		return $out;
-	}
+	return \trim( \preg_replace( '/\s\s+/', ' ', $html ) );
 }
 
 // Convert valid XML to an array tree structure.
@@ -367,12 +135,13 @@ class TestXMLParser {
 /**
  * Converts an XML string into an array tree structure.
  *
- * The output of this function can be passed to xml_find() to find nodes by their path.
+ * The output of this function can be passed to tests_xml_find() to find nodes by their path.
  *
  * @param string $in The XML string.
+ *
  * @return array XML as an array.
  */
-function xml_to_array( $in ) {
+function tests_xml_to_array( string $in ): array {
 	$p = new TestXMLParser( $in );
 	return $p->data;
 }
@@ -382,14 +151,15 @@ function xml_to_array( $in ) {
  *
  * Example usage:
  *
- *     $tree = xml_to_array( $rss );
- *     $items = xml_find( $tree, 'rss', 'channel', 'item' );
+ *     $tree = tests_xml_to_array( $rss );
+ *     $items = tests_xml_find( $tree, 'rss', 'channel', 'item' );
  *
- * @param array     $tree     An array tree structure of XML, typically from xml_to_array().
+ * @param array $tree An array tree structure of XML, typically from tests_xml_to_array().
  * @param string ...$elements Names of XML nodes to create a "path" to find within the XML.
+ *
  * @return array Array of matching XML node information.
  */
-function xml_find( $tree, ...$elements ) {
+function tests_xml_find( array $tree, ...$elements ): array {
 	$n   = count( $elements );
 	$out = array();
 
@@ -397,7 +167,7 @@ function xml_find( $tree, ...$elements ) {
 		return $out;
 	}
 
-	for ( $i = 0; $i < count( $tree ); $i++ ) {
+	for ( $i = 0, $iMax = count( $tree ); $i < $iMax; $i ++ ) {
 		#       echo "checking '{$tree[$i][name]}' == '{$elements[0]}'\n";
 		#       var_dump( $tree[$i]['name'], $elements[0] );
 		if ( $tree[ $i ]['name'] === $elements[0] ) {
@@ -406,7 +176,7 @@ function xml_find( $tree, ...$elements ) {
 				$out[] = $tree[ $i ];
 			} else {
 				$subtree =& $tree[ $i ]['child'];
-				$out     = array_merge( $out, xml_find( $subtree, ...array_slice( $elements, 1 ) ) );
+				$out = array_merge( $out, tests_xml_find( $subtree, ...array_slice( $elements, 1 ) ) );
 			}
 		}
 	}
@@ -414,25 +184,25 @@ function xml_find( $tree, ...$elements ) {
 	return $out;
 }
 
-function xml_join_atts( $atts ) {
+function tests_xml_join_attrs( iterable $attributes ): string {
 	$a = array();
-	foreach ( $atts as $k => $v ) {
+	foreach ( $attributes as $k => $v ) {
 		$a[] = $k . '="' . $v . '"';
 	}
-	return implode( ' ', $a );
+	return \implode( ' ', $a );
 }
 
-function xml_array_dumbdown( &$data ) {
+function tests_xml_array_dumbdown( &$data ): array {
 	$out = array();
 
-	foreach ( array_keys( $data ) as $i ) {
+	foreach ( \array_keys( $data ) as $i ) {
 		$name = $data[ $i ]['name'];
 		if ( ! empty( $data[ $i ]['attributes'] ) ) {
-			$name .= ' ' . xml_join_atts( $data[ $i ]['attributes'] );
+			$name .= ' ' . tests_xml_join_attrs( $data[ $i ]['attributes'] );
 		}
 
 		if ( ! empty( $data[ $i ]['child'] ) ) {
-			$out[ $name ][] = xml_array_dumbdown( $data[ $i ]['child'] );
+			$out[ $name ][] = tests_xml_array_dumbdown( $data[ $i ]['child'] );
 		} else {
 			$out[ $name ] = $data[ $i ]['content'];
 		}
@@ -441,55 +211,26 @@ function xml_array_dumbdown( &$data ) {
 	return $out;
 }
 
-function dmp( ...$args ) {
+function tests_dmp( ...$args ) {
 	foreach ( $args as $thing ) {
 		echo ( is_scalar( $thing ) ? (string) $thing : var_export( $thing, true ) ), "\n";
 	}
 }
 
-function dmp_filter( $a ) {
-	dmp( $a );
+function tests_dmp_filter( $a ) {
+	tests_dmp( $a );
 	return $a;
 }
 
-function get_echo( $callback, $args = array() ) {
-	ob_start();
-	call_user_func_array( $callback, $args );
-	return ob_get_clean();
+function tests_get_echo( $callback, $args = [] ): string {
+	\ob_start();
+	\call_user_func_array( $callback, $args );
+	return (string) \ob_get_clean();
 }
-
-// Recursively generate some quick assertEquals() tests based on an array.
-function gen_tests_array( $name, $expected_data ) {
-	$out = array();
-
-	foreach ( $expected_data as $k => $v ) {
-		if ( is_numeric( $k ) ) {
-			$index = (string) $k;
-		} else {
-			$index = "'" . addcslashes( $k, "\n\r\t'\\" ) . "'";
-		}
-
-		if ( is_string( $v ) ) {
-			$out[] = '$this->assertEquals( \'' . addcslashes( $v, "\n\r\t'\\" ) . '\', $' . $name . '[' . $index . '] );';
-		} elseif ( is_numeric( $v ) ) {
-			$out[] = '$this->assertEquals( ' . $v . ', $' . $name . '[' . $index . '] );';
-		} elseif ( is_array( $v ) ) {
-			$out[] = gen_tests_array( "{$name}[{$index}]", $v );
-		}
-	}
-
-	return implode( "\n", $out ) . "\n";
-}
-
-/**
- * Use to create objects by yourself.
- */
-class MockClass extends stdClass {}
-
 /**
  * Drops all tables from the WordPress database.
  */
-function drop_tables() {
+function tests_drop_tables() {
 	global $wpdb;
 	$tables = $wpdb->get_col( 'SHOW TABLES;' );
 	foreach ( $tables as $table ) {
@@ -498,7 +239,7 @@ function drop_tables() {
 	}
 }
 
-function print_backtrace() {
+function tests_print_backtrace() {
 	$bt = debug_backtrace();
 	echo "Backtrace:\n";
 	$i = 0;
@@ -515,34 +256,34 @@ function print_backtrace() {
 	echo "\n";
 }
 
-// Mask out any input fields matching the given name.
-function mask_input_value( $in, $name = '_wpnonce' ) {
+function tests_mask_input_value( $in, $name = '_wpnonce' ) {
 	return preg_replace( '@<input([^>]*) name="' . preg_quote( $name ) . '"([^>]*) value="[^>]*" />@', '<input$1 name="' . preg_quote( $name ) . '"$2 value="***" />', $in );
 }
 
 /**
  * Removes the post type and its taxonomy associations.
  */
-function _unregister_post_type( $cpt_name ) {
+function tests_unregister_post_type( $cpt_name ) {
 	unregister_post_type( $cpt_name );
 }
 
-function _unregister_taxonomy( $taxonomy_name ) {
+function tests_unregister_taxonomy( $taxonomy_name ) {
 	unregister_taxonomy( $taxonomy_name );
 }
 
 /**
- * Unregister a post status.
+ * Unregister a post stat
+ * us.
  *
  * @since 4.2.0
  *
  * @param string $status
  */
-function _unregister_post_status( $status ) {
+function tests_unregister_post_status( $status ) {
 	unset( $GLOBALS['wp_post_statuses'][ $status ] );
 }
 
-function _cleanup_query_vars() {
+function tests_cleanup_query_vars() {
 	// Clean out globals to stop them polluting wp and wp_query.
 	foreach ( $GLOBALS['wp']->public_query_vars as $v ) {
 		unset( $GLOBALS[ $v ] );
@@ -565,32 +306,9 @@ function _cleanup_query_vars() {
 	}
 }
 
-function _clean_term_filters() {
+function tests_clean_term_filters() {
 	remove_filter( 'get_terms', array( 'Featured_Content', 'hide_featured_term' ), 10, 2 );
 	remove_filter( 'get_the_terms', array( 'Featured_Content', 'hide_the_featured_term' ), 10, 3 );
-}
-
-/**
- * Special class for exposing protected wpdb methods we need to access
- */
-class WpdbExposedMethodsForTesting extends wpdb {
-	public function __construct() {
-		global $wpdb;
-		$this->dbh         = $wpdb->dbh;
-		$this->is_mysql    = $wpdb->is_mysql;
-		$this->ready       = true;
-		$this->field_types = $wpdb->field_types;
-		$this->charset     = $wpdb->charset;
-
-		$this->dbuser     = $wpdb->dbuser;
-		$this->dbpassword = $wpdb->dbpassword;
-		$this->dbname     = $wpdb->dbname;
-		$this->dbhost     = $wpdb->dbhost;
-	}
-
-	public function __call( $name, $arguments ) {
-		return call_user_func_array( array( $this, $name ), $arguments );
-	}
 }
 
 /**
@@ -598,7 +316,7 @@ class WpdbExposedMethodsForTesting extends wpdb {
  *
  * @return int The backtrack count.
  */
-function benchmark_pcre_backtracking( $pattern, $subject, $strategy ) {
+function tests_benchmark_pcre_backtracking( $pattern, $subject, $strategy ) {
 	$saved_config = ini_get( 'pcre.backtrack_limit' );
 
 	// Attempt to prevent PHP crashes. Adjust lower when needed.
