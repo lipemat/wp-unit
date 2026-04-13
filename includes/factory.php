@@ -1,7 +1,9 @@
 <?php
+declare( strict_types=1 );
 
 require_once __DIR__ . '/factory/class-wp-unittest-factory-for-thing.php';
 require_once __DIR__ . '/factory/class-wp-unittest-factory-for-post.php';
+require_once __DIR__ . '/factory/class-wp-unittest-factory-for-page.php';
 require_once __DIR__ . '/factory/class-wp-unittest-factory-for-attachment.php';
 require_once __DIR__ . '/factory/class-wp-unittest-factory-for-user.php';
 require_once __DIR__ . '/factory/class-wp-unittest-factory-for-comment.php';

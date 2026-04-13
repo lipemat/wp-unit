@@ -16,6 +16,13 @@ class WP_UnitTest_Factory {
 	public WP_UnitTest_Factory_For_Post $post;
 
 	/**
+	 * Generates page fixtures for use in tests.
+	 *
+	 * @var WP_UnitTest_Factory_For_Page
+	 */
+	public WP_UnitTest_Factory_For_Page $page;
+
+	/**
 	 * Generates attachment fixtures for use in tests.
 	 *
 	 * @var WP_UnitTest_Factory_For_Attachment
@@ -71,16 +78,18 @@ class WP_UnitTest_Factory {
 	 */
 	public WP_UnitTest_Factory_For_Network $network;
 
+
 	public function __construct() {
-		$this->post       = new WP_UnitTest_Factory_For_Post( $this );
+		$this->post = new WP_UnitTest_Factory_For_Post( $this );
+		$this->page = new WP_UnitTest_Factory_For_Page( $this );
 		$this->attachment = new WP_UnitTest_Factory_For_Attachment( $this );
-		$this->comment    = new WP_UnitTest_Factory_For_Comment( $this );
-		$this->user       = new WP_UnitTest_Factory_For_User( $this );
-		$this->term       = new WP_UnitTest_Factory_For_Term( $this );
-		$this->category   = new WP_UnitTest_Factory_For_Term( $this, 'category' );
-		$this->tag        = new WP_UnitTest_Factory_For_Term( $this, 'post_tag' );
+		$this->comment = new WP_UnitTest_Factory_For_Comment( $this );
+		$this->user = new WP_UnitTest_Factory_For_User( $this );
+		$this->term = new WP_UnitTest_Factory_For_Term( $this );
+		$this->category = new WP_UnitTest_Factory_For_Term( $this, 'category' );
+		$this->tag = new WP_UnitTest_Factory_For_Term( $this, 'post_tag' );
 		if ( is_multisite() ) {
-			$this->blog    = new WP_UnitTest_Factory_For_Blog( $this );
+			$this->blog = new WP_UnitTest_Factory_For_Blog( $this );
 			$this->network = new WP_UnitTest_Factory_For_Network( $this );
 		}
 	}
