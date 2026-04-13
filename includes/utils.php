@@ -142,8 +142,20 @@ class TestXMLParser {
  * @return array XML as an array.
  */
 function tests_xml_to_array( string $in ): array {
-	$p = new TestXMLParser( $in );
-	return $p->data;
+	return ( new TestXMLParser( $in ) )->data;
+}
+
+/**
+ * Converts an XML array tree structure into a flat array.
+ *
+ * Same thing as `tests_xml_array_flatten( tests_xml_to_array( $in ) )`.
+ *
+ * @param string $in The XML string.
+ *
+ * @return array XML as a flat array.
+ */
+function tests_xml_to_simple_array( string $in ): array {
+	return tests_xml_array_flatten( tests_xml_to_array( $in ) );
 }
 
 /**
