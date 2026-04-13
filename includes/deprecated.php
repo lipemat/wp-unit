@@ -54,10 +54,10 @@ function xml_join_atts( $atts ) {
 }
 
 /**
- * @deprecated Use `tests_xml_array_dumbdown()` instead.
+ * @deprecated Use `tests_xml_array_flatten()` instead.
  */
 function xml_array_dumbdown( &$data ) {
-	return tests_xml_array_dumbdown( $data );
+	return tests_xml_array_flatten( $data );
 }
 
 /**

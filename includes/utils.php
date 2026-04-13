@@ -192,17 +192,20 @@ function tests_xml_join_attrs( iterable $attributes ): string {
 	return \implode( ' ', $a );
 }
 
-function tests_xml_array_dumbdown( &$data ): array {
+/**
+ * Flattens an array tree structure of XML into a single-dimensional array.
+ */
+function tests_xml_array_flatten( array $data ): array {
 	$out = array();
 
 	foreach ( \array_keys( $data ) as $i ) {
 		$name = $data[ $i ]['name'];
-		if ( ! empty( $data[ $i ]['attributes'] ) ) {
+		if ( isset( $data[ $i ]['attributes'] ) && \is_array( $data[ $i ]['attributes'] ) ) {
 			$name .= ' ' . tests_xml_join_attrs( $data[ $i ]['attributes'] );
 		}
 
-		if ( ! empty( $data[ $i ]['child'] ) ) {
-			$out[ $name ][] = tests_xml_array_dumbdown( $data[ $i ]['child'] );
+		if ( isset( $data[ $i ]['child'] ) && \is_array( $data[ $i ]['child'] ) ) {
+			$out[ $name ][] = tests_xml_array_flatten( $data[ $i ]['child'] );
 		} else {
 			$out[ $name ] = $data[ $i ]['content'];
 		}
