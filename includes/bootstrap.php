@@ -244,8 +244,8 @@ if ( $multisite ) {
 }
 
 $GLOBALS['_wp_die_disabled'] = false;
-// Allow tests to override wp_die().
-tests_add_filter( 'wp_die_handler', '_wp_die_handler_filter' );
+// Output basic text for wp_die() class while halting execution.
+tests_add_filter( 'wp_die_handler', '_wp_die_handler_filter_exit' );
 // Use the Spy REST Server instead of default.
 tests_add_filter( 'wp_rest_server_class', '_wp_rest_server_class_filter' );
 // Prevent updating translations asynchronously.
@@ -307,6 +307,9 @@ if ( $multisite ) {
 }
 // unset this later, so we can use it after WP loads
 unset( $multisite );
+
+// Output basic text when `wp_die` is called.
+add_filter( 'wp_die_handler', '_wp_die_handler_filter' );
 
 // Backup the global hooks so we can restore them after each test.
 Global_Hooks::init_once();

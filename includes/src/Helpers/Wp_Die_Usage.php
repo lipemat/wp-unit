@@ -95,7 +95,7 @@ final class Wp_Die_Usage {
 	 *
 	 * @return void
 	 */
-	public function validate() {
+	public function validate(): void {
 		// Original implementation before the handler was introduced.
 		if ( 0 === \count( $this->expected ) ) {
 			return;

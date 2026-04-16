@@ -230,7 +230,7 @@ function _delete_all_posts() {
  * @param array           $args    Arguments passed to wp_die().
  */
 function _wp_die_handler( $message, $title = '', $args = array() ) {
-	if ( ! $GLOBALS['_wp_die_disabled'] ) {
+	if ( ! isset( $GLOBALS['_wp_die_disabled'] ) || false === $GLOBALS['_wp_die_disabled'] ) {
 		_wp_die_handler_txt( $message, $title, $args );
 	} else {
 		// Ignore at our peril.
@@ -320,25 +320,7 @@ function _wp_die_handler_txt( $message, $title, $args ) {
  * @param array           $args    Arguments passed to wp_die().
  */
 function _wp_die_handler_exit( $message, $title, $args ) {
-	[ $message, $title, $args ] = _wp_die_process_input( $message, $title, $args );
-
-	echo "\nwp_die() called\n";
-	echo "Message: $message\n";
-
-	if ( ! empty( $title ) ) {
-		echo "Title: $title\n";
-	}
-
-	if ( ! empty( $args ) ) {
-		echo "Args:\n";
-		foreach ( $args as $key => $value ) {
-			if ( ! is_scalar( $value ) ) {
-				$value = var_export( $value, true );
-			}
-
-			echo "\t$key: $value\n";
-		}
-	}
+	_wp_die_handler_txt( $message, $title, $args );
 
 	exit( 1 );
 }
