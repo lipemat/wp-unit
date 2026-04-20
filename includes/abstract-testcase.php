@@ -159,7 +159,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 		 * it saves creating an instance of WP_Screen, making two method calls,
 		 * and firing of the `current_screen` action.
 		 */
-		$current_screen_globals = [ 'current_screen', 'taxnow', 'typenow' ];
+		$current_screen_globals = [ 'current_screen', 'pagenow', 'taxnow', 'typenow' ];
 		foreach ( $current_screen_globals as $global ) {
 			$GLOBALS[ $global ] = null;
 		}
