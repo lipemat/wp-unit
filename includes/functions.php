@@ -127,7 +127,7 @@ if ( ! \function_exists( 'tests_allow_extending_final' ) ) {
 		}
 
 		BypassFinals::enable( false );
-		BypassFinals::setWhitelist( \array_unique( $bypass ) );
+		BypassFinals::allowPaths( \array_unique( $bypass ) );
 	}
 }
 
