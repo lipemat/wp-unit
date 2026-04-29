@@ -290,7 +290,7 @@ if ( isset( $GLOBALS['wp_tests_filters'] ) ) {
 // Not required for non WP Core classes as the `allow_extending_final` helper function is available.
 if ( isset( $GLOBALS['wp_tests_bypass_finals'] ) && \is_array( $GLOBALS['wp_tests_bypass_finals'] ) ) {
 	foreach ( $GLOBALS['wp_tests_bypass_finals'] as $class ) {
-		allow_extending_final( $class );
+		tests_allow_extending_final( $class );
 	}
 }
 

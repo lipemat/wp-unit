@@ -98,8 +98,7 @@ function tests_add_option( string $option_name, $value ): void {
 	}, - 1 );
 }
 
-
-if ( ! \function_exists( 'allow_extending_final' ) ) {
+if ( ! \function_exists( 'tests_allow_extending_final' ) ) {
 	/**
 	 * Allow extending a particular final class.
 	 *
@@ -116,7 +115,7 @@ if ( ! \function_exists( 'allow_extending_final' ) ) {
 	 *
 	 * @return void
 	 */
-	function allow_extending_final( string $class ): void {
+	function tests_allow_extending_final( string $class ): void {
 		static $bypass = [];
 		// Remove the global namespace, so the directory structure is matched.
 		$bypass[] = '*/' . \implode( '/', \array_slice( \explode( '\\', $class ), 2 ) ) . '.php';
