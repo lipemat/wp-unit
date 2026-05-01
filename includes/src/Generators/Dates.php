@@ -23,30 +23,30 @@ use DateTimeZone;
  */
 class Dates implements Template_String {
 	public const DAYS = [
-		'12 days',
-		'3 days',
-		'17 days',
-		'17 days 1 hour',
-		'8 days',
-		'20 days',
-		'20 days 12 hours',
-		'1 day',
-		'15 days',
-		'15 days 21 hours',
-		'6 days',
-		'14 days',
-		'10 days',
-		'2 days',
-		'19 days',
-		'5 days',
-		'21 days',
-		'7 days',
-		'18 days',
-		'13 days',
-		'4 days',
-		'16 days',
-		'9 days',
-		'11 days',
+		12,
+		3,
+		17,
+		17.1,
+		8,
+		20,
+		20.5,
+		1,
+		15,
+		15.9,
+		6,
+		14,
+		10,
+		2,
+		19,
+		5,
+		21,
+		7,
+		18,
+		13,
+		4,
+		16,
+		9,
+		11,
 	];
 
 	private DateTimeZone $timezone;
@@ -67,12 +67,43 @@ class Dates implements Template_String {
 	 * @throws \Exception - If the date cannot be created.
 	 */
 	public function get_template_string(): string {
-		$this->counter %= \count( static::DAYS );
-		$date = new \DateTime( '-' . static::DAYS[ $this->counter ], $this->timezone );
+		$date = new \DateTime( '-' . $this->get_next_date_string(), $this->timezone );
 		// Set seconds to 0 to avoid issues tests taking more than 1 second.
 		$date->setTime( (int) $date->format( 'H' ), (int) $date->format( 'i' ) );
 
-		++ $this->counter;
 		return $date->format( 'Y-m-d H:i:s' );
+	}
+
+
+	/**
+	 * Get a date string for the next date which can be
+	 * understood by the DateTime class.
+	 *
+	 * @since 4.9.2
+	 *
+	 * @return string
+	 */
+	protected function get_next_date_string(): string {
+		$this->counter %= \count( static::DAYS );
+
+		$days = static::DAYS[ $this->counter ];
+		$date = (int) \floor( $days );
+		if ( 1 === $date ) {
+			$date .= ' day';
+		} else {
+			$date .= ' days';
+		}
+
+		if ( \is_float( $days ) ) {
+			$hours = (int) \round( ( $days - \floor( $days ) ) * 24 );
+			if ( 1 === $hours ) {
+				$date .= ' 1 hour';
+			} elseif ( 1 < $hours ) {
+				$date .= ' ' . $hours . ' hours';
+			}
+		}
+
+		++ $this->counter;
+		return $date;
 	}
 }
