@@ -4,15 +4,6 @@
  *       - Add to migration wiki.
  */
 
-if ( ! \function_exists( 'allow_extending_final' ) ) {
-	/**
-	 * @deprecated Use `tests_allow_extending_final()` instead.
-	 */
-	function allow_extending_final( string $class ): void {
-		tests_allow_extending_final( $class );
-	}
-}
-
 /**
  * @deprecated Use `tests_rand_str()` instead.
  */
