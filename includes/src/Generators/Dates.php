@@ -23,30 +23,30 @@ use DateTimeZone;
  */
 class Dates implements Template_String {
 	public const DAYS = [
-		12,
-		3,
-		17,
-		17.1,
-		8,
-		20,
-		20.5,
-		1,
-		15,
-		15.9,
-		6,
-		14,
-		10,
-		2,
-		19,
-		5,
-		21,
-		7,
-		18,
-		13,
-		4,
-		16,
-		9,
-		11,
+		'12 days',
+		'3 days',
+		'17 days',
+		'17 days 1 hour',
+		'8 days',
+		'20 days',
+		'20 days 12 hours',
+		'1 day',
+		'15 days',
+		'15 days 21 hours',
+		'6 days',
+		'14 days',
+		'10 days',
+		'2 days',
+		'19 days',
+		'5 days',
+		'21 days',
+		'7 days',
+		'18 days',
+		'13 days',
+		'4 days',
+		'16 days',
+		'9 days',
+		'11 days',
 	];
 
 	private DateTimeZone $timezone;
@@ -68,7 +68,7 @@ class Dates implements Template_String {
 	 */
 	public function get_template_string(): string {
 		$this->counter %= \count( static::DAYS );
-		$date = new \DateTime( '-' . static::DAYS[ $this->counter ] . ' days', $this->timezone );
+		$date = new \DateTime( '-' . static::DAYS[ $this->counter ], $this->timezone );
 		// Set seconds to 0 to avoid issues tests taking more than 1 second.
 		$date->setTime( (int) $date->format( 'H' ), (int) $date->format( 'i' ) );
 
