@@ -3,7 +3,7 @@ declare( strict_types=1 );
 
 namespace Lipe\WP_Unit\Helpers;
 
-use Lipe\WP_Unit\Traits\Singleton;
+use Lipe\WP_Unit\Traits\TestsSingleton;
 
 /**
  * Cleanup global and WordPress state during tests.
@@ -14,7 +14,7 @@ use Lipe\WP_Unit\Traits\Singleton;
  * @since  4.0.0
  */
 class Cleanup {
-	use Singleton;
+	use TestsSingleton;
 
 	/**
 	 * Cleans the global scope (e.g `$_GET` and `$_POST`).

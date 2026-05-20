@@ -3,7 +3,7 @@ declare( strict_types=1 );
 
 namespace Lipe\WP_Unit\Utils;
 
-use Lipe\WP_Unit\Traits\Singleton;
+use Lipe\WP_Unit\Traits\TestsSingleton;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
@@ -17,7 +17,7 @@ use RecursiveIteratorIterator;
  *
  */
 class Files {
-	use Singleton;
+	use TestsSingleton;
 
 	/**
 	 * Selectively deletes a file.

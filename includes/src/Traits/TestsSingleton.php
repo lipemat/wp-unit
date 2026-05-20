@@ -9,7 +9,7 @@ namespace Lipe\WP_Unit\Traits;
  *
  * @internal
  */
-trait Singleton {
+trait TestsSingleton {
 	final private function __construct() {
 	}
 

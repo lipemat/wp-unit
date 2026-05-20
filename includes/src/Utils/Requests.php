@@ -3,7 +3,7 @@ declare( strict_types=1 );
 
 namespace Lipe\WP_Unit\Utils;
 
-use Lipe\WP_Unit\Traits\Singleton;
+use Lipe\WP_Unit\Traits\TestsSingleton;
 
 /**
  * Utilities for working in HTTP requests.
@@ -13,7 +13,7 @@ use Lipe\WP_Unit\Traits\Singleton;
  *
  */
 final class Requests {
-	use Singleton;
+	use TestsSingleton;
 
 	/**
 	 * Convert JSON data into a raw request response.

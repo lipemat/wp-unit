@@ -4,7 +4,7 @@ declare( strict_types=1 );
 namespace Lipe\WP_Unit\Utils;
 
 use Lipe\WP_Unit\Exceptions\TestHelperException;
-use Lipe\WP_Unit\Traits\Singleton;
+use Lipe\WP_Unit\Traits\TestsSingleton;
 
 /**
  * Helpers for working with classes.
@@ -14,7 +14,7 @@ use Lipe\WP_Unit\Traits\Singleton;
  *
  */
 class PrivateAccess {
-	use Singleton;
+	use TestsSingleton;
 
 	/**
 	 * Get the value of a private constant or property from an object.

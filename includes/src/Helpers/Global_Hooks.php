@@ -3,7 +3,7 @@ declare( strict_types=1 );
 
 namespace Lipe\WP_Unit\Helpers;
 
-use Lipe\WP_Unit\Traits\Singleton;
+use Lipe\WP_Unit\Traits\TestsSingleton;
 use Lipe\WP_Unit\Utils\PrivateAccess;
 
 /**
@@ -14,7 +14,7 @@ use Lipe\WP_Unit\Utils\PrivateAccess;
  *
  */
 final class Global_Hooks {
-	use Singleton;
+	use TestsSingleton;
 
 	/**
 	 * Hold the original state of the global hooks.

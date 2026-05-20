@@ -3,7 +3,7 @@ declare( strict_types=1 );
 
 namespace Lipe\WP_Unit\Utils;
 
-use Lipe\WP_Unit\Traits\Singleton;
+use Lipe\WP_Unit\Traits\TestsSingleton;
 use PHPUnit\Metadata\Annotation\Parser\Registry;
 use PHPUnit\Util\Test;
 
@@ -14,7 +14,7 @@ use PHPUnit\Util\Test;
  * @since  3.7.0
  */
 class Annotations {
-	use Singleton;
+	use TestsSingleton;
 
 	/**
 	 * Cross PHPUnit version method to get annotations.

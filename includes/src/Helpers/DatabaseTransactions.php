@@ -3,7 +3,7 @@ declare( strict_types=1 );
 
 namespace Lipe\WP_Unit\Helpers;
 
-use Lipe\WP_Unit\Traits\Singleton;
+use Lipe\WP_Unit\Traits\TestsSingleton;
 
 /**
  * @author Mat Lipe
@@ -11,7 +11,7 @@ use Lipe\WP_Unit\Traits\Singleton;
  *
  */
 class DatabaseTransactions {
-	use Singleton;
+	use TestsSingleton;
 
 	/**
 	 * Starts a database transaction.
