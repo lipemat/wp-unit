@@ -122,6 +122,18 @@ namespace {
 		 */
 		public static function add_command( string $command, $callback ): void {
 		}
+
+
+		/**
+         * Currently strips color tokens from a string during testing.
+         *
+         * @param string $string String to colorize for output, with color tokens.
+         *
+      	 * @return string Colorized string.
+         */
+		public static function colorize( $string ): string {
+        	return (string) \preg_replace( '/%[a-zA-Z]/', '', $string );
+        }
 	}
 }
 
