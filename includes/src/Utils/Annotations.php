@@ -12,12 +12,18 @@ use PHPUnit\Util\Test;
  *
  * @author Mat Lipe
  * @since  3.7.0
+ *
+ * @todo       Remove in version 5.
+ * @deprecated Use the corresponding test methods.
  */
 class Annotations {
 	use TestsSingleton;
 
 	/**
 	 * Cross PHPUnit version method to get annotations.
+	 *
+	 * @todo       Remove in version 5.
+	 * @deprecated Use the corresponding test methods.
 	 *
 	 * @param \WP_UnitTestCase_Base $case
 	 *

@@ -285,9 +285,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 
 	/**
-	 *  Declares an expected `_deprecated_function()` call from within a test.
-	 *
-	 * An alternative to using the `@expectedDeprecated` annotation.
+	 * Declares an expected `_deprecated_function()` call from within a test.
 	 *
 	 * @since  3.7.0
 	 *
@@ -310,8 +308,6 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 
 	/**
 	 * Declares an expected `_doing_it_wrong()` call from within a test.
-	 *
-	 * An alternative to using the `@expectedIncorrectUsage` annotation.
 	 *
 	 * @since 3.7.0
 	 *

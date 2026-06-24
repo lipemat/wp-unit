@@ -126,6 +126,11 @@ final class Doing_It_Wrong {
 	}
 
 
+	/**
+	 * @todo       Remove in version 5.
+	 *
+	 * @deprecated Use the corresponding test methods.
+	 */
 	private function add_from_annotations(): void {
 		$annotations = Annotations::instance()->get_annotations( $this->case );
 		if ( isset( $annotations['class']['expectedIncorrectUsage'] ) ) {
@@ -145,6 +150,7 @@ final class Doing_It_Wrong {
 	public static function factory( \WP_UnitTestCase_Base $case ): self {
 		$class = new self( $case );
 		$class->hook();
+		// @phpstan-ignore method.deprecated
 		$class->add_from_annotations();
 		return $class;
 	}
