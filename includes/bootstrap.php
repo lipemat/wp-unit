@@ -156,6 +156,9 @@ if ( class_exists( '\Yoast\PHPUnitPolyfills\Autoload' )
 	exit( 1 );
 }
 
+// The PhpStorm file link format contains INI-special characters, which break PHPUnit's process isolation when forwarded to the child unquoted.
+ini_set( 'xdebug.file_link_format', '' );
+
 $required_constants = [
 	'WP_TESTS_DOMAIN',
 	'WP_TESTS_EMAIL',
