@@ -6,7 +6,7 @@ namespace Lipe\WP_Unit\Helpers\Snapshots;
 /**
  * Simple class for implementing a snapshot matcher `Replace` interface.
  *
- * - Used internally by the Matcher class.
+ * - Used internally by the `Adjuster` class.
  * - May also be used locally in tests.
  *
  * @author Mat Lipe
