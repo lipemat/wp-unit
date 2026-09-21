@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 ##################################################################
 #
@@ -11,13 +11,11 @@
 #
 ###################################################################
 
-# shellcheck disable=SC2039
 array=("vendor/yoast/" "vendor/composer/" "vendor/dg/")
 
 echo "Cleaning unused directories...".
 
 for directory in vendor/*/ ; do
-    # shellcheck disable=SC2039
     if [[ ! "${array[*]}" =~ $directory ]]; then
         rm -rf "$directory"
     fi
