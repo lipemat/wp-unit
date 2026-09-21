@@ -11,10 +11,15 @@ parameters:
     - includes/testcase-base.php
     - includes/testcase-xmlrpc.php
   bootstrapFiles:
+    - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit/Exception.php
+    - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit/Framework\SelfDescribing.php
     - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Framework\Reorderable.php
+    - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit/Framework/Exception/Exception.php
+    - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit/Framework/Exception/AssertionFailedError.php
+    - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit/Framework/Exception/ExpectationFailedException.php
+    - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Framework\Assert.php
     - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Framework\SelfDescribing.php
     - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Framework\Test.php
-    - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Framework\Assert.php
     - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Framework\TestCase.php
     - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Runner\Version.php
     - phar://E:/scripts\phpunit\phpunit-9\phpunit-9.phar\phpunit\Util\Test.php
