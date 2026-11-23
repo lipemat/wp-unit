@@ -361,7 +361,7 @@ abstract class WP_Ajax_UnitTestCase extends WP_UnitTestCase {
 	 * @throws WPAjaxDieContinueException
 	 */
 	protected function _handleAjaxCustom( callable $callable ) {
-		$hash = spl_object_hash( (object)$callable );
+		$hash = 'spl_object_id_' . spl_object_id( (object)$callable );
 		add_action( 'wp_ajax_' . $hash, $callable );
 		$this->_handleAjax( $hash );
 	}

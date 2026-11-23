@@ -24,4 +24,26 @@ class WP_Ajax_UnitTestCaseTest extends \WP_Ajax_UnitTestCase {
 		} );
 		$this->assertSame( '-1', $result );
 	}
+
+
+	public function test_get_result_distinct_array_callables(): void {
+		$this->assertSame( '{"success":true,"data":"first"}', $this->_getResult( [ self::class, 'send_first' ] ) );
+		$this->assertSame( '{"success":true,"data":"second"}', $this->_getResult( [ self::class, 'send_second' ] ) );
+	}
+
+
+	public function test_get_result_distinct_string_callables(): void {
+		$this->assertSame( '{"success":true,"data":"first"}', $this->_getResult( self::class . '::send_first' ) );
+		$this->assertSame( '{"success":true,"data":"second"}', $this->_getResult( self::class . '::send_second' ) );
+	}
+
+
+	public static function send_first(): void {
+		wp_send_json_success( 'first' );
+	}
+
+
+	public static function send_second(): void {
+		wp_send_json_success( 'second' );
+	}
 }

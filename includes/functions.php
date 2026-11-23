@@ -145,11 +145,11 @@ function tests_allow_extending_final( string $class ): void {
  *
  * @see _wp_filter_build_unique_id()
  *
- * @param string                $hook_name Unused. The name of the filter to build ID for.
- * @param callable|string|array $callback  The callback to generate ID for. The callback may
- *                                         or may not exist.
- * @param int                   $priority  Unused. The order in which the functions
- *                                         associated with a particular action are executed.
+ * @param string                       $hook_name Unused. The name of the filter.
+ * @param callable|object|string|array $callback  The callback to generate ID for.
+ *                                                May or may not exist.
+ * @param int                          $priority  Unused. The order in which the
+ *                                                functions are executed.
  * @return string Unique function ID for usage as array key.
  */
 function _test_filter_build_unique_id( $hook_name, $callback, $priority ) {
@@ -158,15 +158,15 @@ function _test_filter_build_unique_id( $hook_name, $callback, $priority ) {
 	}
 
 	if ( is_object( $callback ) ) {
-		// Closures are currently implemented as objects.
-		$callback = array( $callback, '' );
-	} else {
-		$callback = (array) $callback;
+		// Prefix prevents PHP casting the array key to int.
+		return 'spl_object_id:' . spl_object_id( $callback );
 	}
+
+	$callback = (array) $callback;
 
 	if ( is_object( $callback[0] ) ) {
 		// Object class calling.
-		return spl_object_hash( $callback[0] ) . $callback[1];
+		return ( (string) spl_object_id( $callback[0] ) ) . $callback[1];
 	} elseif ( is_string( $callback[0] ) ) {
 		// Static calling.
 		return $callback[0] . '::' . $callback[1];
