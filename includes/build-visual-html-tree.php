@@ -34,11 +34,6 @@
  *         class="has-custom-classname is-style-default wp-block-separator"
  *         style="margin-top:50px;margin-bottom:50px;"
  *
- *
- * @see   https://github.com/WordPress/wordpress-develop/blob/trunk/tests/phpunit/data/html5lib-tests/tree-construction/README.md
- *
- * @since 6.9.0
- *
  * @throws Exception If the markup could not be parsed.
  *
  * @param string      $html             Given test HTML.
@@ -51,7 +46,7 @@ function build_visual_html_tree( string $html, ?string $fragment_context ): stri
 		? WP_HTML_Processor::create_fragment( $html, $fragment_context )
 		: WP_HTML_Processor::create_full_parser( $html );
 	if ( null === $processor ) {
-		throw new Exception( 'Could not create a parser.' );
+		throw new Exception( 'Invalide HTML. Could not create a parser.' );
 	}
 	$tree_indent = '  ';
 
