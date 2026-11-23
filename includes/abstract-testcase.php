@@ -10,6 +10,7 @@ use Lipe\WP_Unit\Helpers\Setup_Teardown_State;
 use Lipe\WP_Unit\Helpers\Snapshots;
 use Lipe\WP_Unit\Helpers\Snapshots\SnapshotAdjuster;
 use Lipe\WP_Unit\Helpers\Wp_Die_Usage;
+use Lipe\WP_Unit\Utils\Strings;
 use PHPUnit\Framework\ExpectationFailedException;
 
 require_once __DIR__ . '/factory.php';
@@ -543,31 +544,37 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 * @return void
 	 */
 	public function assertSameTrimWhitespace( $expected, $actual, $message = '' ) {
-		$trim_whitespace = static function( $value ) {
-			$value = \trim( $value );
-			return \implode( "\n", \array_map( function( $value ) {
-				return \trim( \str_replace( "\r\n", "\n", $value ) );
-			}, \explode( "\n", $value ) ) );
-		};
-
 		if ( null !== $actual ) {
-			$actual = map_deep( $actual, static function( $value ) use ( $trim_whitespace ) {
-				if ( \is_string( $value ) ) {
-					return $trim_whitespace( $value );
-				}
-				return $value;
-			} );
+			$actual = Strings::in()->trim_deep( $actual );
 		}
 		if ( null !== $expected ) {
-			$expected = map_deep( $expected, static function( $value ) use ( $trim_whitespace ) {
-				if ( \is_string( $value ) ) {
-					return $trim_whitespace( $value );
-				}
-				return $value;
-			} );
+			$expected = Strings::in()->trim_deep( $expected );
 		}
 
 		self::assertSame( $expected, $actual, $message );
+	}
+
+
+	/**
+	 * Asserts that a string contains another string, ignoring the leading and trailing
+	 * whitespace of each line in the string.
+	 *
+	 * For comparing two strings that may have different tabs, spaces or newlines
+	 * but the same trimmed string contents.
+	 *
+	 * @since 4.11.0
+	 *
+	 * @param string $needle   The expected value.
+	 * @param string $haystack The actual value.
+	 * @param string $message  Optional. Message to display when the assertion fails.
+	 *
+	 * @return void
+	 */
+	public function assertStringContainsStringTrimWhitespace( string $needle, string $haystack, string $message = '' ) {
+		$needle = Strings::in()->trim_deep( $needle, '' );
+		$haystack = Strings::in()->trim_deep( $haystack, '' );
+
+		self::assertStringContainsStringIgnoringLineEndings( $needle, $haystack, $message );
 	}
 
 	/**

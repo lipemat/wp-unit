@@ -41,6 +41,33 @@ class WP_UnitTestCase_BaseTest extends \WP_UnitTestCase {
 	}
 
 
+	/**
+	 * @dataProvider providerContainedTrimWhitespace
+	 */
+	public function test_assert_string_contains_string_trim_whitespace_passes( string $needle, string $haystack, string $message ): void {
+		$this->assertStringContainsStringTrimWhitespace( $needle, $haystack, $message );
+	}
+
+
+	/**
+	 * @dataProvider providerNotContainedTrimWhitespace
+	 */
+	public function test_assert_string_contains_string_trim_whitespace_fails( string $needle, string $haystack, string $message ): void {
+		$this->expectException( ExpectationFailedException::class );
+		$this->expectExceptionMessage( $message );
+
+		$this->assertStringContainsStringTrimWhitespace( $needle, $haystack, $message );
+	}
+
+
+	public function test_assert_string_contains_string_trim_whitespace_failure_reports_trimmed_values(): void {
+		$this->expectException( ExpectationFailedException::class );
+		$this->expectExceptionMessageMatches( '#^Failed asserting that \'<p>Hello</p><p>World</p>\'.* contains "<p>Missing</p>"#' );
+
+		$this->assertStringContainsStringTrimWhitespace( "  <p>Missing</p>\n", "\t<p>Hello</p>\n\t<p>World</p>\n" );
+	}
+
+
 	public static function provideWhitespaceStrings(): array {
 		return [
 			'no whitespace'             => [
@@ -129,4 +156,116 @@ class WP_UnitTestCase_BaseTest extends \WP_UnitTestCase {
 		];
 	}
 
+
+	/**
+	 * @return array<string, array{needle: string, haystack: string, message: string}>
+	 */
+	public static function providerContainedTrimWhitespace(): array {
+		return [
+			'exact substring'          => [
+				'needle'   => 'World',
+				'haystack' => 'Hello World!',
+				'message'  => 'A plain substring should be found.',
+			],
+			'identical strings'        => [
+				'needle'   => 'Hello World',
+				'haystack' => 'Hello World',
+				'message'  => 'A string should contain itself.',
+			],
+			'empty needle'             => [
+				'needle'   => '',
+				'haystack' => 'Hello World',
+				'message'  => 'An empty needle should always be found.',
+			],
+			'whitespace only needle'   => [
+				'needle'   => " \t\n ",
+				'haystack' => 'Hello World',
+				'message'  => 'A whitespace-only needle trims to empty and should be found.',
+			],
+			'padded needle'            => [
+				'needle'   => "   <p>Hello</p>\t\n",
+				'haystack' => '<div><p>Hello</p></div>',
+				'message'  => 'Leading and trailing whitespace on the needle should be ignored.',
+			],
+			'different indentation'    => [
+				'needle'   => "<ul>\n  <li>One</li>\n  <li>Two</li>\n</ul>",
+				'haystack' => "<div>\n\t\t<ul>\n\t\t\t\t<li>One</li>\n\t\t\t\t<li>Two</li>\n\t\t</ul>\n</div>",
+				'message'  => 'Per-line indentation differences should be ignored.',
+			],
+			'crlf haystack'            => [
+				'needle'   => "<li>One</li>\n<li>Two</li>",
+				'haystack' => "<ul>\r\n  <li>One</li>\r\n  <li>Two</li>\r\n</ul>",
+				'message'  => 'CRLF line endings in the haystack should match LF in the needle.',
+			],
+			'crlf needle'              => [
+				'needle'   => "<li>One</li>\r\n<li>Two</li>",
+				'haystack' => "<ul>\n  <li>One</li>\n  <li>Two</li>\n</ul>",
+				'message'  => 'CRLF line endings in the needle should match LF in the haystack.',
+			],
+			'single line vs multiline' => [
+				'needle'   => '<li>One</li><li>Two</li>',
+				'haystack' => "<ul>\n  <li>One</li>\n  <li>Two</li>\n</ul>",
+				'message'  => 'Line breaks between tags should be ignored.',
+			],
+			'trailing newline'         => [
+				'needle'   => "<a href=\"https://example.com\">Link</a>\n",
+				'haystack' => "<p><a href=\"https://example.com\">Link</a></p>",
+				'message'  => 'A trailing newline on the needle should be ignored.',
+			],
+			'unicode'                  => [
+				'needle'   => "  Héllo 🌍\n  Wörld",
+				'haystack' => "<p>\n\tHéllo 🌍\n\tWörld\n</p>",
+				'message'  => 'Multibyte characters should be preserved and matched.',
+			],
+		];
+	}
+
+
+	/**
+	 * @return array<string, array{needle: string, haystack: string, message: string}>
+	 */
+	public static function providerNotContainedTrimWhitespace(): array {
+		return [
+			'missing text'                => [
+				'needle'   => 'Goodbye',
+				'haystack' => 'Hello World',
+				'message'  => 'Text not in the haystack should fail.',
+			],
+			'case differs'                => [
+				'needle'   => 'hello world',
+				'haystack' => 'Hello World',
+				'message'  => 'Matching should remain case-sensitive.',
+			],
+			'inner whitespace differs'    => [
+				'needle'   => 'Hello  World',
+				'haystack' => 'Hello World',
+				'message'  => 'Whitespace inside a line should not be ignored.',
+			],
+			'empty haystack'              => [
+				'needle'   => 'Hello',
+				'haystack' => '',
+				'message'  => 'A non-empty needle should not be found in an empty haystack.',
+			],
+			'whitespace only haystack'    => [
+				'needle'   => 'Hello',
+				'haystack' => "  \n\t\n  ",
+				'message'  => 'A non-empty needle should not be found in a whitespace-only haystack.',
+			],
+			'line order differs'          => [
+				'needle'   => "<li>Two</li>\n<li>One</li>",
+				'haystack' => "<ul>\n  <li>One</li>\n  <li>Two</li>\n</ul>",
+				'message'  => 'Lines in a different order should fail.',
+			],
+			'changed line in multiline'   => [
+				'needle'   => "<li>One</li>\n<li>Three</li>",
+				'haystack' => "<ul>\n  <li>One</li>\n  <li>Two</li>\n</ul>",
+				'message'  => 'A changed line inside a multi-line needle should fail.',
+			],
+			'needle longer than haystack' => [
+				'needle'   => '<p>Hello World</p>',
+				'haystack' => 'Hello World',
+				'message'  => 'A needle wrapping the haystack should fail.',
+			],
+		];
+	}
 }
